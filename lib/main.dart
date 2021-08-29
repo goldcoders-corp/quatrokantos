@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,7 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -48,7 +52,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  String userHome() {
+    return Platform.environment['HOME'] ?? Platform.environment['USERPROFILE']!;
+  }
+
+  void _incrementCounter() async {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -57,6 +65,71 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+    // var shell = Shell();
+    // shell.cd('/Users/uriah/.local/opt/brew/bin').run('./brew --version');
+    var homepath = userHome();
+    // var localPath = '$homepath/.local/bin';
+    var localPath = '$homepath/.local/opt/brew/bin';
+
+    final StringBuffer outputbuffer = StringBuffer();
+    final StringBuffer errorBuffer = StringBuffer();
+
+    // var command = './hugo';
+    // var args = ['version'];
+    var command = './brew';
+    var args = ['--version'];
+    FileSystemEntity.isDirectory(localPath).then((isDir) {
+      if (isDir) {
+        Directory.current = Directory(localPath);
+        Get.snackbar('Notification', 'Changing Directory to $localPath',
+            duration: const Duration(milliseconds: 30000),
+            icon: const Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+            isDismissible: true,
+            dismissDirection: SnackDismissDirection.HORIZONTAL);
+      } else {
+        Directory.current = Directory(localPath);
+        Get.snackbar('Error', 'Command Not Found: No Such file Or Directory',
+            duration: const Duration(milliseconds: 30000),
+            icon: const Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+            isDismissible: true,
+            dismissDirection: SnackDismissDirection.HORIZONTAL);
+      }
+    });
+
+    try {
+      final Process process = await Process.start(command, args);
+
+      final Stream<String> outputStream = process.stdout
+          .transform(const Utf8Decoder())
+          .transform(const LineSplitter());
+      await for (final String line in outputStream) {
+        outputbuffer.write('$line\n');
+      }
+
+      final Stream<String> errorStream = process.stderr
+          .transform(const Utf8Decoder())
+          .transform(const LineSplitter());
+      await for (final String line in errorStream) {
+        errorBuffer.write('$line\n');
+      }
+    } on ProcessException catch (e) {
+      errorBuffer.write(e.message);
+    }
+    var error = errorBuffer.toString();
+    var output = outputbuffer.toString();
+    if (error.isNotEmpty) {
+      Get.snackbar('Notification', error);
+    }
+    if (output.isNotEmpty) {
+      Get.snackbar('Notification', 'Hugo Installed: V$output',
+          duration: const Duration(milliseconds: 30000),
+          icon: const Icon(Icons.warning, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+          dismissDirection: SnackDismissDirection.HORIZONTAL);
+    }
   }
 
   @override
