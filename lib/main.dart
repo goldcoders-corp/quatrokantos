@@ -78,18 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
     // var args = ['version'];
     var command = './brew';
     var args = ['--version'];
-    FileSystemEntity.isDirectory(localPath).then((isDir) {
+    await FileSystemEntity.isDirectory(localPath).then((isDir) {
       if (isDir) {
         Directory.current = Directory(localPath);
-        Get.snackbar('Notification', 'Changing Directory to $localPath',
-            duration: const Duration(milliseconds: 30000),
-            icon: const Icon(Icons.warning, color: Colors.red),
-            snackPosition: SnackPosition.BOTTOM,
-            isDismissible: true,
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
       } else {
-        Directory.current = Directory(localPath);
-        Get.snackbar('Error', 'Command Not Found: No Such file Or Directory',
+        Get.snackbar('Given Path Does Not Exist', '$localPath',
             duration: const Duration(milliseconds: 30000),
             icon: const Icon(Icons.warning, color: Colors.red),
             snackPosition: SnackPosition.BOTTOM,
@@ -123,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Get.snackbar('Notification', error);
     }
     if (output.isNotEmpty) {
-      Get.snackbar('Notification', 'Hugo Installed: V$output',
+      Get.snackbar('Notification', output,
           duration: const Duration(milliseconds: 30000),
           icon: const Icon(Icons.warning, color: Colors.red),
           snackPosition: SnackPosition.BOTTOM,
