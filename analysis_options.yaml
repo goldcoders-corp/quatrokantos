@@ -1,0 +1,36 @@
+
+include: package:lint/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - /**/*.g.dart
+    - /**/*.mocks.dart
+    - lib/generated_plugin_registrant.dart
+  errors:
+    todo: ignore
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    unnecessary_getters_setters: false
+    always_put_required_named_parameters_first: false
+    lines_longer_than_80_chars: true
+    argument_type_not_assignable: true
+    avoid_print: false
+    avoid_type_to_string: true
+    always_require_non_null_named_parameters: true
+    avoid_classes_with_only_static_members: false
+    annotate_overrides: true
+    avoid_field_initializers_in_const_classes: true
+    always_declare_return_types: true
+    cancel_subscriptions: true
+    close_sinks: true
+    comment_references: true
+    only_throw_errors: true
+    sort_child_properties_last: true
+    await_only_futures: true
+    always_specify_types: true
+    constant_identifier_names: false
+    non_constant_identifier_names: false
+
+

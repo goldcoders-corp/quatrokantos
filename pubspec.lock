@@ -64,11 +64,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  file_utils:
+    dependency: transitive
+    description:
+      name: file_utils
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -81,6 +95,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.8"
+  globbing:
+    dependency: transitive
+    description:
+      name: globbing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  lint:
+    dependency: "direct main"
+    description:
+      name: lint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.0"
   matcher:
     dependency: transitive
     description:
@@ -156,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  system_info:
+    dependency: "direct main"
+    description:
+      name: system_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   term_glyph:
     dependency: transitive
     description:
@@ -170,6 +205,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  tint:
+    dependency: "direct main"
+    description:
+      name: tint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   typed_data:
     dependency: transitive
     description:
@@ -192,4 +234,4 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.13.0 <3.0.0"
