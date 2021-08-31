@@ -22,6 +22,7 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.2
+  equatable: ^2.0.3
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
@@ -32,6 +33,7 @@ dependencies:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
       path: plugins/menubar
+  outline_gradient_button: ^2.0.0+1
   process_run: ^0.12.1+1
   system_info: ^1.0.1
   tint: ^2.0.0
@@ -55,6 +57,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/images/
     # assets:
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg
