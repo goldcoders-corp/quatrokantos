@@ -26,10 +26,19 @@ dependencies:
     sdk: flutter
   flutter_dotenv: ^5.0.2
   get: ^4.3.8
+  get_storage: ^2.0.3
   lint: ^1.5.0
+  menubar:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/menubar
   process_run: ^0.12.1+1
   system_info: ^1.0.1
   tint: ^2.0.0
+  window_size:
+    git:
+      url: git://github.com/google/flutter-desktop-embedding.git
+      path: plugins/window_size
 
 dev_dependencies:
   flutter_test:

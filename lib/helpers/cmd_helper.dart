@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
-import 'package:quatrokantos/command_controller.dart';
+import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 
 class Cmd {
