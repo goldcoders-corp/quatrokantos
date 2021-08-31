@@ -42,11 +42,11 @@ class WizardView extends GetView<WizardController> {
                           ),
                           OnboardingCard(
                             title: 'Install System Package Manager',
-                            checkbox: (controller.brewInstalled == true)
+                            checkbox: (controller.pkgInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () {
-                              controller.brewInstalled = true;
+                              controller.pkgInstalled = true;
                             },
                           ),
                         ],
