@@ -5,10 +5,10 @@ import 'package:quatrokantos/services/wizard_service.dart';
 
 class WizardController extends GetxController {
   final GetStorage _getStorage = GetStorage();
+  final WizardService wiz = Get.find<WizardService>();
 
   final RxInt _currentStep = 0.obs;
   final RxBool _complete = false.obs;
-  final WizardService wiz = Get.find<WizardService>();
   final RxBool _hugoInstalled = false.obs;
   final RxBool _webiInstalled = false.obs;
   final RxBool _pkgInstalled = false.obs;
@@ -19,12 +19,18 @@ class WizardController extends GetxController {
   @override
   void onInit() {
     initialState();
-    initWebi();
-    initPkg();
-    initHugo();
-    initNode();
-    initNetlify();
-    initNetlifyAuth();
+    // initWebi();
+    webiInstalled = false;
+    // initPkg();
+    pkgInstalled = false;
+    // initHugo();
+    hugoInstalled = false;
+    // initNode();
+    nodeInstalled = false;
+    // initNetlify();
+    netlifyInstalled = false;
+    // initNetlifyAuth();
+    netlifyLogged = false;
     super.onInit();
   }
 
@@ -95,7 +101,7 @@ class WizardController extends GetxController {
     return _netlifyInstalled.value;
   }
 
-  set netlifyInstalled(bool installed) {
+  set netlifyInstalled(bool val) {
     _getStorage.write(NETLIFY_INSTALLED, val);
     _netlifyInstalled.value = _getStorage.read(NETLIFY_INSTALLED) as bool;
   }
@@ -104,7 +110,7 @@ class WizardController extends GetxController {
     return _nodeInstalled.value;
   }
 
-  set nodeInstalled(bool installed) {
+  set nodeInstalled(bool val) {
     _getStorage.write(NODE_INSTALLED, val);
     _nodeInstalled.value = _getStorage.read(NODE_INSTALLED) as bool;
   }
@@ -113,7 +119,7 @@ class WizardController extends GetxController {
     return _hugoInstalled.value;
   }
 
-  set hugoInstalled(bool installed) {
+  set hugoInstalled(bool val) {
     _getStorage.write(HUGO_INSTALLED, val);
     _hugoInstalled.value = _getStorage.read(HUGO_INSTALLED) as bool;
   }
@@ -122,7 +128,7 @@ class WizardController extends GetxController {
     return _pkgInstalled.value;
   }
 
-  set pkgInstalled(bool installed) {
+  set pkgInstalled(bool val) {
     _getStorage.write(PKG_INSTALLED, val);
     _pkgInstalled.value = _getStorage.read(PKG_INSTALLED) as bool;
   }
@@ -131,7 +137,7 @@ class WizardController extends GetxController {
     return _webiInstalled.value;
   }
 
-  set webiInstalled(bool installed) {
+  set webiInstalled(bool val) {
     _getStorage.write(WEBI_INSTALLED, val);
     _webiInstalled.value = _getStorage.read(WEBI_INSTALLED) as bool;
   }

@@ -7,6 +7,7 @@ import 'package:quatrokantos/utils/window_size.dart';
 Future<void> main() async {
   await GetStorage.init();
   await dotenv.load();
+
   minWindowSize();
 
   runApp(App());

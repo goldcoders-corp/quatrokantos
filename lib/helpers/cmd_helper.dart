@@ -83,12 +83,21 @@ class Cmd {
     ctrl.isLoading = true;
 
     try {
-      final Process process = await Process.start(
-        command,
-        args,
-        workingDirectory: (path == '') ? path : null,
-        runInShell: true,
-      );
+      late final Process process;
+      if (path == '') {
+        process = await Process.start(
+          command,
+          args,
+          runInShell: true,
+        );
+      } else {
+        process = await Process.start(
+          command,
+          args,
+          workingDirectory: path,
+          runInShell: true,
+        );
+      }
 
       final Stream<String> outputStream = process.stdout
           .transform(const Utf8Decoder())

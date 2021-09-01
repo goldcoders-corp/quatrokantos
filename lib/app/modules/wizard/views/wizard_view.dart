@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/wizard/components/onboarding_card.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
+import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/installers/pkg_manager_installer.dart';
+import 'package:quatrokantos/installers/webi_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/widgets/tob_bar.dart';
 
@@ -10,6 +13,7 @@ import '../controllers/wizard_controller.dart';
 WizardController wizardController = Get.put(WizardController());
 
 class WizardView extends GetView<WizardController> {
+  final CommandController ctrl = Get.put(CommandController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +41,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () {
-                              controller.webiInstalled = true;
+                              final WebiInstall webi = WebiInstall();
+                              webi(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.webiInstalled = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'First Step Done',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                           OnboardingCard(
@@ -46,7 +64,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () {
-                              controller.pkgInstalled = true;
+                              final PkgMangerInstall webi = PkgMangerInstall();
+                              webi(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.pkgInstalled = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Second Step Done',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                         ],

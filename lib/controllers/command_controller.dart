@@ -12,4 +12,19 @@ class CommandController extends GetxController {
   bool get isLoading => _loading.value;
 
   set isLoading(bool val) => _loading.value = val;
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    ever(_results, notify);
+    super.onInit();
+  }
+
+  // TODO: replace this later on
+  void notify(String message) {
+    Get.snackbar(
+      'Notification',
+      message,
+      dismissDirection: SnackDismissDirection.HORIZONTAL,
+    );
+  }
 }
