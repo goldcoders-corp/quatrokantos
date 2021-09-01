@@ -41,7 +41,7 @@ class WebiInstall {
           onDone}) async {
     final CommandController ctrl = Get.put(CommandController());
     final String fallback = p.join(PC.userDirectory, '.local', 'bin');
-
+    // TODO: this will change on platform also
     final String fallback1 = p.join('/usr', 'bin');
     final String fallback2 = p.join('/bin');
     const String command1 = 'curl';

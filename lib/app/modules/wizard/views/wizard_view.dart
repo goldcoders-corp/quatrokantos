@@ -98,7 +98,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () async {
-                              controller.hugoInstalled = true;
+                              final HugoInstall hugo = HugoInstall();
+                              hugo(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.hugoInstalled = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Third Step Done',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                           OnboardingCard(
@@ -107,7 +121,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () async {
-                              controller.nodeInstalled = true;
+                              final NodeInstall node = NodeInstall();
+                              node(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.nodeInstalled = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Fourth Step',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                         ],
@@ -127,7 +155,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () async {
-                              controller.netlifyInstalled = true;
+                              final NetlifyInstall netlify = NetlifyInstall();
+                              netlify(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.netlifyInstalled = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Fifth Step Done',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                           OnboardingCard(
@@ -136,7 +178,21 @@ class WizardView extends GetView<WizardController> {
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                             onTap: () async {
-                              controller.netlifyLogged = true;
+                              final NetlifyLogged netlify = NetlifyLogged();
+                              netlify(onDone: (
+                                CommandController ctrl,
+                                bool installed,
+                              ) {
+                                if (installed == true) {
+                                  controller.netlifyLogged = true;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Six Step Done',
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                }
+                              });
                             },
                           ),
                         ],
