@@ -2,15 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:path/path.dart' as p;
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 
 class Cmd {
   late final String _command;
   late final List<String> _args;
   late final String _path;
   late final CommandController ctrl;
+
+  late final Map<String, String> _env;
 
   set args(List<String> args) => _args = args;
 
@@ -23,6 +25,12 @@ class Cmd {
   set path(String path) => _path = path;
 
   String get path => _path;
+
+  set env(Map<String, String> env) {
+    _env = env;
+  }
+
+  Map<String, String> get env => _env;
 
   /// #### CLI Helper to Execute Any Commands
   ///
@@ -57,9 +65,12 @@ class Cmd {
     required String command,
     required List<String> args,
     required String path,
-  })  : _command = p.join('./', command),
+  })  : _command = command,
         _args = args,
-        _path = path;
+        _path = path,
+        _env = <String, String>{
+          'PATH': PathEnv.get(),
+        };
 
   /// #### `command` executed is relative to `cwd`
   /// ####  When `CommandFailedException` is Thrown on `DEBUG=TRUE` at `.env`
@@ -88,12 +99,14 @@ class Cmd {
         process = await Process.start(
           command,
           args,
+          environment: env,
           runInShell: true,
         );
       } else {
         process = await Process.start(
           command,
           args,
+          environment: env,
           workingDirectory: path,
           runInShell: true,
         );
@@ -121,7 +134,9 @@ class Cmd {
 
     try {
       if (error.isNotEmpty) {
-        throw CommandFailedException();
+        // Remove Throwing Exceptions on DEBUG, but we can safely remove this
+        if (command != 'netlify' && args != ['login'])
+          throw CommandFailedException();
       }
     } on CommandFailedException catch (e, stacktrace) {
       CommandFailedException.log(

@@ -9,7 +9,8 @@ class WizardService extends GetxService {
 
   @override
   Future<void> onInit() async {
-    checkSaveState();
+    // checkSaveState();
+    completed = false;
     super.onInit();
   }
 

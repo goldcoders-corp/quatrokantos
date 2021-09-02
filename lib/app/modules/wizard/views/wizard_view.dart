@@ -3,9 +3,13 @@ import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/wizard/components/onboarding_card.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/installers/hugo_installer.dart';
+import 'package:quatrokantos/installers/netlify_install.dart';
+import 'package:quatrokantos/installers/node_installer.dart';
 import 'package:quatrokantos/installers/pkg_manager_installer.dart';
 import 'package:quatrokantos/installers/webi_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
+import 'package:quatrokantos/netlify/netlify_login.dart';
 import 'package:quatrokantos/widgets/tob_bar.dart';
 
 import '../controllers/wizard_controller.dart';
@@ -180,7 +184,6 @@ class WizardView extends GetView<WizardController> {
                             onTap: () async {
                               final NetlifyLogged netlify = NetlifyLogged();
                               netlify(onDone: (
-                                CommandController ctrl,
                                 bool installed,
                               ) {
                                 if (installed == true) {

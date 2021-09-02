@@ -22,6 +22,33 @@ class PathHelper {
     return path;
   }
 
+  static Future<String?> existInPATH(
+      {required String command,
+      required List<String> paths,
+      required String fallback}) async {
+    final StringBuffer pathBuffer = StringBuffer();
+
+    for (final String element in paths) {
+      final String cmd = '$element/$command';
+      final bool installed = await File(cmd).exists();
+      if (installed == true) {
+        pathBuffer.write(element);
+        break;
+      }
+    }
+    final String path = pathBuffer.toString().trim();
+    if (path.isEmpty) {
+      final String cmd = '$fallback/$command';
+      final bool installed = await File(cmd).exists();
+      if (installed == true) {
+        return fallback;
+      } else {
+        return null;
+      }
+    }
+    return path;
+  }
+
   /// #### Fix Issue on Mac `File or Directory not found when executing CMD`
   /// - Change Directory, relative to the command
   /// - Before we Execute the command : ie:  `./brew --version`

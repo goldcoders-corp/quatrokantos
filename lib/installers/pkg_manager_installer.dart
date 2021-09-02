@@ -22,11 +22,19 @@ class PkgMangerInstall {
 
   PkgMangerInstall() : super() {
     if (Platform.isWindows) {
-      // iwr -useb get.scoop.sh | iex
+      //TODO: FIX THIS ON WINDOWS
+      // Powershell.exe -command Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+      // Powershell.exe -command "iwr -useb get.scoop.sh | iex"
       command = 'scoop';
-      command1 = 'iwr';
-      args1 = <String>['-useb', 'get.scoop.sh'];
-      command2 = 'iex';
+      command1 = 'Powershell.exe';
+      args1 = <String>[
+        '-command',
+        'Set-ExecutionPolicy',
+        'RemoteSigned',
+        '-scope',
+        'CurrentUser'
+      ];
+      command2 = '';
       args2 = <String>[];
     } else {
       command = 'brew';
