@@ -75,7 +75,7 @@ class HugoInstall {
       ctrl.results = data.stdout.toString();
       Process.run(
         'hugo',
-        ['version'],
+        <String>['version'],
         runInShell: true,
       ).asStream().listen((ProcessResult data) {
         final String? version = Cmd.version(data.stdout.toString());

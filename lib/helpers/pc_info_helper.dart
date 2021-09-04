@@ -46,7 +46,7 @@ class PC {
 
     final List<ProcessorInfo> processors = SysInfo.processors;
 
-    for (ProcessorInfo processor in processors) {
+    for (final ProcessorInfo processor in processors) {
       name = processor.name;
       break;
     }

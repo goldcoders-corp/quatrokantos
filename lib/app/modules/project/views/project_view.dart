@@ -9,10 +9,10 @@ class ProjectView extends GetView<ProjectController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ProjectView'),
+        title: const Text('ProjectView'),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'ProjectView is working',
           style: TextStyle(fontSize: 20),

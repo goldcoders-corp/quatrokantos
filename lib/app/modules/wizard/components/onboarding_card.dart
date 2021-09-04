@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
-import 'package:quatrokantos/controllers/command_controller.dart';
-import 'package:quatrokantos/maps/app_colors.dart';
-import 'package:quatrokantos/widgets/run_btn.dart';
 
 class OnboardingCard extends StatelessWidget {
   const OnboardingCard({
     Key? key,
     required this.title,
     required this.checkbox,
-    required this.widget,
+    required this.button,
   }) : super(key: key);
 
   final String title;
   final Widget checkbox;
-  final Widget widget;
+  final Widget button;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +45,7 @@ class OnboardingCard extends StatelessWidget {
               ),
             ),
           ),
-          widget
+          button,
         ],
       ),
     );

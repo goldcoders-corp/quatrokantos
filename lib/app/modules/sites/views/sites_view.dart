@@ -9,10 +9,10 @@ class SitesView extends GetView<SitesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SitesView'),
+        title: const Text('SitesView'),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'SitesView is working',
           style: TextStyle(fontSize: 20),

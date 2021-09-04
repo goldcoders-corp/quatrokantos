@@ -42,7 +42,7 @@ class WizardView extends GetView<CommandController> {
                         children: <Widget>[
                           OnboardingCard(
                             title: 'Install Dev Tools',
-                            widget: controller.isLoading == true
+                            button: controller.isLoading == true
                                 ? CircularProgressIndicator(
                                     color: appColors[ACCENT],
                                   )
@@ -143,7 +143,7 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                             checkbox: (wctrl.hugoInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            widget: Container(),
+                            button: Container(),
 //                             onTap: () async {
 //                               final HugoInstall hugo = HugoInstall();
 //                               hugo(onDone: (
@@ -175,7 +175,7 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                             checkbox: (wctrl.nodeInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            widget: Container(),
+                            button: Container(),
                             // onTap: () async {
                             //   final NodeInstall node = NodeInstall();
                             //   node(onDone: (
@@ -210,7 +210,7 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                             checkbox: (wctrl.netlifyInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            widget: Container(),
+                            button: Container(),
 
                             // onTap: () async {
                             //   final NetlifyInstall netlify = NetlifyInstall();
@@ -235,7 +235,7 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                             checkbox: (wctrl.netlifyLogged == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            widget: Container(),
+                            button: Container(),
                             // onTap: () async {
                             //   final NetlifyLogged netlify = NetlifyLogged();
                             //   netlify(onDone: (

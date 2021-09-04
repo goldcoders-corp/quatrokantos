@@ -1,13 +1,8 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
-import 'package:path/path.dart' as p;
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
-import 'package:quatrokantos/helpers/path_helper.dart';
-import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class NodeInstall {
   late final String command;

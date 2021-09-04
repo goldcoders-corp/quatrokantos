@@ -133,7 +133,7 @@ class Cmd {
     try {
       if (error.isNotEmpty) {
         // Remove Throwing Exceptions on DEBUG, but we can safely remove this
-        if (command != 'netlify' && args != ['login']) {
+        if (command != 'netlify' && args != <String>['login']) {
           throw CommandFailedException();
         }
       }
