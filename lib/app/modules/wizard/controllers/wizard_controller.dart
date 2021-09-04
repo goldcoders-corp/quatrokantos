@@ -20,18 +20,18 @@ class WizardController extends GetxController {
   @override
   void onInit() {
     initialState();
-    // initWebi();
-    webiInstalled = false;
-    // initPkg();
-    pkgInstalled = false;
-    // initHugo();
-    hugoInstalled = false;
-    // initNode();
-    nodeInstalled = false;
-    // initNetlify();
-    netlifyInstalled = false;
-    // initNetlifyAuth();
-    netlifyLogged = false;
+    initWebi();
+    // webiInstalled = false;
+    initPkg();
+    // pkgInstalled = false;
+    initHugo();
+    // hugoInstalled = false;
+    initNode();
+    // nodeInstalled = false;
+    initNetlify();
+    // netlifyInstalled = false;
+    initNetlifyAuth();
+    // netlifyLogged = false;
     super.onInit();
   }
 
@@ -156,8 +156,6 @@ class WizardController extends GetxController {
       return;
     } else {
       if (currentStep > 0) {
-        print('-------------------------------------------------------------');
-        print(currentStep);
         currentStep--;
       }
     }

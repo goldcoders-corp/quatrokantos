@@ -210,7 +210,7 @@ $cmdInstalled
                       ),
                     ),
                     Step(
-                      title: const Text('Install Local Servers'),
+                      title: const Text('Set Up Local Site Server'),
                       isActive: wctrl.currentStep >= 2,
                       state: wctrl.currentStep >= 2
                           ? StepState.complete
@@ -219,65 +219,85 @@ $cmdInstalled
                         children: <Widget>[
                           OnboardingCard(
                             title: 'Install Hugo',
+                            button: controller.isLoading == true
+                                ? CircularProgressIndicator(
+                                    color: appColors[ACCENT],
+                                  )
+                                : RunBtn(
+                                    title: 'Run',
+                                    icon: Icons.play_arrow,
+                                    onTap: controller.isLoading == true
+                                        ? () {}
+                                        : () async {
+                                            final String path = PathEnv.get();
+                                            const String command = 'hugo';
+
+                                            final Map<String, String> env =
+                                                <String, String>{
+                                              'PATH': path,
+                                            };
+                                            final String? cmdInstalled =
+                                                whichSync(
+                                              command,
+                                              environment: env,
+                                            );
+                                            if (cmdInstalled != null) {
+                                              wctrl.hugoInstalled = true;
+
+                                              Get.defaultDialog(
+                                                  title: 'Step #3 Done:',
+                                                  middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                      .trim(),
+                                                  confirm: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ));
+                                            } else {
+                                              final HugoInstall hugoInstaller =
+                                                  HugoInstall();
+                                              await hugoInstaller(onDone: (
+                                                bool installed,
+                                              ) {
+                                                if (installed == true) {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.hugoInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #3 Done:',
+                                                      middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                }
+                                                controller.isLoading = false;
+                                              });
+                                            }
+                                          },
+                                  ),
                             checkbox: (wctrl.hugoInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            button: Container(),
-//                             onTap: () async {
-//                               final HugoInstall hugo = HugoInstall();
-//                               hugo(onDone: (
-//                                 CommandController controller,
-//                                 bool installed,
-//                               ) {
-//                                 if (installed == true) {
-//                                   wctrl.hugoInstalled = true;
-
-//                                   Get.defaultDialog(
-//                                       title: 'Step #3 Done:',
-//                                       middleText: '''
-// Hugo Installed at
-// ${whichSync('hugo')}
-//                                           '''
-//                                           .trim(),
-//                                       confirm: TextButton(
-//                                         onPressed: () {
-//                                           Get.back();
-//                                         },
-//                                         child: const Text('OK'),
-//                                       ));
-//                                 }
-//                               });
-//                             },
-                          ),
-                          OnboardingCard(
-                            title: 'Install Node',
-                            checkbox: (wctrl.nodeInstalled == true)
-                                ? const Icon(Icons.check_box)
-                                : const Icon(Icons.check_box_outline_blank),
-                            button: Container(),
-                            // onTap: () async {
-                            //   final NodeInstall node = NodeInstall();
-                            //   node(onDone: (
-                            //     CommandController ctrl,
-                            //     bool installed,
-                            //   ) {
-                            //     if (installed == true) {
-                            //       wctrl.nodeInstalled = true;
-                            //       Get.snackbar(
-                            //         'Notification',
-                            //         'Fourth Step',
-                            //         dismissDirection:
-                            //             SnackDismissDirection.HORIZONTAL,
-                            //       );
-                            //     }
-                            //   });
-                            // },
                           ),
                         ],
                       ),
                     ),
                     Step(
-                      title: const Text('Set Up Site Manager'),
+                      title: const Text('Set Up Local Backend Server'),
                       isActive: wctrl.currentStep >= 3,
                       state: wctrl.currentStep >= 3
                           ? StepState.complete
@@ -285,52 +305,167 @@ $cmdInstalled
                       content: Column(
                         children: <Widget>[
                           OnboardingCard(
-                            title: 'Install Netlify',
-                            checkbox: (wctrl.netlifyInstalled == true)
-                                ? const Icon(Icons.check_box)
-                                : const Icon(Icons.check_box_outline_blank),
-                            button: Container(),
+                            title: 'Install Node',
+                            button: controller.isLoading == true
+                                ? CircularProgressIndicator(
+                                    color: appColors[ACCENT],
+                                  )
+                                : RunBtn(
+                                    title: 'Run',
+                                    icon: Icons.play_arrow,
+                                    onTap: controller.isLoading == true
+                                        ? () {}
+                                        : () async {
+                                            final String path = PathEnv.get();
+                                            const String command = 'node';
 
-                            // onTap: () async {
-                            //   final NetlifyInstall netlify = NetlifyInstall();
-                            //   netlify(onDone: (
-                            //     CommandController controller,
-                            //     bool installed,
-                            //   ) {
-                            //     if (installed == true) {
-                            //       wctrl.netlifyInstalled = true;
-                            //       Get.snackbar(
-                            //         'Notification',
-                            //         'Fifth Step Done',
-                            //         dismissDirection:
-                            //             SnackDismissDirection.HORIZONTAL,
-                            //       );
-                            //     }
-                            //   });
-                            // },
-                          ),
-                          OnboardingCard(
-                            title: 'Sign Up/Login with Netlify',
-                            checkbox: (wctrl.netlifyLogged == true)
+                                            final Map<String, String> env =
+                                                <String, String>{
+                                              'PATH': path,
+                                            };
+                                            final String? cmdInstalled =
+                                                whichSync(
+                                              command,
+                                              environment: env,
+                                            );
+                                            if (cmdInstalled != null) {
+                                              wctrl.nodeInstalled = true;
+
+                                              Get.defaultDialog(
+                                                  title: 'Step #4 Done:',
+                                                  middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                      .trim(),
+                                                  confirm: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ));
+                                            } else {
+                                              final NodeInstall nodeInstaller =
+                                                  NodeInstall();
+                                              await nodeInstaller(onDone: (
+                                                bool installed,
+                                              ) {
+                                                if (installed == true) {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.nodeInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #3 Done:',
+                                                      middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                }
+                                                controller.isLoading = false;
+                                              });
+                                            }
+                                          },
+                                  ),
+                            checkbox: (wctrl.nodeInstalled == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
-                            button: Container(),
-                            // onTap: () async {
-                            //   final NetlifyLogged netlify = NetlifyLogged();
-                            //   netlify(onDone: (
-                            //     bool installed,
-                            //   ) {
-                            //     if (installed == true) {
-                            //       wctrl.netlifyLogged = true;
-                            //       Get.snackbar(
-                            //         'Notification',
-                            //         'Six Step Done',
-                            //         dismissDirection:
-                            //             SnackDismissDirection.HORIZONTAL,
-                            //       );
-                            //     }
-                            //   });
-                            // },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Step(
+                      title: const Text('Set Up Site Deployer'),
+                      isActive: wctrl.currentStep >= 4,
+                      state: wctrl.currentStep >= 4
+                          ? StepState.complete
+                          : StepState.disabled,
+                      content: Column(
+                        children: <Widget>[
+                          OnboardingCard(
+                            title: 'Install Netlify',
+                            button: controller.isLoading == true
+                                ? CircularProgressIndicator(
+                                    color: appColors[ACCENT],
+                                  )
+                                : RunBtn(
+                                    title: 'Run',
+                                    icon: Icons.play_arrow,
+                                    onTap: controller.isLoading == true
+                                        ? () {}
+                                        : () async {
+                                            final String path = PathEnv.get();
+                                            const String command = 'node';
+
+                                            final Map<String, String> env =
+                                                <String, String>{
+                                              'PATH': path,
+                                            };
+                                            final String? cmdInstalled =
+                                                whichSync(
+                                              command,
+                                              environment: env,
+                                            );
+                                            if (cmdInstalled != null) {
+                                              wctrl.nodeInstalled = true;
+
+                                              Get.defaultDialog(
+                                                  title: 'Step #4 Done:',
+                                                  middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                      .trim(),
+                                                  confirm: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ));
+                                            } else {
+                                              final NodeInstall nodeInstaller =
+                                                  NodeInstall();
+                                              await nodeInstaller(onDone: (
+                                                bool installed,
+                                              ) {
+                                                if (installed == true) {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.nodeInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #3 Done:',
+                                                      middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                }
+                                                controller.isLoading = false;
+                                              });
+                                            }
+                                          },
+                                  ),
+                            checkbox: (wctrl.nodeInstalled == true)
+                                ? const Icon(Icons.check_box)
+                                : const Icon(Icons.check_box_outline_blank),
                           ),
                         ],
                       ),
@@ -351,7 +486,8 @@ $cmdInstalled
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          if (wctrl.currentStep == 0)
+                          if (wctrl.currentStep == 0 ||
+                              controller.isLoading == true)
                             const SizedBox()
                           else
                             ElevatedButton(
@@ -377,24 +513,27 @@ $cmdInstalled
                           const SizedBox(
                             width: 20.0,
                           ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.pressed)) {
-                                  return Colors.purple.shade100;
-                                } else {
-                                  return appColors[PRIMARY_DARK]!;
-                                }
-                              }),
+                          if (controller.isLoading == true)
+                            const SizedBox()
+                          else
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith<Color>(
+                                        (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.pressed)) {
+                                    return Colors.purple.shade100;
+                                  } else {
+                                    return appColors[PRIMARY_DARK]!;
+                                  }
+                                }),
+                              ),
+                              onPressed: wctrl.next,
+                              child: const Text(
+                                'Next',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
-                            onPressed: wctrl.next,
-                            child: const Text(
-                              'Next',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
                         ],
                       ),
                     );

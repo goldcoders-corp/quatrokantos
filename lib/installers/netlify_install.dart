@@ -36,7 +36,6 @@ class NetlifyInstall {
 
       final Cmd cmd = Cmd(command: command1, args: args1);
       await cmd.execute(onResult: (
-        CommandController ctrl,
         String output,
       ) {
         if (output.isNotEmpty) {

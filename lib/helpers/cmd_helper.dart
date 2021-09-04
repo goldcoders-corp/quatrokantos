@@ -10,7 +10,7 @@ class Cmd {
   late final String _command;
   late final List<String> _args;
   late final String? _path;
-  late final CommandController ctrl;
+  final CommandController ctrl = Get.find<CommandController>();
 
   late final Map<String, String>? _env;
 
@@ -90,15 +90,9 @@ class Cmd {
   /// ```
   ///       Obx(() => Text('Version: ${ctrl.results}'))
   /// ```
-  Future<void> execute(
-      {required Function(CommandController ctrl, String output)
-          onResult}) async {
+  Future<void> execute({required Function(String output) onResult}) async {
     final StringBuffer outputbuffer = StringBuffer();
     final StringBuffer errorBuffer = StringBuffer();
-
-    final CommandController ctrl = Get.put(CommandController());
-
-    ctrl.isLoading = true;
 
     try {
       final Process process = await Process.start(
@@ -129,6 +123,7 @@ class Cmd {
 
     final String error = errorBuffer.toString();
     final String output = outputbuffer.toString();
+    String result = '';
 
     try {
       if (error.isNotEmpty) {
@@ -136,18 +131,17 @@ class Cmd {
         if (command != 'netlify' && args != <String>['login']) {
           throw CommandFailedException();
         }
+        result = error;
       }
+      if (output.isNotEmpty) {
+        result = output;
+      }
+      ctrl.results = result;
+      onResult(ctrl.results);
     } on CommandFailedException catch (e, stacktrace) {
       CommandFailedException.log(
           e.toString(), '$error\n${stacktrace.toString()}');
     }
-
-    if (output.isNotEmpty) {
-      ctrl.results = output;
-      onResult(ctrl, output);
-    }
-
-    ctrl.isLoading = false;
   }
 
   static String? version(String output) {
@@ -194,8 +188,6 @@ class Cmd {
     final StringBuffer outputbuffer = StringBuffer();
 
     try {
-      ctrl.isLoading = true;
-
       final Process left = await Process.start(
         command1,
         args1,
@@ -216,7 +208,6 @@ class Cmd {
       right.stdout.transform(utf8.decoder).listen((String event) {
         outputbuffer.write('$event\n');
       }).onDone(() {
-        ctrl.isLoading = false;
         ctrl.results = outputbuffer.toString();
       });
     } catch (e, stacktrace) {
@@ -232,8 +223,6 @@ class Cmd {
     final StringBuffer outputbuffer = StringBuffer();
 
     try {
-      ctrl.isLoading = true;
-
       final Process left = await Process.start(
         command,
         args,
@@ -242,7 +231,6 @@ class Cmd {
       left.stdout.transform(utf8.decoder).listen((String event) {
         outputbuffer.write('$event\n');
       }).onDone(() {
-        ctrl.isLoading = false;
         ctrl.results = outputbuffer.toString();
       });
     } catch (e, stacktrace) {

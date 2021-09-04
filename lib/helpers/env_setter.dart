@@ -37,6 +37,8 @@ ${PC.userDirectory}\\.local\\bin
 ${PC.userDirectory}\\scoops\\shims
 ${PC.userDirectory}\\scoop\\apps\\nodejs-lts\\current
 ${PC.userDirectory}\\scoop\\apps\\nodejs-lts\\current\\bin
+${PC.userDirectory}\\scoop\\apps\\nodejs\\current
+${PC.userDirectory}\\scoop\\apps\\nodejs\\current\\bin
 ${PC.userDirectory}\\.local\\bin
 ${PC.userDirectory}\\.local\\opt\\node\\bin''';
       str = ';';
