@@ -15,6 +15,7 @@ class WizardController extends GetxController {
   final RxBool _nodeInstalled = false.obs;
   final RxBool _netlifyInstalled = false.obs;
   final RxBool _netlifyLogged = false.obs;
+  final RxInt _highestStep = 0.obs;
 
   @override
   void onInit() {
@@ -86,6 +87,14 @@ class WizardController extends GetxController {
     } else {
       pkgInstalled = pkg;
     }
+  }
+
+  int get highestStep {
+    return _highestStep.value;
+  }
+
+  set highestStep(int value) {
+    _highestStep.value = value;
   }
 
   bool get netlifyLogged {
@@ -167,32 +176,45 @@ class WizardController extends GetxController {
         hugoInstalled != true &&
         nodeInstalled != true &&
         netlifyInstalled != true) {
-      currentStep = 1;
+      const int stepIndex = 1;
+
+      currentStep = stepIndex;
     } else if (webiInstalled == true &&
         pkgInstalled == true &&
         hugoInstalled != true &&
         nodeInstalled != true &&
         netlifyInstalled != true) {
-      currentStep = 2;
+      const int stepIndex = 2;
+
+      currentStep = stepIndex;
     } else if (webiInstalled == true &&
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled != true &&
         netlifyInstalled != true) {
-      currentStep = 3;
+      const int stepIndex = 3;
+
+      currentStep = stepIndex;
     } else if (webiInstalled == true &&
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled == true &&
         netlifyInstalled != true) {
-      currentStep = 4;
+      const int stepIndex = 4;
+
+      currentStep = stepIndex;
     } else if (webiInstalled == true &&
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled == true &&
         netlifyInstalled == true) {
-      currentStep = 5;
+      const int stepIndex = 5;
+
+      currentStep = stepIndex;
+
       complete = true;
+      final WizardService ws = Get.find<WizardService>();
+      ws.completed = true;
       Get.snackbar(
         'Congratulations',
         'Your All Ready To Start Creating Sites',
