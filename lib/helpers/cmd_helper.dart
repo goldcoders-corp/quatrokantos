@@ -186,14 +186,14 @@ class Cmd {
   ///   path2: path2,
   /// );
   ///```
-  static Future<void> pipeTo({
-    required String command1,
-    required List<String> args1,
-    String? path1,
-    required String command2,
-    required List<String> args2,
-    String? path2,
-  }) async {
+  static Future<void> pipeTo(
+      {required String command1,
+      required List<String> args1,
+      String? path1,
+      required String command2,
+      required List<String> args2,
+      String? path2,
+      required Function(bool installed) onDone}) async {
     final CommandController ctrl = Get.find<CommandController>();
     final StringBuffer outputbuffer = StringBuffer();
 
@@ -219,6 +219,7 @@ class Cmd {
         outputbuffer.write('$event\n');
       }).onDone(() {
         ctrl.results = outputbuffer.toString();
+        onDone(true);
       });
     } catch (e, stacktrace) {
       CommandFailedException.log(e.toString(), stacktrace.toString());
