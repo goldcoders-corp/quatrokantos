@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:process_run/shell.dart';
@@ -5,6 +7,7 @@ import 'package:quatrokantos/app/modules/wizard/components/onboarding_card.dart'
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
+import 'package:quatrokantos/helpers/pkg_manager.dart';
 import 'package:quatrokantos/installers/hugo_installer.dart';
 import 'package:quatrokantos/installers/netlify_install.dart';
 import 'package:quatrokantos/installers/node_installer.dart';
@@ -52,19 +55,26 @@ class WizardView extends GetView<CommandController> {
                                     onTap: controller.isLoading == true
                                         ? () {}
                                         : () async {
+                                            final String path = PathEnv.get();
+                                            const String command = 'webi';
+
+                                            final Map<String, String> env =
+                                                <String, String>{
+                                              'PATH': path,
+                                            };
                                             final String? cmdInstalled =
-                                                whichSync('webi', environment: <
-                                                    String, String>{
-                                              'PATH': PathEnv.get()
-                                            });
+                                                whichSync(
+                                              command,
+                                              environment: env,
+                                            );
                                             if (cmdInstalled != null) {
                                               wctrl.webiInstalled = true;
                                               Get.defaultDialog(
                                                   title: 'Step #1 Done:',
                                                   middleText: '''
-Webi Installed at
-${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
-                                          '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
                                                       .trim(),
                                                   confirm: TextButton(
                                                     onPressed: () {
@@ -79,13 +89,18 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                                                 bool installed,
                                               ) {
                                                 if (installed == true) {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
                                                   wctrl.webiInstalled = true;
                                                   Get.defaultDialog(
                                                       title: 'Step #1 Done:',
                                                       middleText: '''
-Webi Installed at
-${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
-                                          '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
                                                           .trim(),
                                                       confirm: TextButton(
                                                         onPressed: () {
@@ -103,37 +118,101 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                           ),
+                        ],
+                      ),
+                    ),
+                    Step(
+                      title: const Text('Set Up Package Managers'),
+                      isActive: wctrl.currentStep >= 1,
+                      state: wctrl.currentStep >= 1
+                          ? StepState.complete
+                          : StepState.disabled,
+                      content: Column(
+                        children: <Widget>[
+                          OnboardingCard(
+                            title: 'Install ${PackageManager.get()}',
+                            button: controller.isLoading == true
+                                ? CircularProgressIndicator(
+                                    color: appColors[ACCENT],
+                                  )
+                                : RunBtn(
+                                    title: 'Run',
+                                    icon: Icons.play_arrow,
+                                    onTap: controller.isLoading == true
+                                        ? () {}
+                                        : () async {
+                                            final String path = PathEnv.get();
+                                            final String pkgmanager =
+                                                PackageManager.get();
+                                            final Map<String, String> env =
+                                                <String, String>{
+                                              'PATH': path,
+                                            };
+                                            final String? cmdInstalled =
+                                                whichSync(
+                                              pkgmanager,
+                                              environment: env,
+                                            );
+                                            if (cmdInstalled != null) {
+                                              wctrl.pkgInstalled = true;
 
-                          // OnboardingCard(
-                          //   title: 'Install System Package Manager',
-                          //   checkbox: (wctrl.pkgInstalled == true)
-                          //       ? const Icon(Icons.check_box)
-                          //       : const Icon(Icons.check_box_outline_blank),
-                          //   onTap: () {
-                          //     final PkgMangerInstall webi = PkgMangerInstall();
-                          //     webi(onDone: (
-                          //       CommandController ctrl,
-                          //       bool installed,
-                          //     ) {
-                          //       if (installed == true) {
-                          //         wctrl.pkgInstalled = true;
-                          //         Get.snackbar(
-                          //           'Notification',
-                          //           'Second Step Done',
-                          //           dismissDirection:
-                          //               SnackDismissDirection.HORIZONTAL,
-                          //         );
-                          //       }
-                          //     });
-                          //   },
-                          // ),
+                                              Get.defaultDialog(
+                                                  title: 'Step #2 Done:',
+                                                  middleText: '''
+${pkgmanager.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                      .trim(),
+                                                  confirm: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ));
+                                            } else {
+                                              final PkgMangerInstall
+                                                  pkgInstaller =
+                                                  PkgMangerInstall();
+                                              await pkgInstaller(onDone: (
+                                                bool installed,
+                                              ) {
+                                                if (installed == true) {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    pkgmanager,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.pkgInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #2 Done:',
+                                                      middleText: '''
+${pkgmanager.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                }
+                                                controller.isLoading = false;
+                                              });
+                                            }
+                                          },
+                                  ),
+                            checkbox: (wctrl.pkgInstalled == true)
+                                ? const Icon(Icons.check_box)
+                                : const Icon(Icons.check_box_outline_blank),
+                          ),
                         ],
                       ),
                     ),
                     Step(
                       title: const Text('Install Local Servers'),
-                      isActive: wctrl.currentStep >= 1,
-                      state: wctrl.currentStep >= 1
+                      isActive: wctrl.currentStep >= 2,
+                      state: wctrl.currentStep >= 2
                           ? StepState.complete
                           : StepState.disabled,
                       content: Column(
@@ -199,8 +278,8 @@ ${whichSync('webi', environment: <String, String>{'PATH': PathEnv.get()})}
                     ),
                     Step(
                       title: const Text('Set Up Site Manager'),
-                      isActive: wctrl.currentStep >= 2,
-                      state: wctrl.currentStep >= 2
+                      isActive: wctrl.currentStep >= 3,
+                      state: wctrl.currentStep >= 3
                           ? StepState.complete
                           : StepState.disabled,
                       content: Column(

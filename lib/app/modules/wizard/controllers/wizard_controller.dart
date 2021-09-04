@@ -147,6 +147,8 @@ class WizardController extends GetxController {
       return;
     } else {
       if (currentStep > 0) {
+        print('-------------------------------------------------------------');
+        print(currentStep);
         currentStep--;
       }
     }
@@ -158,68 +160,39 @@ class WizardController extends GetxController {
   }
 
   void next() {
-    // if (currentStep == 0) {
-    // check if we have webi
-    // check if we have brew
-    // if yes we invoke next
-    // } else if (currentStep == 1) {
-    // check if we have hugo
-    // check if we have node
-    // } else if (currentStep == 2) {
-    // check if we have netlify
-    // check if we get auth from netlify status
-    // }
-    // here when complete true
-    // then we need to set completed on wizard service
-    // and invoke Get.offNamed('/home');
-    currentStep + 1 < 3 ? currentStep++ : complete = true;
-    if (currentStep == 1) {
-      if (webiInstalled != true) {
-        currentStep--;
-      }
-    }
-    if (currentStep == 2) {
-      if (webiInstalled != true && pkgInstalled != true) {
-        currentStep--;
-      }
-    }
-    if (currentStep == 3) {
-      if (webiInstalled != true &&
-          pkgInstalled != true &&
-          hugoInstalled != true) {
-        currentStep--;
-      }
-    }
-    if (currentStep == 4) {
-      if (webiInstalled != true &&
-          pkgInstalled != true &&
-          hugoInstalled != true &&
-          nodeInstalled != true) {
-        currentStep--;
-      }
-    }
-    if (currentStep == 5) {
-      if (webiInstalled != true &&
-          pkgInstalled != true &&
-          hugoInstalled != true &&
-          nodeInstalled != true &&
-          netlifyInstalled != true) {
-        currentStep--;
-      }
-    }
-    if (currentStep == 6) {
-      if (webiInstalled != true &&
-          pkgInstalled != true &&
-          hugoInstalled != true &&
-          nodeInstalled != true &&
-          netlifyInstalled != true &&
-          netlifyLogged != true) {
-        currentStep--;
-      }
-    }
-
-    if (complete == true) {
-      wiz.completed = true;
+    print('-------------------------------------------------------------');
+    print(currentStep);
+    if (webiInstalled == true &&
+        pkgInstalled != true &&
+        hugoInstalled != true &&
+        nodeInstalled != true &&
+        netlifyInstalled != true) {
+      currentStep = 1;
+    } else if (webiInstalled == true &&
+        pkgInstalled == true &&
+        hugoInstalled != true &&
+        nodeInstalled != true &&
+        netlifyInstalled != true) {
+      currentStep = 2;
+    } else if (webiInstalled == true &&
+        pkgInstalled == true &&
+        hugoInstalled == true &&
+        nodeInstalled != true &&
+        netlifyInstalled != true) {
+      currentStep = 3;
+    } else if (webiInstalled == true &&
+        pkgInstalled == true &&
+        hugoInstalled == true &&
+        nodeInstalled == true &&
+        netlifyInstalled != true) {
+      currentStep = 4;
+    } else if (webiInstalled == true &&
+        pkgInstalled == true &&
+        hugoInstalled == true &&
+        nodeInstalled == true &&
+        netlifyInstalled == true) {
+      currentStep = 5;
+      complete = true;
       Get.snackbar(
         'Congratulations',
         'Your All Ready To Start Creating Sites',

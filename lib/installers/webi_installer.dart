@@ -20,6 +20,7 @@ class WebiInstall {
   late final String path2;
 
   final WizardController wctrl = Get.find<WizardController>();
+  final CommandController ctrl = Get.find<CommandController>();
 
   WebiInstall() : super() {
     command = 'webi';
@@ -48,7 +49,6 @@ class WebiInstall {
     if (installed == true) {
       wctrl.webiInstalled = true;
     } else {
-      final CommandController ctrl = Get.find<CommandController>();
       ctrl.isLoading = true;
       if (Platform.isWindows) {
         await _injectPath(onDone: onDone);
