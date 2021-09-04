@@ -173,6 +173,51 @@ class WizardController extends GetxController {
     // then we need to set completed on wizard service
     // and invoke Get.offNamed('/home');
     currentStep + 1 < 3 ? currentStep++ : complete = true;
+    if (currentStep == 1) {
+      if (webiInstalled != true) {
+        currentStep--;
+      }
+    }
+    if (currentStep == 2) {
+      if (webiInstalled != true && pkgInstalled != true) {
+        currentStep--;
+      }
+    }
+    if (currentStep == 3) {
+      if (webiInstalled != true &&
+          pkgInstalled != true &&
+          hugoInstalled != true) {
+        currentStep--;
+      }
+    }
+    if (currentStep == 4) {
+      if (webiInstalled != true &&
+          pkgInstalled != true &&
+          hugoInstalled != true &&
+          nodeInstalled != true) {
+        currentStep--;
+      }
+    }
+    if (currentStep == 5) {
+      if (webiInstalled != true &&
+          pkgInstalled != true &&
+          hugoInstalled != true &&
+          nodeInstalled != true &&
+          netlifyInstalled != true) {
+        currentStep--;
+      }
+    }
+    if (currentStep == 6) {
+      if (webiInstalled != true &&
+          pkgInstalled != true &&
+          hugoInstalled != true &&
+          nodeInstalled != true &&
+          netlifyInstalled != true &&
+          netlifyLogged != true) {
+        currentStep--;
+      }
+    }
+
     if (complete == true) {
       wiz.completed = true;
       Get.snackbar(

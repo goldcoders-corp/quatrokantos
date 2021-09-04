@@ -9,10 +9,12 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 class Cmd {
   late final String _command;
   late final List<String> _args;
-  late final String _path;
+  late final String? _path;
   late final CommandController ctrl;
 
-  late final Map<String, String> _env;
+  late final Map<String, String>? _env;
+
+  late final bool _runInShell;
 
   set args(List<String> args) => _args = args;
 
@@ -22,15 +24,19 @@ class Cmd {
 
   String get command => _command;
 
-  set path(String path) => _path = path;
+  set path(String? path) => _path = path;
 
-  String get path => _path;
+  String? get path => _path;
 
-  set env(Map<String, String> env) {
+  set env(Map<String, String>? env) {
     _env = env;
   }
 
-  Map<String, String> get env => _env;
+  bool get runInShell => _runInShell;
+
+  set runInShell(bool runInShell) => _runInShell = runInShell;
+
+  Map<String, String>? get env => _env;
 
   /// #### CLI Helper to Execute Any Commands
   ///
@@ -64,13 +70,14 @@ class Cmd {
   Cmd({
     required String command,
     required List<String> args,
-    required String path,
+    Map<String, String>? env,
+    String? path,
+    bool runInShell = false,
   })  : _command = command,
         _args = args,
         _path = path,
-        _env = <String, String>{
-          'PATH': PathEnv.get(),
-        };
+        _runInShell = runInShell,
+        _env = env;
 
   /// #### `command` executed is relative to `cwd`
   /// ####  When `CommandFailedException` is Thrown on `DEBUG=TRUE` at `.env`
@@ -94,23 +101,14 @@ class Cmd {
     ctrl.isLoading = true;
 
     try {
-      late final Process process;
-      if (path == '') {
-        process = await Process.start(
-          command,
-          args,
-          environment: env,
-          runInShell: true,
-        );
-      } else {
-        process = await Process.start(
-          command,
-          args,
-          environment: env,
-          workingDirectory: path,
-          runInShell: true,
-        );
-      }
+      final Process process = await Process.start(
+        command,
+        args,
+        environment:
+            env == null ? <String, String>{'PATH': PathEnv.get()} : null,
+        workingDirectory: path,
+        runInShell: runInShell,
+      );
 
       final Stream<String> outputStream = process.stdout
           .transform(const Utf8Decoder())
@@ -135,8 +133,9 @@ class Cmd {
     try {
       if (error.isNotEmpty) {
         // Remove Throwing Exceptions on DEBUG, but we can safely remove this
-        if (command != 'netlify' && args != ['login'])
+        if (command != 'netlify' && args != ['login']) {
           throw CommandFailedException();
+        }
       }
     } on CommandFailedException catch (e, stacktrace) {
       CommandFailedException.log(
@@ -151,7 +150,7 @@ class Cmd {
     ctrl.isLoading = false;
   }
 
-  static String version(String output) {
+  static String? version(String output) {
     final RegExp regExp = RegExp(
       r'(\d+)\.(\d+)\.(\d+)',
     );
@@ -186,10 +185,10 @@ class Cmd {
   static Future<void> pipeTo({
     required String command1,
     required List<String> args1,
-    required String path1,
+    String? path1,
     required String command2,
     required List<String> args2,
-    required String path2,
+    String? path2,
   }) async {
     final CommandController ctrl = Get.find<CommandController>();
     final StringBuffer outputbuffer = StringBuffer();
@@ -200,13 +199,17 @@ class Cmd {
       final Process left = await Process.start(
         command1,
         args1,
+        environment: <String, String>{'PATH': PathEnv.get()},
         workingDirectory: path1,
+        runInShell: true,
       );
 
       final Process right = await Process.start(
         command2,
         args2,
+        environment: <String, String>{'PATH': PathEnv.get()},
         workingDirectory: path2,
+        runInShell: true,
       );
 
       left.stdout.pipe(right.stdin);

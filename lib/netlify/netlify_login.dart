@@ -24,7 +24,7 @@ class NetlifyLogged {
 
     if (wizard.netlifyLogged == false) {
       ctrl.isLoading = true;
-      final Cmd cmd = Cmd(command: command, args: args, path: '');
+      final Cmd cmd = Cmd(command: command, args: args, runInShell: true);
       cmd.execute(onResult: (CommandController ctrl, String output) {
         onDone(true);
         Get.snackbar('Netlify Login', output);

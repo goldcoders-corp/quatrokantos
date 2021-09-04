@@ -23,8 +23,7 @@ class RunBtn extends StatelessWidget {
 
   const RunBtn({
     required this.title,
-    // ignore: avoid_init_to_null
-    this.onTap = null,
+    this.onTap,
     this.height = 70,
     this.width = 70,
     this.radius = 35,

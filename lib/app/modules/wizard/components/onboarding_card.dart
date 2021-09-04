@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
+import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 class OnboardingCard extends StatelessWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  OnboardingCard({
+  const OnboardingCard({
     Key? key,
     required this.title,
     required this.checkbox,
-    this.onTap,
+    required this.widget,
   }) : super(key: key);
 
   final String title;
   final Widget checkbox;
-  final VoidCallback? onTap;
+  final Widget widget;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,7 @@ class OnboardingCard extends StatelessWidget {
               ),
             ),
           ),
-          RunBtn(title: 'Run', onTap: onTap, icon: Icons.play_arrow),
+          widget
         ],
       ),
     );

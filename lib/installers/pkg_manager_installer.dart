@@ -1,32 +1,26 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:path/path.dart' as p;
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
-import 'package:quatrokantos/helpers/path_helper.dart';
-import 'package:quatrokantos/helpers/pc_info_helper.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 
 class PkgMangerInstall {
   late final String command;
   late final String command1;
   late final List<String> args1;
-  late final String path1;
 
   late final String command2;
   late final List<String> args2;
-  late final String path2;
 
   late final CommandController ctrl;
 
   PkgMangerInstall() : super() {
     if (Platform.isWindows) {
-      //TODO: FIX THIS ON WINDOWS
-      // Powershell.exe -command Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-      // Powershell.exe -command "iwr -useb get.scoop.sh | iex"
       command = 'scoop';
-      command1 = 'Powershell.exe';
+      command1 = 'powershell.exe';
       args1 = <String>[
         '-command',
         'Set-ExecutionPolicy',
@@ -34,13 +28,23 @@ class PkgMangerInstall {
         '-scope',
         'CurrentUser'
       ];
-      command2 = '';
-      args2 = <String>[];
+      command2 = 'powershell.exe';
+      args2 = <String>[
+        '-command',
+        'iwr -useb get.scoop.sh',
+        '|',
+        'iex',
+      ];
     } else {
       command = 'brew';
-      command1 = whichSync('curl')!;
-      args1 = <String>['-sS', 'https://webinstall.dev/brew'];
-      command2 = whichSync('bash')!;
+      command1 = 'bash';
+      args1 = <String>[
+        '-c',
+        '''
+      "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'''
+            .trim()
+      ];
+      command2 = '';
       args2 = <String>[];
     }
   }
@@ -49,43 +53,34 @@ class PkgMangerInstall {
       {required Function(CommandController ctrl, bool installed)
           onDone}) async {
     final CommandController ctrl = Get.put(CommandController());
-    // TODO: this will change on platform also
-    final String fallback =
-        p.join(PC.userDirectory, '.local', 'opt', 'brew', 'bin');
-    final String fallback1 = p.join('/usr', 'bin');
-    final String fallback2 = p.join('/bin');
-    const String command1 = 'curl';
-    const String command2 = 'bash';
     bool installed = false;
-
-    final String path =
-        await PathHelper.resolve(paths: <String>[], fallback: fallback);
-
-    final String cmd = '$path/$command';
-    installed = await File(cmd).exists();
+    final String? pathExists = whichSync(command,
+        environment: <String, String>{'PATH': PathEnv.get()});
+    if (pathExists != null) {
+      installed = true;
+    }
+    print('mypath: $pathExists');
 
     if (installed == false) {
       ctrl.isLoading = true;
+      try {
+        await Cmd.pipeTo(
+          command1: command1,
+          args1: args1,
+          command2: command2,
+          args2: args2,
+        );
 
-      final String path1 =
-          await PathHelper.resolve(paths: <String>[], fallback: fallback1);
-
-      final String path2 =
-          await PathHelper.resolve(paths: <String>[], fallback: fallback2);
-
-      await Cmd.pipeTo(
-        command1: command1,
-        args1: args1,
-        path1: path1,
-        command2: command2,
-        args2: <String>[],
-        path2: path2,
-      );
+        installed = true;
+      } catch (e, stacktrace) {
+        CommandFailedException.log(e.toString(), stacktrace.toString());
+      }
 
       ctrl.isLoading;
 
-      installed = true;
+      onDone(ctrl, installed);
+    } else {
+      onDone(ctrl, installed);
     }
-    onDone(ctrl, installed);
   }
 }
