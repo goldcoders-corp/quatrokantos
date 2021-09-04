@@ -169,8 +169,6 @@ class WizardController extends GetxController {
   }
 
   void next() {
-    print('-------------------------------------------------------------');
-    print(currentStep);
     if (webiInstalled == true &&
         pkgInstalled != true &&
         hugoInstalled != true &&
