@@ -15,7 +15,6 @@ class WizardController extends GetxController {
   final RxBool _nodeInstalled = false.obs;
   final RxBool _netlifyInstalled = false.obs;
   final RxBool _netlifyLogged = false.obs;
-  final RxInt _highestStep = 0.obs;
 
   @override
   void onInit() {
@@ -87,14 +86,6 @@ class WizardController extends GetxController {
     } else {
       pkgInstalled = pkg;
     }
-  }
-
-  int get highestStep {
-    return _highestStep.value;
-  }
-
-  set highestStep(int value) {
-    _highestStep.value = value;
   }
 
   bool get netlifyLogged {
@@ -171,7 +162,8 @@ class WizardController extends GetxController {
         pkgInstalled != true &&
         hugoInstalled != true &&
         nodeInstalled != true &&
-        netlifyInstalled != true) {
+        netlifyInstalled != true &&
+        netlifyLogged != true) {
       const int stepIndex = 1;
 
       currentStep = stepIndex;
@@ -179,7 +171,8 @@ class WizardController extends GetxController {
         pkgInstalled == true &&
         hugoInstalled != true &&
         nodeInstalled != true &&
-        netlifyInstalled != true) {
+        netlifyInstalled != true &&
+        netlifyLogged != true) {
       const int stepIndex = 2;
 
       currentStep = stepIndex;
@@ -187,7 +180,8 @@ class WizardController extends GetxController {
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled != true &&
-        netlifyInstalled != true) {
+        netlifyInstalled != true &&
+        netlifyLogged != true) {
       const int stepIndex = 3;
 
       currentStep = stepIndex;
@@ -195,7 +189,8 @@ class WizardController extends GetxController {
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled == true &&
-        netlifyInstalled != true) {
+        netlifyInstalled != true &&
+        netlifyLogged != true) {
       const int stepIndex = 4;
 
       currentStep = stepIndex;
@@ -203,8 +198,18 @@ class WizardController extends GetxController {
         pkgInstalled == true &&
         hugoInstalled == true &&
         nodeInstalled == true &&
-        netlifyInstalled == true) {
+        netlifyInstalled == true &&
+        netlifyLogged != true) {
       const int stepIndex = 5;
+
+      currentStep = stepIndex;
+    } else if (webiInstalled == true &&
+        pkgInstalled == true &&
+        hugoInstalled == true &&
+        nodeInstalled == true &&
+        netlifyInstalled == true &&
+        netlifyLogged == true) {
+      const int stepIndex = 6;
 
       currentStep = stepIndex;
 

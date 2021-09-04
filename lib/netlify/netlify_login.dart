@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
+import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 
 class NetlifyLogged {
-  late final CommandController ctrl;
-  late final WizardController wizard;
   final String command = 'netlify';
   late final List<String> args;
+
+  final WizardController wctrl = Get.find<WizardController>();
+  final CommandController ctrl = Get.find<CommandController>();
 
   NetlifyLogged() : super() {
     args = <String>['login'];
@@ -19,19 +25,43 @@ class NetlifyLogged {
     )
         onDone,
   }) async {
-    ctrl = Get.put(CommandController());
-    wizard = Get.put(WizardController());
-
-    if (wizard.netlifyLogged == false) {
+    if (wctrl.netlifyLogged == false) {
       ctrl.isLoading = true;
-      final Cmd cmd = Cmd(command: command, args: args, runInShell: true);
-      cmd.execute(onResult: (String output) {
-        onDone(true);
-        Get.snackbar('Netlify Login', output);
-      });
+      if (Platform.isWindows) {
+        await _logOnWindows(onDone: onDone);
+      } else {
+        final Cmd cmd = Cmd(command: command, args: args);
+        cmd.execute(onResult: (String output) {
+          onDone(true);
+        });
+      }
     } else {
       onDone(true);
-      Get.snackbar('Netlify Login', 'Already Logged In');
+    }
+  }
+
+  Future<void> _logOnWindows({required Function(bool logged) onDone}) async {
+    final String? cmdPathOrNull = whichSync(command,
+        environment: <String, String>{'PATH': PathEnv.get()});
+    if (cmdPathOrNull != null) {
+      try {
+        Process.run(
+          cmdPathOrNull,
+          args,
+          environment: <String, String>{'PATH': PathEnv.get()},
+        ).asStream().listen((ProcessResult process) async {
+          print(process.stdout);
+          print(process.stderr);
+        }, onDone: () {
+          onDone(true);
+        });
+      } catch (e, stacktrace) {
+        CommandFailedException.log(e.toString(), stacktrace.toString());
+      }
+    } else {
+      CommandFailedException.log(
+          'Command Not Found', 'NodeJS is not yet Installed');
+      onDone(false);
     }
   }
 }

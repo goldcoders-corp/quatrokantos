@@ -107,7 +107,11 @@ class Cmd {
       final Stream<String> outputStream = process.stdout
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
+
       await for (final String line in outputStream) {
+        print('-----------------------------------------------');
+        print('Stdout: $line\n');
+        print('-----------------------------------------------');
         outputbuffer.write('$line\n');
       }
 
@@ -115,6 +119,9 @@ class Cmd {
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
+        print('-----------------------------------------------');
+        print('Error: $line\n');
+        print('-----------------------------------------------');
         errorBuffer.write('$line\n');
       }
     } catch (e, stacktrace) {
@@ -135,6 +142,9 @@ class Cmd {
       }
       if (output.isNotEmpty) {
         result = output;
+        print('-----------------------------------------------');
+        print('Result: $result\n');
+        print('-----------------------------------------------');
       }
       ctrl.results = result;
       onResult(ctrl.results);

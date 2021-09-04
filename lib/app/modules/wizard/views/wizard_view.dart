@@ -358,7 +358,7 @@ $cmdInstalled
                                                   );
                                                   wctrl.nodeInstalled = true;
                                                   Get.defaultDialog(
-                                                      title: 'Step #3 Done:',
+                                                      title: 'Step #4 Done:',
                                                       middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
@@ -404,7 +404,7 @@ $cmdInstalled
                                         ? () {}
                                         : () async {
                                             final String path = PathEnv.get();
-                                            const String command = 'node';
+                                            const String command = 'netlify';
 
                                             final Map<String, String> env =
                                                 <String, String>{
@@ -416,10 +416,10 @@ $cmdInstalled
                                               environment: env,
                                             );
                                             if (cmdInstalled != null) {
-                                              wctrl.nodeInstalled = true;
+                                              wctrl.netlifyInstalled = true;
 
                                               Get.defaultDialog(
-                                                  title: 'Step #4 Done:',
+                                                  title: 'Step #5 Done:',
                                                   middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
@@ -432,9 +432,9 @@ $cmdInstalled
                                                     child: const Text('OK'),
                                                   ));
                                             } else {
-                                              final NodeInstall nodeInstaller =
-                                                  NodeInstall();
-                                              await nodeInstaller(onDone: (
+                                              final NetlifyInstall netlify =
+                                                  NetlifyInstall();
+                                              await netlify(onDone: (
                                                 bool installed,
                                               ) {
                                                 if (installed == true) {
@@ -443,9 +443,9 @@ $cmdInstalled
                                                     command,
                                                     environment: env,
                                                   );
-                                                  wctrl.nodeInstalled = true;
+                                                  wctrl.netlifyInstalled = true;
                                                   Get.defaultDialog(
-                                                      title: 'Step #3 Done:',
+                                                      title: 'Step #5 Done:',
                                                       middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
@@ -463,7 +463,73 @@ $cmdInstalled
                                             }
                                           },
                                   ),
-                            checkbox: (wctrl.nodeInstalled == true)
+                            checkbox: (wctrl.netlifyInstalled == true)
+                                ? const Icon(Icons.check_box)
+                                : const Icon(Icons.check_box_outline_blank),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Step(
+                      title: const Text('Create Account / Login Netlify'),
+                      isActive: wctrl.currentStep >= 5,
+                      state: wctrl.currentStep >= 5
+                          ? StepState.complete
+                          : StepState.disabled,
+                      content: Column(
+                        children: <Widget>[
+                          OnboardingCard(
+                            title: 'Login To Netlify',
+                            button: controller.isLoading == true
+                                ? CircularProgressIndicator(
+                                    color: appColors[ACCENT],
+                                  )
+                                : RunBtn(
+                                    title: 'Run',
+                                    icon: Icons.play_arrow,
+                                    onTap: controller.isLoading == true
+                                        ? () {}
+                                        : () async {
+                                            if (wctrl.netlifyLogged == true) {
+                                              Get.defaultDialog(
+                                                  title: 'Step #6 Done:',
+                                                  middleText: '''
+You already Logged In to Netlify
+'''
+                                                      .trim(),
+                                                  confirm: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ));
+                                            } else {
+                                              final NetlifyLogged logged =
+                                                  NetlifyLogged();
+                                              await logged(onDone: (
+                                                bool logged,
+                                              ) {
+                                                if (logged == true) {
+                                                  wctrl.netlifyLogged = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #6 Done:',
+                                                      middleText: '''
+You Have Successfully Logged In to Netlify
+'''
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                }
+                                                controller.isLoading = false;
+                                              });
+                                            }
+                                          },
+                                  ),
+                            checkbox: (wctrl.netlifyLogged == true)
                                 ? const Icon(Icons.check_box)
                                 : const Icon(Icons.check_box_outline_blank),
                           ),
