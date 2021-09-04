@@ -40,14 +40,9 @@ class PkgMangerInstall {
       ];
     } else {
       command = 'brew';
-      command1 = 'bash';
-      args1 = <String>[
-        '-c',
-        '''
-      "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'''
-            .trim()
-      ];
-      command2 = '';
+      command1 = 'curl';
+      args1 = <String>['-sS', 'https://webinstall.dev/brew'];
+      command2 = 'bash';
       args2 = <String>[];
     }
   }
@@ -75,10 +70,8 @@ class PkgMangerInstall {
             args1: args1,
             command2: command2,
             args2: args2,
+            onDone: onDone,
           );
-
-          installed = true;
-          onDone(installed);
         } catch (e, stacktrace) {
           CommandFailedException.log(e.toString(), stacktrace.toString());
         }
