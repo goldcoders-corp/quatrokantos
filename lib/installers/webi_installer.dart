@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
@@ -25,9 +24,9 @@ class WebiInstall {
   WebiInstall() : super() {
     command = 'webi';
     if (Platform.isWindows) {
-      command1 = 'curl.exe';
+      command1 = 'curl';
       args1 = <String>['-A', '"MS"', 'https://webinstall.dev/webi'];
-      command2 = 'powershell.exe';
+      command2 = 'powershell';
     } else {
       command1 = 'curl';
       args1 = <String>['-sS', 'https://webinstall.dev/webi'];
@@ -75,16 +74,17 @@ class WebiInstall {
     final String envpath = PathEnv.get();
     if (Platform.isWindows) {
       Process.run(
-        'powershell.exe',
+        'powershell',
         <String>[
           '-command',
           '[Environment]::GetEnvironmentVariable("PATH", "User")',
         ],
         runInShell: true,
+        workingDirectory: PC.userDirectory,
       ).asStream().listen((ProcessResult process) async {
         if (process.stdout is String) {
           Process.run(
-            'powershell.exe',
+            'powershell',
             <String>[
               '-command',
               '''
@@ -92,6 +92,7 @@ class WebiInstall {
 ''',
             ],
             runInShell: true,
+            workingDirectory: PC.userDirectory,
           ).asStream().listen((ProcessResult process) async {
             await _installOnWindows(onDone: onDone);
           });
@@ -103,7 +104,7 @@ class WebiInstall {
   Future<void> _installOnWindows(
       {required Function(bool installed) onDone}) async {
     Process.run(
-      'curl.exe',
+      'curl',
       <String>[
         '-A',
         'MS',
@@ -112,15 +113,16 @@ class WebiInstall {
         '${PC.userDirectory}\\Downloads\\install_webi.ps1',
       ],
       runInShell: true,
-    ).asStream().listen((ProcessResult data) {
+      workingDirectory: PC.userDirectory,
+    ).asStream().listen((ProcessResult process1) {
       try {
-        if (data.stderr is String &&
-            data.stderr.toString().contains('''
+        if (process1.stderr is String &&
+            process1.stderr.toString().contains('''
             Could not resolve host: webinstall.dev
             '''
                 .trim())) {
           throw ProcessException(
-            'curl.exe',
+            'curl',
             <String>[
               '-A',
               'MS',
@@ -132,22 +134,23 @@ class WebiInstall {
         } else {
           print(<String>[
             '-command',
-            data.stdout.toString().trim(),
+            process1.stdout.toString().trim(),
           ]);
           Process.run(
-            'powershell.exe',
+            'powershell',
             <String>[
               '-command',
               '${PC.userDirectory}\\Downloads\\install_webi.ps1',
             ],
             runInShell: true,
-          ).asStream().listen((ProcessResult data1) {
-            if (data1.stdout is String) {
+            workingDirectory: PC.userDirectory,
+          ).asStream().listen((ProcessResult process2) {
+            if (process2.stdout is String) {
               onDone(true);
             }
-            if (data1.stderr is String && data1.stderr.toString() != '') {
+            if (process2.stderr is String && process2.stderr.toString() != '') {
               CommandFailedException.log(
-                  'Command Failed', data1.stderr.toString());
+                  'Command Failed', process2.stderr.toString());
             }
           });
         }

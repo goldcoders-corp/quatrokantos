@@ -10,12 +10,15 @@ import 'package:quatrokantos/helpers/writter_helper.dart';
 class CommandFailedException implements Exception {
   static Future<void> log(String e, String stacktrace) async {
     if (dotenv.env['DEBUG']! == 'TRUE' && kReleaseMode || !kReleaseMode) {
-      Get.snackbar(e, stacktrace,
-          duration: const Duration(milliseconds: 5000),
-          icon: const Icon(Icons.warning, color: Colors.red),
-          snackPosition: SnackPosition.BOTTOM,
-          isDismissible: true,
-          dismissDirection: SnackDismissDirection.HORIZONTAL);
+      Get.snackbar(
+        e,
+        stacktrace,
+        duration: const Duration(milliseconds: 30000),
+        icon: const Icon(Icons.warning, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+        isDismissible: true,
+        dismissDirection: SnackDismissDirection.HORIZONTAL,
+      );
     } else {
       String folder = dotenv.env['APP_NAME']!.toLowerCase();
       // ignore: unnecessary_string_escapes
