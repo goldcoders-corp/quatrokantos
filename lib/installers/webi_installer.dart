@@ -8,6 +8,7 @@ import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
+import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class WebiInstall {
   late final String command;
@@ -38,7 +39,6 @@ class WebiInstall {
   Future<void> call({required Function(bool installed) onDone}) async {
     final String? cmdPathOrNull = whichSync(command,
         environment: <String, String>{'PATH': PathEnv.get()});
-
     bool installed;
     if (cmdPathOrNull != null) {
       installed = true;
@@ -52,7 +52,7 @@ class WebiInstall {
       final CommandController ctrl = Get.find<CommandController>();
       ctrl.isLoading = true;
       if (Platform.isWindows) {
-        await InstallOnWindows(onDone: onDone);
+        await _injectPath(onDone: onDone);
       } else {
         try {
           await Cmd.pipeTo(
@@ -71,7 +71,36 @@ class WebiInstall {
     }
   }
 
-  Future<void> InstallOnWindows(
+  Future<void> _injectPath({required Function(bool installed) onDone}) async {
+    final String envpath = PathEnv.get();
+    if (Platform.isWindows) {
+      Process.run(
+        'powershell.exe',
+        <String>[
+          '-command',
+          '[Environment]::GetEnvironmentVariable("PATH", "User")',
+        ],
+        runInShell: true,
+      ).asStream().listen((ProcessResult process) async {
+        if (process.stdout is String) {
+          Process.run(
+            'powershell.exe',
+            <String>[
+              '-command',
+              '''
+[Environment]::SetEnvironmentVariable("PATH", "${process.stdout.toString().trim()};$envpath","User")
+''',
+            ],
+            runInShell: true,
+          ).asStream().listen((ProcessResult process) async {
+            await _installOnWindows(onDone: onDone);
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> _installOnWindows(
       {required Function(bool installed) onDone}) async {
     Process.run(
       'curl.exe',
@@ -79,9 +108,10 @@ class WebiInstall {
         '-A',
         'MS',
         'https://webinstall.dev/webi',
+        '>>',
+        '${PC.userDirectory}\\Downloads\\install_webi.ps1',
       ],
       runInShell: true,
-      // environment: <String, String>{'PATH': PathEnv.get()},
     ).asStream().listen((ProcessResult data) {
       try {
         if (data.stderr is String &&
@@ -89,29 +119,35 @@ class WebiInstall {
             Could not resolve host: webinstall.dev
             '''
                 .trim())) {
-          throw const ProcessException(
+          throw ProcessException(
             'curl.exe',
             <String>[
               '-A',
               'MS',
               'https://webinstall.dev/webi',
+              '>>',
+              '${PC.userDirectory}\\Downloads\\install_webi.ps1',
             ],
           );
         } else {
+          print(<String>[
+            '-command',
+            data.stdout.toString().trim(),
+          ]);
           Process.run(
             'powershell.exe',
             <String>[
               '-command',
-              data.stdout.toString().trim(),
+              '${PC.userDirectory}\\Downloads\\install_webi.ps1',
             ],
-            // runInShell: true,
-          ).asStream().listen((ProcessResult data) {
-            if (data.stdout is String) {
+            runInShell: true,
+          ).asStream().listen((ProcessResult data1) {
+            if (data1.stdout is String) {
               onDone(true);
             }
-            if (data.stderr is String && data.stderr.toString() != '') {
+            if (data1.stderr is String && data1.stderr.toString() != '') {
               CommandFailedException.log(
-                  'Command Failed', data.stderr.toString());
+                  'Command Failed', data1.stderr.toString());
             }
           });
         }
