@@ -59,10 +59,8 @@ class WebiInstall {
             args1: args1,
             command2: command2,
             args2: args2,
+            onDone: onDone,
           );
-
-          installed = true;
-          onDone(installed);
         } catch (e, stacktrace) {
           CommandFailedException.log(e.toString(), stacktrace.toString());
         }
