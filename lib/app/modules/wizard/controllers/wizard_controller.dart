@@ -216,11 +216,6 @@ class WizardController extends GetxController {
       complete = true;
       final WizardService ws = Get.find<WizardService>();
       ws.completed = true;
-      Get.snackbar(
-        'Congratulations',
-        'Your All Ready To Start Creating Sites',
-        dismissDirection: SnackDismissDirection.HORIZONTAL,
-      );
     }
   }
 

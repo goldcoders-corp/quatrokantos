@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/wizard/components/onboarding_card.dart';
@@ -609,32 +610,49 @@ You Have Successfully Logged In to Netlify
             ],
           );
         } else {
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  const Text('Your All Set!'),
-                  const SizedBox(height: 50),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.purple.shade100;
-                        } else {
-                          return appColors[PRIMARY_DARK]!;
-                        }
-                      }),
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Start Creating Site',
+                      style: TextStyle(
+                          color: Colors.pink[400],
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () {
-                      Get.toNamed('/home');
-                    },
-                    child: const Text(
-                      'Next',
-                      style: TextStyle(color: Colors.white),
+                    SvgPicture.asset('assets/svg/build_site.svg',
+                        width: 500.0,
+                        height: 500.0,
+                        semanticsLabel: 'Start Building Your Site'),
+                    const SizedBox(height: 50),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.purple.shade100;
+                          } else {
+                            return appColors[PRIMARY_DARK]!;
+                          }
+                        }),
+                      ),
+                      onPressed: () {
+                        Get.offNamed('/home');
+                      },
+                      child: const Text(
+                        'GO',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
