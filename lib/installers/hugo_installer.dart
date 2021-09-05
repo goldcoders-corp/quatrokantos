@@ -12,7 +12,7 @@ import 'package:quatrokantos/helpers/pkg_manager.dart';
 
 class HugoInstall {
   late final String command;
-  late final String command1;
+  late String command1;
   late final List<String> args1;
 
   final WizardController wctrl = Get.find<WizardController>();
@@ -25,7 +25,8 @@ class HugoInstall {
     if (Platform.isWindows) {
       args1 = <String>['install', 'hugo-extended'];
     } else if (Platform.isMacOS) {
-      args1 = <String>['install', 'hugo'];
+      command1 = 'webi';
+      args1 = <String>['hugo'];
     } else {
       args1 = <String>['instal', 'hugo'];
     }
@@ -50,14 +51,12 @@ class HugoInstall {
       if (Platform.isWindows) {
         await _installOnWindows(onDone: onDone);
       } else {
-        final Cmd cmd = Cmd(command: command1, args: args1);
+        final Cmd cmd = Cmd(command: command1, args: args1, runInShell: true);
 
         await cmd.execute(onResult: (
           String output,
         ) {
-          if (output.isNotEmpty) {
-            onDone(true);
-          }
+          onDone(true);
         });
       }
     }
