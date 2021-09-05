@@ -12,7 +12,7 @@ import 'package:quatrokantos/helpers/pkg_manager.dart';
 
 class NodeInstall {
   late final String command;
-  late final String command1;
+  late String command1;
   late final List<String> args1;
   late final String path1;
 
@@ -25,7 +25,9 @@ class NodeInstall {
     if (Platform.isWindows) {
       args1 = <String>['install', 'nodejs-lts'];
     } else if (Platform.isMacOS) {
-      args1 = <String>['install', 'node@14'];
+      // args1 = <String>['install', 'node@14'];
+      command1 = 'webi';
+      args1 = <String>['node@14.17.1'];
     } else {
       args1 = <String>['install', 'node'];
     }
@@ -49,16 +51,12 @@ class NodeInstall {
       if (Platform.isWindows) {
         await _installOnWindows(onDone: onDone);
       } else {
-        final Cmd cmd = Cmd(
-          command: command1,
-          args: args1,
-        );
+        final Cmd cmd = Cmd(command: command1, args: args1, runInShell: true);
+
         await cmd.execute(onResult: (
           String output,
         ) {
-          if (output.isNotEmpty) {
-            onDone(true);
-          }
+          onDone(true);
         });
       }
     }
