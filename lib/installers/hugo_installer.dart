@@ -8,27 +8,42 @@ import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
-import 'package:quatrokantos/helpers/pkg_manager.dart';
 
 class HugoInstall {
   late final String command;
-  late String command1;
-  late final List<String> args1;
+  late final String command1;
+  final List<String> args1 = <String>[];
+
+  late final String command2;
+  late final List<String> args2;
 
   final WizardController wctrl = Get.find<WizardController>();
   final CommandController ctrl = Get.find<CommandController>();
 
   HugoInstall() : super() {
     command = 'hugo';
-    command1 = PackageManager.get();
-
     if (Platform.isWindows) {
-      args1 = <String>['install', 'hugo-extended'];
+      args1.add('install');
+      args1.add('hugo-extended');
     } else if (Platform.isMacOS) {
-      command1 = 'webi';
-      args1 = <String>['hugo'];
+      command1 = 'curl';
+      args1.add('-sS');
+      if (PC.chip == 'Apple M1') {
+        args1.add(
+            'https://gist.githubusercontent.com/goldcoders/1c5c7b4fb7f574cc468fabacab5a6b68/raw/3b622e2fe1767f7f0183af505549a065ccbdeddf/hugo_extended_mac_arm64.sh');
+      } else {
+        args1.add(
+            'https://gist.githubusercontent.com/goldcoders/1c5c7b4fb7f574cc468fabacab5a6b68/raw/3b622e2fe1767f7f0183af505549a065ccbdeddf/hugo_extended_mac_64bit.sh');
+      }
+      command2 = 'bash';
+      args2 = <String>[];
     } else {
-      args1 = <String>['instal', 'hugo'];
+      command1 = 'curl';
+      args1.add('-sS');
+      args1.add(
+          'https://gist.githubusercontent.com/goldcoders/1c5c7b4fb7f574cc468fabacab5a6b68/raw/3b622e2fe1767f7f0183af505549a065ccbdeddf/hugo_extended_linux.sh');
+      command2 = 'bash';
+      args2 = <String>[];
     }
   }
 
@@ -51,13 +66,17 @@ class HugoInstall {
       if (Platform.isWindows) {
         await _installOnWindows(onDone: onDone);
       } else {
-        final Cmd cmd = Cmd(command: command1, args: args1, runInShell: true);
-
-        await cmd.execute(onResult: (
-          String output,
-        ) {
-          onDone(true);
-        });
+        try {
+          await Cmd.pipeTo(
+            command1: command1,
+            args1: args1,
+            command2: command2,
+            args2: args2,
+            onDone: onDone,
+          );
+        } catch (e, stacktrace) {
+          CommandFailedException.log(e.toString(), stacktrace.toString());
+        }
       }
     }
   }
