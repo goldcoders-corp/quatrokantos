@@ -27,5 +27,5 @@
 - [x] Bux.ph
 
 > For International
-- [] Stripe (TBA)
-- [] Paypal (TBA)
+- [ ] Stripe (TBA)
+- [ ] Paypal (TBA)
