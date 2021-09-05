@@ -1,0 +1,10 @@
+[Desktop Entry]
+# This is a development .desktop file, no version is specified.
+Terminal=false
+Type=Application
+Name=Thriftshop Desktop Site Manager
+StartupWMClass=sidekick
+Comment=Offline First Site Manager for any Cloud Services like Netlify, Vervel, AWS etc.
+Exec=Quatrokantos %F
+Icon=snap/gui/app.png
+Categories=Utility;
