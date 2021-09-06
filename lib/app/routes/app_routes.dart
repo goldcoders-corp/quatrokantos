@@ -14,5 +14,5 @@ abstract class _Paths {
   static const String HOME = '/home';
   static const String WIZARD = '/wizard';
   static const String SITES = '/sites';
-  static const String PROJECT = '/project';
+  static const String PROJECT = '/project/:name';
 }
