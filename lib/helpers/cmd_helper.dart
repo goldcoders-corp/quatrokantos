@@ -11,6 +11,7 @@ class Cmd {
   late final List<String> _args;
   late final String? _path;
   final CommandController ctrl = Get.find<CommandController>();
+  // final CommandController ctrl = Get.put(CommandController());
 
   late final Map<String, String>? _env;
 
@@ -109,9 +110,6 @@ class Cmd {
           .transform(const LineSplitter());
 
       await for (final String line in outputStream) {
-        print('-----------------------------------------------');
-        print('Stdout: $line\n');
-        print('-----------------------------------------------');
         outputbuffer.write('$line\n');
       }
 
@@ -119,9 +117,6 @@ class Cmd {
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
-        print('-----------------------------------------------');
-        print('Error: $line\n');
-        print('-----------------------------------------------');
         errorBuffer.write('$line\n');
       }
     } catch (e, stacktrace) {
@@ -142,12 +137,8 @@ class Cmd {
       }
       if (output.isNotEmpty) {
         result = output;
-        print('-----------------------------------------------');
-        print('Result: $result\n');
-        print('-----------------------------------------------');
       }
-      ctrl.results = result;
-      onResult(ctrl.results);
+      onResult(result);
     } on CommandFailedException catch (e, stacktrace) {
       CommandFailedException.log(
           e.toString(), '$error\n${stacktrace.toString()}');
