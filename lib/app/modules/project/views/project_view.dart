@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
+import 'package:quatrokantos/widgets/top_bar.dart';
 
 import '../controllers/project_controller.dart';
 
@@ -8,14 +8,24 @@ class ProjectView extends GetView<ProjectController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ProjectView'),
-        centerTitle: true,
+      appBar: TopBar(
+        title: 'Create New Site',
       ),
-      body: const Center(
-        child: Text(
-          'ProjectView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Obx(() {
+              return Text(
+                'Site ID: ${controller.id}',
+                style: const TextStyle(fontSize: 20),
+              );
+            }),
+            TextButton(
+                onPressed: () {
+                  controller.id = '1000';
+                },
+                child: const Text('Update')),
+          ],
         ),
       ),
     );
