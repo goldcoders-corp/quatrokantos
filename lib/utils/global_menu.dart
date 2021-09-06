@@ -4,57 +4,20 @@ import 'package:menubar/menubar.dart' as menubar;
 
 void setGlobalMenu() {
   menubar.setApplicationMenu(<menubar.Submenu>[
-    menubar.Submenu(
-        label: 'Getting Started',
-        children: <menubar.AbstractMenuItem>[
-          menubar.MenuItem(
-            label: 'Get App Requiments',
-            onClicked: () {
-              Get.defaultDialog(
-                title: 'Alert',
-                content: const Text(
-                  'Downloading all Necessary Dependencies',
-                ),
-              );
-            },
-          ),
-          menubar.MenuItem(
-            label: 'Login Netlify Account',
-            onClicked: () {
-              Get.defaultDialog(
-                title: 'Alert',
-                content: const Text(
-                  'Login to Netlify Account',
-                ),
-              );
-            },
-          ),
-          menubar.MenuItem(
-            label: 'Download Themes',
-            onClicked: () {
-              Get.defaultDialog(
-                title: 'Alert',
-                content: const Text(
-                  'Show Download Theme Page',
-                ),
-              );
-            },
-          ),
-          menubar.MenuItem(
-            label: 'Create New Site',
-            onClicked: () {
-              Get.defaultDialog(
-                title: 'Alert',
-                content: const Text(
-                  'Creating New Sites',
-                ),
-              );
-            },
-          ),
-        ]),
-    menubar.Submenu(label: 'Scripts', children: <menubar.AbstractMenuItem>[
+    menubar.Submenu(label: 'Run', children: <menubar.AbstractMenuItem>[
       menubar.MenuItem(
-        label: 'Start Server',
+        label: 'Install',
+        onClicked: () {
+          Get.defaultDialog(
+            title: 'Alert',
+            content: const Text(
+              'Install Dependencies',
+            ),
+          );
+        },
+      ),
+      menubar.MenuItem(
+        label: 'Start CMS',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
@@ -65,58 +28,58 @@ void setGlobalMenu() {
         },
       ),
       menubar.MenuItem(
-        label: 'Stop Server',
+        label: 'Stop CMS',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
             content: const Text(
-              'Stopping Local Server',
+              'Killing... process of Isolate',
             ),
           );
         },
       ),
       menubar.MenuItem(
-        label: 'Push To Staging Site',
+        label: 'Build Site',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
             content: const Text(
-              'Pushing to Staging Site',
+              'Optimizing Site for Production',
             ),
           );
         },
       ),
       menubar.MenuItem(
-        label: 'Push to Production Site',
+        label: 'Deploy Site',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
             content: const Text(
-              'Pushing to Live Site',
+              'Make Sure You Build Site Before Running Deploy!',
             ),
           );
         },
       ),
     ]),
-    menubar.Submenu(label: 'Go', children: <menubar.AbstractMenuItem>[
+    menubar.Submenu(label: 'About Us', children: <menubar.AbstractMenuItem>[
       menubar.MenuItem(
-        label: 'Content Management System',
+        label: 'Facebook Fanpage',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
             content: const Text(
-              'Launching CMS',
+              'Creating a New Site',
             ),
           );
         },
       ),
       menubar.MenuItem(
-        label: 'Local Website',
+        label: 'Company Website',
         onClicked: () {
           Get.defaultDialog(
             title: 'Alert',
             content: const Text(
-              'Launching Local Site',
+              'Creating a New Site',
             ),
           );
         },
