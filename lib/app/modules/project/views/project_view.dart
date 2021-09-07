@@ -8,22 +8,48 @@ class ProjectView extends GetView<ProjectController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(
-        title: 'Create New Site',
+        title: controller.custom_domain,
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Obx(() {
-              return Text(
-                'Site ID: ${controller.id}',
-                style: const TextStyle(fontSize: 20),
-              );
-            }),
             TextButton(
                 onPressed: () {
-                  controller.id = '1000';
+                  Get.snackbar('Downloadig Theme', 'Thriftshop Theme');
                 },
-                child: const Text('Update')),
+                child: const Text('Download Theme')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar('Linking Site', 'Now Linking Site');
+                },
+                child: const Text('Link Site')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar('Build Site', 'Building Site');
+                },
+                child: const Text('Build Site')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar(
+                      'Deploying Site', 'Production Site Being Deployed');
+                },
+                child: const Text('Deploy Site')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar('Run Local Server', 'Running Local Server');
+                },
+                child: const Text('Run CMS')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar('Opening Site', 'on http://localhost:13131');
+                },
+                child: const Text('Open Local Site')),
+            TextButton(
+                onPressed: () {
+                  Get.snackbar('Opening CMS', 'on http://localhost:1234');
+                },
+                child: const Text('Open CMS ')),
           ],
         ),
       ),

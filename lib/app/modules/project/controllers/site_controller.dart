@@ -118,7 +118,7 @@ class SiteController extends GetxController {
     appFolder = appText.replace();
 
     final ReplaceHelper folderText =
-        ReplaceHelper(text: local_name, regex: '\\s+');
+        ReplaceHelper(text: local_name.toLowerCase(), regex: '\\s+', str: '-');
     final String folder = folderText.replace();
 
     path = p.join(
@@ -133,11 +133,11 @@ class SiteController extends GetxController {
   }
 
   Future<void> create() async {
-    _setUpFolder();
-    SiteListController ctrl = Get.put(SiteListController());
+    final SiteListController ctrl = Get.put(SiteListController());
     isLoading = true;
-    var id = await addSite();
-    var site = Site(
+    final id = await addSite();
+    print(local_name);
+    final site = Site(
         local_name: local_name,
         path: path,
         custom_domain: custom_domain,

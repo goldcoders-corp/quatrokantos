@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/views/dashboard_screen.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
-import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/responsive.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
@@ -14,7 +13,6 @@ import '../controllers/site_list_controller.dart';
 class HomeView extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
-    final CommandController ctrl = Get.put(CommandController());
     return Scaffold(
       appBar: TopBar(title: 'Site Manager'),
       drawer: const SideMenu(),

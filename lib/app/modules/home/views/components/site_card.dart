@@ -65,35 +65,37 @@ class SiteCard extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                site.custom_domain ?? site.default_domain!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: TextButton(
-                    onPressed: () async {
-                      if (site.default_domain != '') {
-                        final UrlLauncher openURL =
-                            UrlLauncher(url: 'https://${site.default_domain}');
-                        await openURL();
-                      } else {
-                        final UrlLauncher openURL =
-                            UrlLauncher(url: 'https://${site.custom_domain}');
-                        await openURL();
-                      }
-                    },
-                    child: Icon(
-                      Icons.search,
-                      color: appColors[ACCENT_DARK],
-                    )),
-              ),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  site.custom_domain ?? site.default_domain!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: TextButton(
+                      onPressed: () async {
+                        if (site.default_domain != '') {
+                          final UrlLauncher openURL = UrlLauncher(
+                              url: 'https://${site.default_domain}');
+                          await openURL();
+                        } else {
+                          final UrlLauncher openURL =
+                              UrlLauncher(url: 'https://${site.custom_domain}');
+                          await openURL();
+                        }
+                      },
+                      child: Icon(
+                        Icons.search,
+                        color: appColors[ACCENT_DARK],
+                      )),
+                ),
+              ],
+            ),
           ),
         ],
       ),

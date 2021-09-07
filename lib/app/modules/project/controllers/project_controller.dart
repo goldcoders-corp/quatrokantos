@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -24,6 +23,8 @@ class ProjectController extends GetxController {
   @override
   void onInit() {
     initData();
+    updateCWD();
+
     super.onInit();
   }
 
@@ -62,31 +63,19 @@ class ProjectController extends GetxController {
   /// ```
   void initData() {
     local_name = Get.parameters['local_name'] ??= '';
-    print(id);
-    path = Get.parameters['path'] ??= '';
+    // path = Get.parameters['path'] ??= '';
     custom_domain = Get.parameters['custom_domain'] ??= '';
     id = Get.parameters['id'] ??= '';
     name = Get.parameters['name'] ??= '';
     account_slug = Get.parameters['account_slug'] ??= '';
     default_domain = Get.parameters['default_domain'] ??= '';
     repo_url = Get.parameters['repo_url'] ??= '';
-
-    print(id);
   }
 
   void updateCWD() {
-    String folder = name;
-    if (name.isEmpty || name == '') {
-      // use our local name folder
-      final ReplaceHelper text = ReplaceHelper(text: local_name, regex: '\\s+');
-      folder = text.replace();
-      folder = local_name;
-    }
-    PathHelper.mkd(folder);
-
-    final String cwd = p.join(getSitesFolder(), folder);
-    print(cwd);
-    Directory.current = cwd;
+    path = p.join(getSitesFolder(), local_name);
+    PathHelper.mkd(path);
+    Directory.current = path;
   }
 
   static String getSitesFolder() {
@@ -96,32 +85,5 @@ class ProjectController extends GetxController {
     final String cwd =
         p.join(PC.userDirectory, '.local', 'share', '.$folder', 'sites');
     return cwd;
-  }
-
-  String randomString(int length) {
-    final Random _rnd = Random();
-    // ignore: always_specify_types
-    return String.fromCharCodes(Iterable.generate(
-        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-  }
-
-  void _setUpFolder() {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
-    final ReplaceHelper appText = ReplaceHelper(text: appFolder, regex: '\\s+');
-    appFolder = appText.replace();
-
-    final ReplaceHelper folderText =
-        ReplaceHelper(text: local_name, regex: '\\s+');
-    final String folder = folderText.replace();
-
-    path = p.join(
-      PC.userDirectory,
-      '.local',
-      'share',
-      '.$appFolder',
-      'sites',
-      folder,
-    );
-    PathHelper.mkd(path);
   }
 }
