@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/views/models/site_model.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 
-class HomeController extends GetxController {
-  //TODO: Implement HomeController
-
+class SiteListController extends GetxController {
   final Rx<List<Site>> sites = Rx<List<Site>>(<Site>[]);
 
   @override
@@ -20,33 +19,40 @@ class HomeController extends GetxController {
   @override
   void onClose() {}
 
+  Function listEquals = const DeepCollectionEquality().equals;
+
   Future<void> fetchSites() async {
     final CommandController ctrl = Get.put(CommandController());
     const String command = 'netlify';
     final List<String> args = <String>['sites:list', '--json'];
+    final List<Site> siteList = <Site>[];
+
     ctrl.isLoading = true;
+
     final Cmd cmd = Cmd(command: command, args: args);
     await cmd.execute(onResult: (String output) {
-      final List<dynamic> fetchSites = json.decode(output) as List<dynamic>;
+      final List<dynamic> transformSiteList =
+          json.decode(output) as List<dynamic>;
 
-      fetchSites.forEach((dynamic element) {
-        final String? cdomain = element['custom_domain'] as String?;
-
-        final String ddomain = element['default_domain'] as String;
-
+      // ignore: avoid_function_literals_in_foreach_calls
+      transformSiteList.forEach((dynamic element) {
         final Site entrySite = Site(
-          local_name: element['name'] as String? ?? '',
-          custom_domain: cdomain,
-          path: '',
           id: element['id'] as String,
           name: element['name'] as String,
           account_slug: element['account_slug'] as String,
-          default_domain: ddomain,
+          default_domain: element['default_domain'] as String,
           repo_url: element['build_settings']['repo_url'] as String?,
         );
-        sites.value.add(entrySite);
+        //list.addIf(entrySite < limit, item);
+        siteList.add(entrySite);
+        print(entrySite.toJson());
       });
-      sites.refresh();
+      //  If there is changes in Offline vs Remote Data
+      if (listEquals(sites.value, siteList) == false) {
+        // We Update The Sites Value
+        sites.value = siteList;
+        sites.refresh();
+      }
 
       ctrl.isLoading = false;
     });
