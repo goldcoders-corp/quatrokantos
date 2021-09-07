@@ -4,14 +4,11 @@ import 'dart:math';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
-import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
-import 'package:quatrokantos/app/modules/home/views/models/site_model.dart';
 import 'package:quatrokantos/helpers/path_helper.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
 import 'package:quatrokantos/helpers/replace_helper.dart';
-import 'package:quatrokantos/netlify/netlify_site_create.dart';
 
-class SiteController extends GetxController {
+class ProjectController extends GetxController {
   final RxString _local_name = ''.obs;
   final RxString _path = ''.obs;
   final RxString _custom_domain = ''.obs;
@@ -20,7 +17,6 @@ class SiteController extends GetxController {
   final RxString _account_slug = ''.obs;
   final RxString _default_domain = ''.obs;
   final RxString _repo_url = ''.obs;
-  final RxBool _isLoading = false.obs;
 
   static const String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -30,9 +26,6 @@ class SiteController extends GetxController {
     initData();
     super.onInit();
   }
-
-  bool get isLoading => _isLoading.value;
-  set isLoading(bool val) => _isLoading.value = val;
 
   String get local_name => _local_name.value;
   set local_name(String val) => _local_name.value = val;
@@ -130,28 +123,5 @@ class SiteController extends GetxController {
       folder,
     );
     PathHelper.mkd(path);
-  }
-
-  Future<void> create() async {
-    _setUpFolder();
-    SiteListController ctrl = Get.put(SiteListController());
-    isLoading = true;
-    var id = await addSite();
-    var site = Site(
-        local_name: local_name,
-        path: path,
-        custom_domain: custom_domain,
-        id: id);
-    // run script hre
-    ctrl.sites.value.add(site);
-    ctrl.sites.refresh();
-    isLoading = false;
-  }
-
-  Future<String> addSite() async {
-    final NetlifyCreateSite netlify = NetlifyCreateSite(name: local_name);
-    final String response = await netlify() as String;
-    print('Myresponse : $response');
-    return response;
   }
 }

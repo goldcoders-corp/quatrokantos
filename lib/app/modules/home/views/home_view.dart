@@ -6,7 +6,6 @@ import 'package:quatrokantos/constants/default_size.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/responsive.dart';
-import 'package:quatrokantos/widgets/run_btn.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
@@ -40,25 +39,6 @@ class HomeView extends GetView<SiteListController> {
           ],
         ),
       ),
-      floatingActionButton: Obx(
-        () => (ctrl.isLoading == false)
-            ? RunBtn(
-                title: 'Load Sites',
-                icon: Icons.refresh,
-                onTap: () async {
-                  controller.fetchSites();
-                },
-              )
-            : SizedBox(
-                height: 70,
-                width: 70,
-                child: CircularProgressIndicator(
-                  color: Colors.pink.shade200,
-                ),
-              ),
-      ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
     );
   }
 }

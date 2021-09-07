@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/project/controllers/site_controller.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/helpers/replace_helper.dart';
@@ -10,6 +11,7 @@ import 'package:quatrokantos/widgets/run_btn.dart';
 class CreateNewSiteDialog {
   static Future<dynamic> launch() {
     final SiteController project = Get.put(SiteController());
+    final SiteListController sitesCtrl = Get.put(SiteListController());
 
     return Get.defaultDialog(
         cancel: RunBtn(
@@ -73,45 +75,48 @@ class CreateNewSiteDialog {
                 },
               ),
               const Expanded(child: SizedBox()),
-              ElevatedButton.icon(
-                icon: const Icon(
-                  Icons.add_business,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  'Add New Site',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  onPrimary: Colors.purple[50],
-                  primary: appColors[ACCENT],
-                  onSurface: Colors.lightBlue,
-                  elevation: 20,
-                  minimumSize: const Size(500, 50),
-                  shadowColor: Colors.purple[100],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                onPressed: () {
-                  //TODO: Submit Using a Command
-                  // validate form check if not empty
-                  // check if valid domain format
-                  project.create();
-                  Get.back();
-                  Get.snackbar(
-                      'Item',
-                      '''
-${project.local_name},
-${project.custom_domain}')
-'''
-                          .trim());
-                },
-              ),
+              Obx(() {
+                if (project.isLoading == false) {
+                  return ElevatedButton.icon(
+                    icon: const Icon(
+                      Icons.add_business,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Add New Site',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: Colors.purple[50],
+                      primary: appColors[ACCENT],
+                      onSurface: Colors.lightBlue,
+                      elevation: 20,
+                      minimumSize: const Size(500, 50),
+                      shadowColor: Colors.purple[100],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    onPressed: () async {
+                      //TODO: Submit Using a Command
+                      // validate form check if not empty
+                      // check if valid domain format
+                      await project.create();
+                      // TODO: fix this by adding the new sites to local
+                      await sitesCtrl.fetchSites();
+                      Get.back();
+                    },
+                  );
+                } else {
+                  return CircularProgressIndicator(
+                    color: Colors.red[200],
+                  );
+                }
+              }),
               const SizedBox(
                 height: 50,
               )

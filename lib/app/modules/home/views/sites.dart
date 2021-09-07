@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/home/views/create_new_site_dialog.dart';
-import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
-import 'package:quatrokantos/maps/app_colors.dart';
+import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/netlify/netlify_delete_all_site.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 import '../../../../../responsive.dart';
@@ -19,6 +19,8 @@ class SitePanel extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
+    final CommandController ctrl = Get.put(CommandController());
+
     return Obx(() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
@@ -26,24 +28,60 @@ class SitePanel extends GetView<SiteListController> {
           children: <Widget>[
             if (controller.sites.value.isNotEmpty)
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     'Site Listings',
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  RunBtn(
-                      title: 'New Site',
-                      icon: Icons.add_business,
-                      onTap: () async {
-                        await CreateNewSiteDialog.launch();
-                      }),
+                  const SizedBox(
+                    height: 50,
+                  ),
                 ],
               )
             else
               const SizedBox(
                 height: defaultPadding,
               ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RunBtn(
+                    title: 'New Site',
+                    icon: Icons.add_business,
+                    onTap: () async {
+                      await CreateNewSiteDialog.launch();
+                    }),
+                Obx(
+                  () => (ctrl.isLoading == false)
+                      ? RunBtn(
+                          title: 'Sync',
+                          icon: Icons.refresh,
+                          onTap: () async {
+                            controller.fetchSites();
+                          },
+                        )
+                      : SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: CircularProgressIndicator(
+                            color: Colors.pink.shade200,
+                          ),
+                        ),
+                ),
+                RunBtn(
+                    title: 'Trash All',
+                    icon: Icons.restore_from_trash,
+                    onTap: () async {
+                      final SiteListController sitesCtrl =
+                          Get.put(SiteListController());
+                      final NetlifyDeleteAllSites delete =
+                          NetlifyDeleteAllSites();
+                      await delete.all();
+                      await sitesCtrl.fetchSites();
+                    }),
+              ],
+            ),
             const SizedBox(height: defaultPadding),
             Responsive(
               mobile: SiteCardGridView(
@@ -95,9 +133,9 @@ class SiteCardGridView extends GetView<SiteListController> {
           child: Column(
             children: <Widget>[
               const Text(
-                'Launch Your First Site',
+                'Launch Your Site',
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 24,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -105,28 +143,6 @@ class SiteCardGridView extends GetView<SiteListController> {
                   width: 350.0,
                   height: 350.0,
                   semanticsLabel: 'Create Your First Site Now'),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.purple.shade100;
-                    } else {
-                      return appColors[PRIMARY_DARK]!;
-                    }
-                  }),
-                ),
-                onPressed: () async {
-                  await CreateNewSiteDialog.launch();
-                },
-                child: const Text(
-                  'Create New Site`',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
             ],
           ),
         );

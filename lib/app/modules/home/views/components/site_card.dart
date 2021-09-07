@@ -45,7 +45,7 @@ class SiteCard extends StatelessWidget {
                 width: 40,
                 child: TextButton(
                     onPressed: () {
-                      Get.toNamed('/project/${site.name}',
+                      Get.toNamed('/project/${site.local_name}',
                           parameters: site.toJson());
                     },
                     child: Icon(
@@ -83,7 +83,9 @@ class SiteCard extends StatelessWidget {
                             UrlLauncher(url: 'https://${site.default_domain}');
                         await openURL();
                       } else {
-                        Get.snackbar('No Site URL', 'Failed to Open Domain');
+                        final UrlLauncher openURL =
+                            UrlLauncher(url: 'https://${site.custom_domain}');
+                        await openURL();
                       }
                     },
                     child: Icon(
