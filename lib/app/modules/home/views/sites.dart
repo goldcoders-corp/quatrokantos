@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:quatrokantos/app/modules/home/controllers/home_controller.dart';
+import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/home/views/create_new_site_dialog.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
@@ -11,7 +11,7 @@ import 'package:quatrokantos/widgets/run_btn.dart';
 import '../../../../../responsive.dart';
 import 'components/site_card.dart';
 
-class SitePanel extends GetView<HomeController> {
+class SitePanel extends GetView<SiteListController> {
   const SitePanel({
     Key? key,
   }) : super(key: key);
@@ -62,7 +62,7 @@ class SitePanel extends GetView<HomeController> {
   }
 }
 
-class SiteCardGridView extends GetView<HomeController> {
+class SiteCardGridView extends GetView<SiteListController> {
   const SiteCardGridView({
     Key? key,
     this.crossAxisCount = 3,
@@ -117,7 +117,6 @@ class SiteCardGridView extends GetView<HomeController> {
                   }),
                 ),
                 onPressed: () async {
-                  //TODO: Add Dialog to Create First Site
                   await CreateNewSiteDialog.launch();
                 },
                 child: const Text(
