@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/project/controllers/project_controller.dart';
+import 'package:quatrokantos/constants/color_constants.dart';
+import 'package:quatrokantos/constants/default_size.dart';
+import 'package:quatrokantos/maps/app_colors.dart';
+import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
 class ProjectView extends GetView<ProjectController> {
@@ -10,13 +14,17 @@ class ProjectView extends GetView<ProjectController> {
       appBar: TopBar(
         title: controller.custom_domain,
       ),
-      body: Center(
+      drawer: const SideMenu(),
+      body: Ink(
+        padding: const EdgeInsets.all(defaultPadding),
+        color: appColors[BG],
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextButton(
                 onPressed: () {
-                  Get.snackbar('Downloadig Theme', 'Thriftshop Theme');
+                  Get.snackbar('Downloading Theme', 'Thriftshop Theme');
                 },
                 child: const Text('Download Theme')),
             TextButton(
