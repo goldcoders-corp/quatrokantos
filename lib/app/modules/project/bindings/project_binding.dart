@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 
-import '../controllers/project_controller.dart';
+import '../controllers/site_controller.dart';
 
 class ProjectBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ProjectController>(
-      () => ProjectController(),
+    Get.lazyPut<SiteController>(
+      () => SiteController(),
     );
   }
 }
