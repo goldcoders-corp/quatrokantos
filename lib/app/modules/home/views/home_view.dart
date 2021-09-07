@@ -14,7 +14,7 @@ class HomeView extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(title: 'Site Manager'),
+      appBar: TopBar(title: 'Thriftshop Desktop Site Manager'),
       drawer: const SideMenu(),
       body: Ink(
         padding: const EdgeInsets.all(defaultPadding),
