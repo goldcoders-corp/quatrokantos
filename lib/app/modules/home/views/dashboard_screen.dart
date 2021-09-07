@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quatrokantos/app/modules/home/controllers/home_controller.dart';
+import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/home/views/sites.dart';
 import 'package:quatrokantos/constants/default_size.dart';
 
 import '../../../../responsive.dart';
 
-class DashboardScreen extends GetView<HomeController> {
+class DashboardScreen extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
