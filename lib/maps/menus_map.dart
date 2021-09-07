@@ -16,9 +16,9 @@ final List<Menu> Menus = <Menu>[
     icon: topBarIcon(Icons.dashboard, color: appColors[ACCENT_DARK]!),
   ),
   // Check Storage if we already have all steps done
-  Menu(
-    name: 'Sites',
-    route: '/sites',
-    icon: topBarIcon(Icons.alternate_email, color: appColors[ACCENT_DARK]!),
-  ),
+  // Menu(
+  //   name: 'Sites',
+  //   route: '/sites',
+  //   icon: topBarIcon(Icons.alternate_email, color: appColors[ACCENT_DARK]!),
+  // ),
 ];
