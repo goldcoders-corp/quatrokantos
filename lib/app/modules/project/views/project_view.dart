@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
-import '../controllers/project_controller.dart';
+import '../controllers/site_controller.dart';
 
-class ProjectView extends GetView<ProjectController> {
+class ProjectView extends GetView<SiteController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
