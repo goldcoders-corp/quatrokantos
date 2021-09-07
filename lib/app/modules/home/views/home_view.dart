@@ -10,9 +10,9 @@ import 'package:quatrokantos/widgets/run_btn.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
-import '../controllers/home_controller.dart';
+import '../controllers/site_list_controller.dart';
 
-class HomeView extends GetView<HomeController> {
+class HomeView extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     final CommandController ctrl = Get.put(CommandController());
