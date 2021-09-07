@@ -1,3 +1,8 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:path/path.dart' as p;
+import 'package:quatrokantos/helpers/pc_info_helper.dart';
+import 'package:quatrokantos/helpers/replace_helper.dart';
+
 class Site {
   // will be field up from form field
   String? local_name;
@@ -22,7 +27,22 @@ class Site {
     this.account_slug = '', // account_slug
     this.default_domain = '', // default_domain
     this.repo_url = '', // build_settings.repo_url
-  });
+  }) {
+    local_name ??= name;
+    custom_domain = custom_domain ?? default_domain;
+    path ??= (name != null) ? cwd(name!) : '';
+  }
+
+  static String cwd(String name) {
+    String folder = dotenv.env['APP_NAME']!.toLowerCase();
+    final ReplaceHelper text = ReplaceHelper(text: folder, regex: '\\s+');
+    folder = text.replace();
+    final String cwd =
+        p.join(PC.userDirectory, '.local', 'share', '.$folder', 'sites', name);
+    // PathHelper.mkd(cwd);
+
+    return cwd;
+  }
 
   // publish_deploy.site_capabilities.functions.invocations.used
   // capabilities.functions.invocations.included
