@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quatrokantos/app/modules/project/controllers/project_controller.dart';
+import 'package:quatrokantos/app/modules/project/controllers/site_controller.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/helpers/replace_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
@@ -9,7 +9,7 @@ import 'package:quatrokantos/widgets/run_btn.dart';
 
 class CreateNewSiteDialog {
   static Future<dynamic> launch() {
-    final ProjectController project = Get.put(ProjectController());
+    final SiteController project = Get.put(SiteController());
 
     return Get.defaultDialog(
         cancel: RunBtn(
@@ -20,14 +20,12 @@ class CreateNewSiteDialog {
             icon: Icons.close),
         title: '',
         barrierDismissible: false,
-        content: SizedBox(
-          height: 400,
+        content: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          height: 350,
           width: 500,
           child: Column(
             children: <Widget>[
-              const SizedBox(
-                height: 50,
-              ),
               Obx(() => Text(
                     (project.local_name == '')
                         ? 'Create New Site'
@@ -35,7 +33,7 @@ class CreateNewSiteDialog {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 18.0),
+                        fontSize: 20, fontWeight: FontWeight.w900),
                   )),
               const SizedBox(
                 height: 50,
