@@ -26,20 +26,8 @@ class SiteCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: TextButton(
-                    onPressed: () {
-                      Get.snackbar('Opening Folder', 'TBA soon!');
-                    },
-                    child: const Icon(
-                      Icons.folder_open,
-                      color: Colors.amber,
-                    )),
-              ),
               SizedBox(
                 height: 40,
                 width: 40,
@@ -49,7 +37,7 @@ class SiteCard extends StatelessWidget {
                           parameters: site.toJson());
                     },
                     child: Icon(
-                      Icons.open_in_browser,
+                      Icons.folder_open,
                       color: appColors[ACCENT_DARK],
                     )),
               ),
