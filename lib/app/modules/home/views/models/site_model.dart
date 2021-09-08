@@ -1,73 +1,101 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:path/path.dart' as p;
-import 'package:quatrokantos/helpers/pc_info_helper.dart';
-import 'package:quatrokantos/helpers/replace_helper.dart';
+import 'package:equatable/equatable.dart';
 
-class Site {
-  // will be field up from form field
-  String? local_name;
-  String? custom_domain;
-  String? path;
-  // below can be sync when online
-  String? id;
-  String? name;
-  String? account_slug;
-  String? default_domain;
-  String? repo_url;
+class SiteDetailsEntity extends Equatable {
+  final String id;
+  final String name;
+  final String account_slug;
+  final String default_domain;
+  final String? repo_url;
+  final String? custom_domain;
 
-  Site({
-    this.local_name,
+  const SiteDetailsEntity({
+    required this.id,
+    required this.name,
+    required this.account_slug,
+    required this.default_domain,
+    this.repo_url,
     this.custom_domain,
-    this.path,
-    // all params below from netlify
-    // netlify sites:list --json
+  });
 
-    this.id = '', //  id
-    this.name = '', //  name
-    this.account_slug = '', // account_slug
-    this.default_domain = '', // default_domain
-    this.repo_url = '', // build_settings.repo_url
-  }) {
-    local_name ??= name;
-    custom_domain = custom_domain ?? default_domain;
-    path ??= (name != null) ? cwd(name!) : '';
+  @override
+  List<Object?> get props => <Object?>[
+        id,
+        name,
+        account_slug,
+        default_domain,
+        repo_url,
+        custom_domain,
+      ];
+}
+
+class SiteDetails extends SiteDetailsEntity {
+  const SiteDetails({
+    required String id,
+    required String name,
+    required String account_slug,
+    required String default_domain,
+    String? repo_url,
+    String? custom_domain,
+  }) : super(
+          id: id,
+          name: name,
+          account_slug: account_slug,
+          default_domain: default_domain,
+          repo_url: repo_url,
+          custom_domain: custom_domain,
+        );
+
+  factory SiteDetails.fromJson(Map<String, dynamic> json) {
+    return SiteDetails(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      account_slug: json['account_slug'] as String,
+      default_domain: json['default_domain'] as String,
+      repo_url: json['repo_url'] as String?,
+      custom_domain: json['custom_domain'] as String?,
+    );
   }
+}
 
-  static String cwd(String name) {
-    String folder = dotenv.env['APP_NAME']!.toLowerCase();
-    final ReplaceHelper text = ReplaceHelper(text: folder, regex: '\\s+');
-    folder = text.replace();
-    final String cwd =
-        p.join(PC.userDirectory, '.local', 'share', '.$folder', 'sites', name);
-    // PathHelper.mkd(cwd);
+class SiteEntity extends Equatable {
+  final String name;
+  final String path;
+  final bool linked;
+  final SiteDetailsEntity? details;
 
-    return cwd;
-  }
+  const SiteEntity({
+    required this.name,
+    required this.path,
+    required this.linked,
+    this.details,
+  });
 
-  // publish_deploy.site_capabilities.functions.invocations.used
-  // capabilities.functions.invocations.included
-  // capabilities.functions.runtime.included
-  // capabilities.functions.runtime.used
+  @override
+  List<Object?> get props => <Object?>[name, path, linked, details];
+}
 
+class Site extends SiteEntity {
+  const Site({
+    required String name,
+    required String path,
+    required bool linked,
+    SiteDetails? details,
+  }) : super(
+          name: name,
+          path: path,
+          linked: linked,
+          details: details,
+        );
   factory Site.fromJson(Map<String, dynamic> json) => Site(
-        local_name: json['local_name'] as String?,
-        custom_domain: json['custom_domain'] as String?,
-        path: json['path'] as String?,
-        id: json['id'] as String?,
-        name: json['name'] as String?,
-        account_slug: json['account_slug'] as String?,
-        default_domain: json['default_domain'] as String?,
-        repo_url: json['repo_url'] as String?,
-      );
+      name: json['name'] as String,
+      path: json['path'] as String,
+      linked: json['linked'] as bool,
+      details: SiteDetails.fromJson(json['details'] as Map<String, dynamic>));
 
-  Map<String, String> toJson() => <String, String>{
-        'local_name': local_name ??= '',
-        'custom_domain': custom_domain ??= '',
-        'path': path ??= '',
-        'id': id ??= '',
-        'name': name ??= '',
-        'account_slug': account_slug ??= '',
-        'default_domain': default_domain ??= '',
-        'repo_url': repo_url ??= '',
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'name': name,
+        'path': path,
+        'linked': linked,
+        'details': details
       };
 }
