@@ -5,7 +5,6 @@ import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.d
 import 'package:quatrokantos/app/modules/home/views/create_new_site_dialog.dart';
 import 'package:quatrokantos/constants/default_size.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
-import 'package:quatrokantos/netlify/netlify_delete_all_site.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 import '../../../../../responsive.dart';
@@ -20,6 +19,7 @@ class SitePanel extends GetView<SiteListController> {
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     final CommandController ctrl = Get.put(CommandController());
+    final SiteListController sitesCtrl = Get.put(SiteListController());
 
     return Obx(() {
       return Padding(
@@ -44,7 +44,7 @@ class SitePanel extends GetView<SiteListController> {
                 height: defaultPadding,
               ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 RunBtn(
                     title: 'New Site',
@@ -56,7 +56,7 @@ class SitePanel extends GetView<SiteListController> {
                   () => (ctrl.isLoading == false)
                       ? RunBtn(
                           title: 'Sync',
-                          icon: Icons.refresh,
+                          icon: Icons.update,
                           onTap: () async {
                             controller.fetchSites();
                           },
@@ -69,17 +69,22 @@ class SitePanel extends GetView<SiteListController> {
                           ),
                         ),
                 ),
-                RunBtn(
-                    title: 'Trash All',
-                    icon: Icons.restore_from_trash,
-                    onTap: () async {
-                      final SiteListController sitesCtrl =
-                          Get.put(SiteListController());
-                      final NetlifyDeleteAllSites delete =
-                          NetlifyDeleteAllSites();
-                      await delete.all();
-                      await sitesCtrl.fetchSites();
-                    }),
+                Obx(
+                  () => (sitesCtrl.isLoading == false)
+                      ? RunBtn(
+                          title: 'Trash All',
+                          icon: Icons.auto_delete_outlined,
+                          onTap: () async {
+                            await sitesCtrl.emptySites();
+                          })
+                      : SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: CircularProgressIndicator(
+                            color: Colors.indigo.shade200,
+                          ),
+                        ),
+                ),
               ],
             ),
             const SizedBox(height: defaultPadding),
@@ -123,7 +128,7 @@ class SiteCardGridView extends GetView<SiteListController> {
             crossAxisSpacing: defaultPadding,
             mainAxisSpacing: defaultPadding,
             childAspectRatio: childAspectRatio,
-            mainAxisExtent: 150,
+            mainAxisExtent: 200,
           ),
           itemBuilder: (BuildContext context, int index) =>
               SiteCard(site: controller.sites.value[index]),
