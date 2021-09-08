@@ -6,6 +6,11 @@ import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 
 /// List of Netlify APIs
+/// For more information, see
+///
+/// https://open-api.netlify.com
+///
+/// https://docs.netlify.com/api/get-started/
 class NetlifyApi {
   /// Sure Method to Get Correct Account Slug
   /// ie: hugoforbes88@gmail.com -> hugoforbes88
