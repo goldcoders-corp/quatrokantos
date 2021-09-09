@@ -68,11 +68,11 @@ class CreateSiteController extends GetxController {
     // ntl api getSite --data '{ "site_id": "123456"}'
     // d40fc58f-f6a4-4a69-80d5-4b59b3fe5bdb
 
-    final site = Site(
+    final Site site = Site(
         name: local_name,
         path: path,
         linked: true,
-        details: SiteDetails(
+        details: const SiteDetails(
           account_slug: '',
           default_domain: '',
           id: '',
