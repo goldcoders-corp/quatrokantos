@@ -7,11 +7,19 @@ import 'package:quatrokantos/app/modules/home/views/models/site_model.dart';
 import 'package:quatrokantos/constants/site_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
+import 'package:quatrokantos/helpers/folder_launcher.dart';
+import 'package:quatrokantos/netlify/netlify_delete_all_site.dart';
+import 'package:quatrokantos/netlify/netlify_delete_site.dart';
 
 class SiteListController extends GetxController {
   final GetStorage _getStorage = GetStorage();
 
   final Rx<List<Site>> sites = Rx<List<Site>>(<Site>[]);
+
+  final RxBool _isLoading = false.obs;
+
+  bool get isLoading => _isLoading.value;
+  set isLoading(bool val) => _isLoading.value = val;
 
   @override
   // ignore: avoid_void_async
@@ -42,13 +50,18 @@ class SiteListController extends GetxController {
         // ignore: avoid_function_literals_in_foreach_calls
         transformSiteList.forEach((dynamic element) {
           final Site entrySite = Site(
-            id: element['id'] as String,
             name: element['name'] as String,
-            account_slug: element['account_slug'] as String,
-            default_domain: element['default_domain'] as String,
-            repo_url: element['build_settings']['repo_url'] as String?,
+            linked: false,
+            path: Folder(name: element['name'] as String).folder(),
+            details: SiteDetails(
+              id: element['details']['id'] as String,
+              name: element['details']['name'] as String,
+              account_slug: element['details']['account_slug'] as String,
+              default_domain: element['details']['default_domain'] as String,
+              repo_url: element['details']?['repo_url'] as String?,
+              custom_domain: element['details']?['custom_domain'] as String?,
+            ),
           );
-          //list.addIf(entrySite < limit, item);
           siteList.add(entrySite);
         });
         //  If there is changes in Offline vs Remote Data
@@ -68,6 +81,33 @@ class SiteListController extends GetxController {
     });
   }
 
+  Site? findByName(String name) =>
+      sites.value.firstWhere((Site site) => site.name == name);
+
+  int getIndex(String name) =>
+      sites.value.indexWhere((Site site) => site.name == name);
+
+  Future<void> deleteSite(String id) async {
+    isLoading = true;
+    final int index = getIndex(id);
+    sites.value.removeAt(index);
+    final NetlifyDeleteSite site = NetlifyDeleteSite(siteID: id);
+    site.delete();
+    final String siteData = json.encode(sites.value);
+    saveLocal(siteData);
+    sites.refresh();
+    isLoading = false;
+  }
+
+  Future<void> emptySites() async {
+    isLoading = true;
+    final List<Site> siteList = <Site>[];
+    sites.value = siteList;
+    final NetlifyDeleteAllSites delete = NetlifyDeleteAllSites();
+    await delete.all();
+    isLoading = false;
+  }
+
   List<Site> getLocalData() {
     final List<Site> siteList = <Site>[];
 
@@ -77,11 +117,9 @@ class SiteListController extends GetxController {
 
       transformSiteList.forEach((dynamic element) {
         final Site entrySite = Site(
-          id: element['id'] as String,
           name: element['name'] as String,
-          account_slug: element['account_slug'] as String,
-          default_domain: element['default_domain'] as String,
-          repo_url: element['repo_url'] as String?,
+          path: element['path'] as String,
+          linked: element['linked'] as bool,
         );
         //list.addIf(entrySite < limit, item);
         siteList.add(entrySite);
