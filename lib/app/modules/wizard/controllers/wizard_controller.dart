@@ -211,8 +211,7 @@ class WizardController extends GetxController {
         netlifyLogged == true) {
       currentStep = 5;
       complete = true;
-      final WizardService ws = Get.find<WizardService>();
-      ws.completed = true;
+      wiz.completed = true;
       Get.toNamed('/home');
     }
   }
