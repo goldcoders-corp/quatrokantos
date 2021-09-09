@@ -127,8 +127,20 @@ class SiteCard extends GetView<SiteListController> {
                     onPressed: () {
                       // TODO: check this after we finished
                       // Site Creation , we can then navigate to the extra page
-                      final Map<String, String> params =
-                          site.toJson() as Map<String, String>;
+                      final Map<String, dynamic> siteMap = site.toJson();
+                      final Map<String, String> params = <String, String>{
+                        'local_name': siteMap['name'] as String,
+                        'path': siteMap['path'] as String,
+                        'siteId': siteMap['details']['id'] as String,
+                        'name': siteMap['details']['name'] as String,
+                        'account_slug':
+                            siteMap['details']['account_slug'] as String,
+                        'default_domain':
+                            siteMap['details']['default_domain'] as String,
+                        'repo_url': (siteMap['details']['repo_url'] == null)
+                            ? ''
+                            : siteMap['details']['repo_url'] as String,
+                      };
                       Get.toNamed('/project/${site.name}', parameters: params);
                     },
                     child: Icon(
