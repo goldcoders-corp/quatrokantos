@@ -57,7 +57,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
             return Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: TextButton(
-                onPressed: () => Get.close(1),
+                onPressed: () => Get.back(),
                 child: const Icon(Icons.arrow_back, color: Colors.white),
               ),
             );

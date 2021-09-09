@@ -12,7 +12,7 @@ class ProjectView extends GetView<ProjectController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(
-        title: controller.custom_domain,
+        title: controller.local_name,
       ),
       drawer: const SideMenu(),
       body: Ink(
