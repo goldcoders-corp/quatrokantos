@@ -39,10 +39,16 @@ class NetlifyAccount extends NetlifyAccountEntity {
         );
 
   factory NetlifyAccount.fromJson(Map<String, dynamic> json) {
+    String accountName = '';
+    if (json.containsKey('full_name')) {
+      accountName = json['full_name'] as String;
+    }
+    if (json.containsKey('name')) {
+      accountName = json['name'] as String;
+    }
     return NetlifyAccount(
       id: json['id'] as String,
-      // changed to full_name
-      name: json['full_name'] as String,
+      name: accountName,
       avatar: json['avatar'] as String,
       email: json['email'] as String,
       slug: json['slug'] == null ? '' : json['slug'] as String,
