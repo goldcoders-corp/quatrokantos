@@ -1,15 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/create_site_controller.dart';
-import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
+import 'package:quatrokantos/netlify/netlify_api.dart';
 import 'package:quatrokantos/widgets/routed_input_field.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 class CreateNewSiteDialog {
   static Future<dynamic> launch() {
-    final SiteListController sitesCtrl = Get.put(SiteListController());
     final CreateSiteController project = Get.put(CreateSiteController());
 
     return Get.defaultDialog(
@@ -22,28 +23,25 @@ class CreateNewSiteDialog {
         title: '',
         barrierDismissible: false,
         content: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           height: 350,
           width: 500,
           child: Column(
             children: <Widget>[
-              Obx(() => Text(
-                    (project.local_name == '')
-                        ? 'Create New Site'
-                        : 'My Site: ${project.local_name}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w900),
-                  )),
+              const Text(
+                'Create New Site',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              ),
               const SizedBox(
-                height: 50,
+                height: 25,
               ),
               RoundedInputField(
-                hintText: "What's Your Project Name?",
-                labelText: 'Site name',
+                hintText: "What's your Project Name?",
+                labelText: 'Project name',
                 labelStyle: TextStyle(color: Colors.purple.shade300),
-                helperText: 'e.g.: Project name',
+                helperText: 'Note: This is Used for Local Folder',
                 border: OutlineInputBorder(
                   gapPadding: 1.0,
                   borderRadius: const BorderRadius.all(Radius.circular(25.0)),
@@ -53,8 +51,38 @@ class CreateNewSiteDialog {
                   project.local_name = value;
                 },
               ),
-              const SizedBox(height: 25.0),
-              const Expanded(child: SizedBox()),
+              const SizedBox(height: 10.0),
+              RoundedInputField(
+                hintText: 'What Netlify site name do you want?',
+                labelText: 'Site name',
+                labelStyle: TextStyle(color: Colors.purple.shade300),
+                helperText: 'Note: Must Be Unique',
+                border: OutlineInputBorder(
+                  gapPadding: 1.0,
+                  borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
+                ),
+                onChanged: (String value) {
+                  project.name = value;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              RoundedInputField(
+                hintText: 'What Domain you want for Live Site?',
+                labelText: 'Domain Name',
+                labelStyle: TextStyle(color: Colors.purple.shade300),
+                helperText:
+                    'It can be purchased at later time, e.g: goldcoders.dev',
+                border: OutlineInputBorder(
+                  gapPadding: 1.0,
+                  borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
+                ),
+                onChanged: (String value) {
+                  project.custom_domain = value;
+                },
+              ),
+              const SizedBox(height: 10.0),
               Obx(() {
                 if (project.isLoading == false) {
                   return ElevatedButton.icon(
@@ -82,24 +110,47 @@ class CreateNewSiteDialog {
                           borderRadius: BorderRadius.circular(30)),
                     ),
                     onPressed: () async {
-                      //TODO: Submit Using a Command
-                      // validate form check if not empty
-                      // check if valid domain format
-                      // await project.add();
-                      // TODO: fix this by adding the new sites to local
-                      // await sitesCtrl.fetchSites();
-                      Get.back();
+                      if (project.local_name == '' ||
+                          project.custom_domain == '' ||
+                          project.name == '') {
+                        Get.snackbar('Validation Error', '''
+Please Fill Up All Fields
+''');
+                        return;
+                      }
+                      project.isLoading = true;
+                      final Map<String, Map<String, String>> data =
+                          <String, Map<String, String>>{
+                        'body': <String, String>{
+                          'name': project.name,
+                          'custom_domain': project.custom_domain
+                        }
+                      };
+                      final String bodyStr = json.encode(data);
+                      await NetlifyApi.createSite(bodyStr,
+                          onDone: (String? siteDetails) async {
+                        if (siteDetails != null && siteDetails != '') {
+                          final Map<String, dynamic> siteMap =
+                              json.decode(siteDetails) as Map<String, dynamic>;
+                          await project.addSite(siteMap);
+                        }
+                        project.isLoading = false;
+                      }, onError: (String? error) {
+                        if (error != null && error.isNotEmpty) {
+                          Get.snackbar('Validation Error', '''
+Site Name: ${project.local_name} or Domain Name: ${project.custom_domain} Already Taken
+''');
+                        }
+                        project.isLoading = false;
+                      });
                     },
                   );
                 } else {
                   return CircularProgressIndicator(
-                    color: Colors.red[200],
-                  );
+                      color: appColors[ACCENT],
+                      backgroundColor: Colors.white38);
                 }
               }),
-              const SizedBox(
-                height: 50,
-              )
             ],
           ),
         ));

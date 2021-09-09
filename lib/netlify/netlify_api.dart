@@ -175,9 +175,11 @@ class NetlifyApi {
   /// ```
   ///  For Detailed API Docs: https://open-api.netlify.com/#operation/createSite
   static Future<void> createSite(String? data,
-      {required Function(String? siteDetails) onDone}) async {
+      {required Function(String? siteDetails) onDone,
+      required Function(String? errorMessage) onError}) async {
     const String command = 'ntl';
     final List<String> args = <String>[];
+    final RegExp errorReg = RegExp(r'\bJSONHTTPError\b');
     args.add('api');
     args.add('createSite');
     if (data != null) {
@@ -187,7 +189,9 @@ class NetlifyApi {
     final String? cmdPathOrNull = whichSync(command,
         environment: <String, String>{'PATH': PathEnv.get()});
     final StringBuffer output = StringBuffer();
+    final StringBuffer errorBuffer = StringBuffer();
     String? siteDetails;
+    String? errorMessage;
     if (cmdPathOrNull != null) {
       try {
         Process.run(
@@ -196,10 +200,16 @@ class NetlifyApi {
           runInShell: true,
         ).asStream().listen((ProcessResult process) async {
           output.write(process.stdout.toString());
+          print('output on CreateSite: ${process.stdout}');
+          print('error on CreateSite: ${process.stderr}');
+          if (errorReg.hasMatch(process.stderr.toString().trim())) {
+            errorBuffer.write(process.stderr.toString());
+          }
         }, onDone: () {
           siteDetails = output.toString();
-          print(output.toString());
+          errorMessage = errorBuffer.toString();
           onDone(siteDetails);
+          onError(errorMessage);
         });
       } catch (e, stacktrace) {
         CommandFailedException.log(e.toString(), stacktrace.toString());

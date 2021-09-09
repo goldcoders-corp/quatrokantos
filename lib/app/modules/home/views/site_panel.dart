@@ -75,7 +75,7 @@ class SitePanel extends GetView<SiteListController> {
                           title: 'Trash All',
                           icon: Icons.auto_delete_outlined,
                           onTap: () async {
-                            await sitesCtrl.emptySites();
+                            await sitesCtrl.emptyLocalSites();
                           })
                       : SizedBox(
                           height: 70,

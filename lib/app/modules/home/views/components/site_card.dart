@@ -32,9 +32,9 @@ class SiteCard extends GetView<SiteListController> {
                 height: 40,
                 width: 40,
                 child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (site.details?.id != null) {
-                        controller.deleteSite(site.details!.id);
+                        await controller.deleteSite(site.details!.id);
                       }
                     },
                     child: Icon(

@@ -8,8 +8,8 @@ import 'package:quatrokantos/constants/site_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
+import 'package:quatrokantos/netlify/netlify_api.dart';
 import 'package:quatrokantos/netlify/netlify_delete_all_site.dart';
-import 'package:quatrokantos/netlify/netlify_delete_site.dart';
 
 class SiteListController extends GetxController {
   final GetStorage _getStorage = GetStorage();
@@ -26,6 +26,7 @@ class SiteListController extends GetxController {
   // ignore: avoid_void_async
   void onInit() {
     getLocalData();
+    print(sites.value);
     super.onInit();
   }
 
@@ -84,22 +85,28 @@ class SiteListController extends GetxController {
   Site? findByName(String name) =>
       sites.value.firstWhere((Site site) => site.name == name);
 
-  int getIndex(String name) =>
-      sites.value.indexWhere((Site site) => site.name == name);
+  int getIndex(String id) =>
+      sites.value.indexWhere((Site site) => site.details?.id == id);
 
   Future<void> deleteSite(String id) async {
     isLoading = true;
-    final int index = getIndex(id);
-    sites.value.removeAt(index);
-    final NetlifyDeleteSite site = NetlifyDeleteSite(siteID: id);
-    site.delete();
-    final String siteData = json.encode(sites.value);
-    saveLocal(siteData);
-    sites.refresh();
-    isLoading = false;
+    await NetlifyApi.deleteSite(id, onDone: (String? message) {
+      Get.snackbar(
+        'Site Deleted',
+        'Site with id: $id Deleted Successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        dismissDirection: SnackDismissDirection.HORIZONTAL,
+      );
+      final int index = getIndex(id);
+      sites.value.removeAt(index);
+      final String siteData = json.encode(sites.value);
+      saveLocal(siteData);
+      sites.refresh();
+      isLoading = false;
+    });
   }
 
-  Future<void> emptySites() async {
+  Future<void> deleteAllRemote() async {
     isLoading = true;
     final List<Site> siteList = <Site>[];
     sites.value = siteList;
@@ -108,7 +115,14 @@ class SiteListController extends GetxController {
     isLoading = false;
   }
 
-  List<Site> getLocalData() {
+  Future<void> emptyLocalSites() async {
+    sites.value.toList().forEach((Site site) async {
+      print(site.details!.id);
+      await deleteSite(site.details!.id);
+    });
+  }
+
+  void getLocalData() {
     final List<Site> siteList = <Site>[];
 
     if (_getStorage.hasData(SITE_LIST)) {
@@ -120,18 +134,21 @@ class SiteListController extends GetxController {
           name: element['name'] as String,
           path: element['path'] as String,
           linked: element['linked'] as bool,
+          details: SiteDetails(
+            id: element['details']['id'] as String,
+            account_slug: element['details']['account_slug'] as String,
+            default_domain: element['details']['default_domain'] as String,
+            name: element['details']['name'] as String,
+            repo_url: element['details']?['repo_url'] as String?,
+            custom_domain: element['details']?['custom_domain'] as String?,
+          ),
         );
         //list.addIf(entrySite < limit, item);
         siteList.add(entrySite);
       });
-      //  If there is changes in Offline vs Remote Data
-      if (listEquals(sites.value, siteList) == false) {
-        // We Update The Sites Value
-        sites.value = siteList;
-        sites.refresh();
-      }
+      sites.value = siteList;
+      sites.refresh();
     }
-    return sites.value;
   }
 
   /// Only JSON String here must be Stored
