@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quatrokantos/app/modules/home/controllers/create_site_controller.dart';
 import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
-import 'package:quatrokantos/app/modules/project/controllers/site_controller.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
-import 'package:quatrokantos/helpers/replace_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/widgets/routed_input_field.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 class CreateNewSiteDialog {
   static Future<dynamic> launch() {
-    final SiteController project = Get.put(SiteController());
     final SiteListController sitesCtrl = Get.put(SiteListController());
+    final CreateSiteController project = Get.put(CreateSiteController());
 
     return Get.defaultDialog(
         cancel: RunBtn(
@@ -51,29 +50,10 @@ class CreateNewSiteDialog {
                   borderSide: BorderSide(color: Colors.purple.shade300),
                 ),
                 onChanged: (String value) {
-                  final ReplaceHelper slug =
-                      ReplaceHelper(text: value, regex: '\\s+', str: '-');
-                  final String text = slug.replace();
                   project.local_name = value;
-                  project.name = '$text-${project.randomString(10)}';
                 },
               ),
               const SizedBox(height: 25.0),
-              RoundedInputField(
-                hintText: "What's Your Desired Domain Name?",
-                labelText: 'Domain name',
-                labelStyle: TextStyle(color: Colors.purple.shade300),
-                helperText:
-                    'e.g.: https://goldcoders.dev , you can ommit https or http',
-                border: OutlineInputBorder(
-                  gapPadding: 1.0,
-                  borderRadius: const BorderRadius.all(Radius.circular(25.0)),
-                  borderSide: BorderSide(color: Colors.purple.shade300),
-                ),
-                onChanged: (String value) {
-                  project.custom_domain = value;
-                },
-              ),
               const Expanded(child: SizedBox()),
               Obx(() {
                 if (project.isLoading == false) {
@@ -105,9 +85,9 @@ class CreateNewSiteDialog {
                       //TODO: Submit Using a Command
                       // validate form check if not empty
                       // check if valid domain format
-                      await project.create();
+                      // await project.add();
                       // TODO: fix this by adding the new sites to local
-                      await sitesCtrl.fetchSites();
+                      // await sitesCtrl.fetchSites();
                       Get.back();
                     },
                   );
