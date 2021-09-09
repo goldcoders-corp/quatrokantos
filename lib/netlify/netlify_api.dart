@@ -13,19 +13,13 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 /// https://docs.netlify.com/api/get-started/
 class NetlifyApi {
   /// Sure Method to Get Correct Account Slug
-  /// ie: hugoforbes88@gmail.com -> hugoforbes88
   static Future<void> getAccountSlug(
       {required Function(String? slug) onDone}) async {
-    String? siteID;
-    String? account_slug;
-    await NetlifyApi.createRandomSite(onDone: (String? siteDetails) async {
-      if (siteDetails != null) {
-        final Map<String, dynamic> site =
-            json.decode(siteDetails) as Map<String, dynamic>;
-        siteID = site['id'] as String;
-        account_slug = site['account_slug'] as String;
-        await NetlifyApi.deleteSite(siteID!, onDone: (String? message) {});
-        onDone(account_slug);
+    await NetlifyApi.getCurrentUser(onDone: (String? account) async {
+      if (account != null) {
+        final Map<String, dynamic> user =
+            json.decode(account) as Map<String, dynamic>;
+        onDone(user['slug'] as String?);
       }
     });
   }
@@ -263,6 +257,27 @@ class NetlifyApi {
   /// Create New Site with account Slug and data
   ///
   ///  For Detailed API Docs: https://open-api.netlify.com/#operation/createSiteInTeam
+  ///  - @param `accountSlug`
+  ///  - @param `data`
+  ///  - @param `onDone`
+  ///
+  ///  Example Usage:
+  ///  ```
+  /// final Map<String, String> body = <String, String>{
+  ///    'name': 'Quatrokantos',
+  ///    'custom_domain': 'quatrokantos.app'
+  ///  };
+  ///  final String bodyStr = json.encode(body);
+  ///  NetlifyApi.createSiteInTeam('hugoforbes88', bodyStr,
+  ///      onDone: (String? output) {
+  ///    print(output);
+  ///  });
+  ///  ```
+  /// - @return `void`
+  ///
+  /// onDOne returns `empty string` if `failed`
+  ///
+  /// Example Response :
   /// ```
   /// {
   /// "id": "d377266e-aa4b-47e7-abf6-f5233922e4fc",
