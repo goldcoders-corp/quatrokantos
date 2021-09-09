@@ -44,7 +44,7 @@ class SitePanel extends GetView<SiteListController> {
                 height: defaultPadding,
               ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 RunBtn(
                     title: 'New Site',
@@ -52,23 +52,24 @@ class SitePanel extends GetView<SiteListController> {
                     onTap: () async {
                       await CreateNewSiteDialog.launch();
                     }),
-                Obx(
-                  () => (ctrl.isLoading == false)
-                      ? RunBtn(
-                          title: 'Sync',
-                          icon: Icons.update,
-                          onTap: () async {
-                            controller.fetchSites();
-                          },
-                        )
-                      : SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: CircularProgressIndicator(
-                            color: Colors.pink.shade200,
-                          ),
-                        ),
-                ),
+                // TODO: Add Sync Button Later On
+                // Obx(
+                //   () => (ctrl.isLoading == false)
+                //       ? RunBtn(
+                //           title: 'Sync',
+                //           icon: Icons.update,
+                //           onTap: () async {
+                //             controller.fetchSites();
+                //           },
+                //         )
+                //       : SizedBox(
+                //           height: 70,
+                //           width: 70,
+                //           child: CircularProgressIndicator(
+                //             color: Colors.pink.shade200,
+                //           ),
+                //         ),
+                // ),
                 Obx(
                   () => (sitesCtrl.isLoading == false)
                       ? RunBtn(

@@ -33,7 +33,6 @@ class SiteListController extends GetxController {
   void onClose() {}
 
   Function listEquals = const DeepCollectionEquality().equals;
-
   Future<void> fetchSites() async {
     const String command = 'netlify';
     final List<String> args = <String>['sites:list', '--json'];
@@ -54,6 +53,7 @@ class SiteListController extends GetxController {
             linked: false,
             path: Folder(name: element['name'] as String).folder(),
             details: SiteDetails(
+              // TODO: This is throwing an error at this LINE
               id: element['details']['id'] as String,
               name: element['details']['name'] as String,
               account_slug: element['details']['account_slug'] as String,
@@ -83,6 +83,9 @@ class SiteListController extends GetxController {
 
   Site? findByName(String name) =>
       sites.value.firstWhere((Site site) => site.name == name);
+
+  Site? findById(String id) =>
+      sites.value.firstWhere((Site site) => site.details?.id == id);
 
   int getIndex(String id) =>
       sites.value.indexWhere((Site site) => site.details?.id == id);
