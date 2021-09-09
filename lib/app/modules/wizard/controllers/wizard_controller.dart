@@ -209,13 +209,11 @@ class WizardController extends GetxController {
         nodeInstalled == true &&
         netlifyInstalled == true &&
         netlifyLogged == true) {
-      const int stepIndex = 6;
-
-      currentStep = stepIndex;
-
+      currentStep = 5;
       complete = true;
       final WizardService ws = Get.find<WizardService>();
       ws.completed = true;
+      Get.toNamed('/home');
     }
   }
 

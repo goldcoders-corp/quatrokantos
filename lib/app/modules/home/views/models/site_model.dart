@@ -103,8 +103,9 @@ class Site extends SiteEntity {
           details: details,
         );
   factory Site.fromJson(Map<String, dynamic> json) => Site(
-      name: json['name'] as String,
-      path: json['path'] as String,
-      linked: json['linked'] as bool,
-      details: SiteDetails.fromJson(json['details'] as Map<String, dynamic>));
+        name: json['name'] as String,
+        path: json['path'] as String,
+        linked: json['linked'] as bool,
+        details: SiteDetails.fromJson(json['details'] as Map<String, dynamic>),
+      );
 }

@@ -19,6 +19,9 @@ class NetlifyApi {
       if (account != null) {
         final Map<String, dynamic> user =
             json.decode(account) as Map<String, dynamic>;
+        // compute here slug
+        // if no slug default is full name
+        // if no full name default is email
         onDone(user['slug'] as String?);
       }
     });

@@ -1,1 +1,2 @@
 const String SITE_LIST = 'SITES';
+const String NETLIFY_ACCOUNT = 'NETLIFY_ACCOUNT';
