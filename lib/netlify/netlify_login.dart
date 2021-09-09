@@ -42,7 +42,6 @@ class NetlifyLogged {
             .transform(const LineSplitter());
         await for (final String line in outputStream) {
           if (loginUrlRegex.hasMatch('$line\n')) {
-            print(line);
             loginUrlBuffer
                 .write(loginUrlRegex.stringMatch('$line\n'.strip()).toString());
             break;

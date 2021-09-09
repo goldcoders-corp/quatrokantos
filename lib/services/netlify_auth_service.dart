@@ -35,8 +35,7 @@ class NetlifyAuthService extends GetxService {
   }
 
   Future<void> _netlifyLogout() async {
-    final String message = await NetlifyLogout()();
-    print(message);
+    await NetlifyLogout()();
   }
 
   void emptyAccount() {

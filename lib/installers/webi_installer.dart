@@ -130,10 +130,6 @@ class WebiInstall {
             ],
           );
         } else {
-          print(<String>[
-            '-command',
-            process1.stdout.toString().trim(),
-          ]);
           Process.run(
             'powershell',
             <String>[

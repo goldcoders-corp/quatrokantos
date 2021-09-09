@@ -26,7 +26,6 @@ class SiteListController extends GetxController {
   // ignore: avoid_void_async
   void onInit() {
     getLocalData();
-    print(sites.value);
     super.onInit();
   }
 
@@ -117,7 +116,6 @@ class SiteListController extends GetxController {
 
   Future<void> emptyLocalSites() async {
     sites.value.toList().forEach((Site site) async {
-      print(site.details!.id);
       await deleteSite(site.details!.id);
     });
   }

@@ -146,7 +146,6 @@ class NetlifyLoginDialog {
                     ),
                     onPressed: () async {
                       NetlifyApi.getCurrentUser(onDone: (String? userStr) {
-                        print(userStr);
                         if (userStr != '') {
                           final Map<String, dynamic> userMap =
                               json.decode(userStr!) as Map<String, dynamic>;

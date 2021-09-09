@@ -200,8 +200,6 @@ class NetlifyApi {
           runInShell: true,
         ).asStream().listen((ProcessResult process) async {
           output.write(process.stdout.toString());
-          print('output on CreateSite: ${process.stdout}');
-          print('error on CreateSite: ${process.stderr}');
           if (errorReg.hasMatch(process.stderr.toString().trim())) {
             errorBuffer.write(process.stderr.toString());
           }
@@ -446,7 +444,6 @@ class NetlifyApi {
           output.write(process.stdout.toString());
         }, onDone: () {
           siteDetails = output.toString();
-          print(output.toString());
           onDone(siteDetails);
         });
       } catch (e, stacktrace) {
@@ -1294,7 +1291,6 @@ class NetlifyApi {
           runInShell: true,
         ).asStream().listen((ProcessResult process) async {
           output.write(process.stdout.toString());
-          print(process.stderr.toString());
         }, onDone: () {
           siteDetails = output.toString();
           onDone(siteDetails);
