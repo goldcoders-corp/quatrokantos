@@ -38,8 +38,8 @@ class SiteCard extends GetView<SiteListController> {
                       }
                     },
                     child: Icon(
-                      Icons.delete_forever_rounded,
-                      color: Colors.redAccent[100],
+                      Icons.delete_outline,
+                      color: Colors.red[400]?.withOpacity(0.5),
                     )),
               )
             ],
@@ -117,7 +117,21 @@ class SiteCard extends GetView<SiteListController> {
                     },
                     child: Icon(
                       Icons.travel_explore,
-                      color: Colors.indigoAccent.shade100,
+                      color: Colors.indigo.shade100,
+                    )),
+              ),
+
+              SizedBox(
+                height: 40,
+                width: 40,
+                child: TextButton(
+                    onPressed: () {
+                      final Folder folder = Folder(name: site.path);
+                      folder.open();
+                    },
+                    child: Icon(
+                      Icons.pageview,
+                      color: Colors.brown.shade200,
                     )),
               ),
               SizedBox(
@@ -144,45 +158,8 @@ class SiteCard extends GetView<SiteListController> {
                       Get.toNamed('/project/${site.name}', parameters: params);
                     },
                     child: Icon(
-                      Icons.folder_open,
-                      color: appColors[ACCENT_DARK],
-                    )),
-              ),
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: TextButton(
-                    onPressed: () {
-                      Get.snackbar('Deploying Site', 'Site Deploying');
-                    },
-                    child: Icon(
-                      Icons.cloud_upload,
-                      color: appColors[ACCENT_DARK],
-                    )),
-              ),
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: TextButton(
-                    onPressed: () {
-                      Get.snackbar('Load All Functions', 'NPM Functions');
-                    },
-                    child: Icon(
-                      Icons.functions,
-                      color: appColors[ACCENT_DARK],
-                    )),
-              ),
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: TextButton(
-                    onPressed: () {
-                      final Folder folder = Folder(name: site.path);
-                      folder.open();
-                    },
-                    child: Icon(
-                      Icons.folder_open,
-                      color: appColors[ACCENT_DARK],
+                      Icons.drive_file_move,
+                      color: Colors.pink.shade200,
                     )),
               ),
             ],

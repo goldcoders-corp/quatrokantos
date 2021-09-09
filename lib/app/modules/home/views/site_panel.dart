@@ -135,21 +135,27 @@ class SiteCardGridView extends GetView<SiteListController> {
               SiteCard(site: controller.sites.value[index]),
         );
       } else {
-        return Center(
-          child: Column(
-            children: <Widget>[
-              const Text(
-                'Launch Your Site',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                const Text(
+                  'Create Your First Site',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
-              SvgPicture.asset('assets/svg/app_launch.svg',
-                  width: 350.0,
-                  height: 350.0,
-                  semanticsLabel: 'Create Your First Site Now'),
-            ],
+                SvgPicture.asset('assets/svg/build_site.svg',
+                    width: 350.0,
+                    height: 350.0,
+                    semanticsLabel: 'Create Your First Site Now'),
+              ],
+            ),
           ),
         );
       }
