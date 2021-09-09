@@ -13,6 +13,7 @@ import 'package:quatrokantos/netlify/netlify_delete_site.dart';
 
 class SiteListController extends GetxController {
   final GetStorage _getStorage = GetStorage();
+  final CommandController ctrl = Get.find<CommandController>();
 
   final Rx<List<Site>> sites = Rx<List<Site>>(<Site>[]);
 
@@ -34,7 +35,6 @@ class SiteListController extends GetxController {
   Function listEquals = const DeepCollectionEquality().equals;
 
   Future<void> fetchSites() async {
-    final CommandController ctrl = Get.put(CommandController());
     const String command = 'netlify';
     final List<String> args = <String>['sites:list', '--json'];
     final List<Site> siteList = <Site>[];

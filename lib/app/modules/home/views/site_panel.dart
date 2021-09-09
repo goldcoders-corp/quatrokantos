@@ -18,7 +18,7 @@ class SitePanel extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    final CommandController ctrl = Get.put(CommandController());
+    final CommandController ctrl = Get.find<CommandController>();
     final SiteListController sitesCtrl = Get.put(SiteListController());
 
     return Obx(() {

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:get/get.dart';
-import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 
 /// #### Open Any URL with the Default Browser
@@ -30,7 +28,7 @@ class UrlLauncher {
   Future<void> call() async {
     final String command = _getOpenCMD();
     final List<String> args = _getArgs(url);
-    Get.put(CommandController());
+
     await Cmd.open(command: command, args: args);
   }
 }

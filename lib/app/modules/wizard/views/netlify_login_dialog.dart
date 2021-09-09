@@ -19,7 +19,8 @@ class NetlifyLoginDialog {
   NetlifyLoginDialog(this.response);
 
   Future<dynamic> launch() {
-    final CommandController controller = Get.put(CommandController());
+    final CommandController controller = Get.find<CommandController>();
+
     final WizardController wctrl = Get.put(WizardController());
     final NetlifyAuthService netlify = Get.put(NetlifyAuthService());
     final String? url = response['url'] as String?;

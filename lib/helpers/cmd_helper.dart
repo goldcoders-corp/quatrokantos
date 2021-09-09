@@ -11,7 +11,6 @@ class Cmd {
   late final List<String> _args;
   late final String? _path;
   final CommandController ctrl = Get.find<CommandController>();
-  // final CommandController ctrl = Get.put(CommandController());
 
   late final Map<String, String>? _env;
 
