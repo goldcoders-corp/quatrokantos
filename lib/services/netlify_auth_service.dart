@@ -1,12 +1,15 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
 import 'package:quatrokantos/constants/site_constants.dart';
 import 'package:quatrokantos/models/netlify_account.dart';
+import 'package:quatrokantos/netlify/netlify_logout.dart';
+import 'package:quatrokantos/services/wizard_service.dart';
 
 class NetlifyAuthService extends GetxService {
   final GetStorage _getStorage = GetStorage();
+  final WizardController stepper = Get.find<WizardController>();
+  WizardService wizard = Get.find<WizardService>();
   final Rx<NetlifyAccount> _user = const NetlifyAccount(
     avatar: '',
     email: '',
@@ -15,11 +18,48 @@ class NetlifyAuthService extends GetxService {
     slug: '',
   ).obs;
 
+  final RxBool _isLogged = false.obs;
+
   @override
   Future<void> onInit() async {
     initAccount();
     super.onInit();
   }
+
+  void logout() {
+    _netlifyLogout();
+    emptyAccount();
+    wizard.completed = false;
+    stepper.netlifyLogged = false;
+    Get.toNamed('/wizard');
+  }
+
+  Future<void> _netlifyLogout() async {
+    final String message = await NetlifyLogout()();
+    print(message);
+  }
+
+  void emptyAccount() {
+    user = const NetlifyAccount(
+      avatar: '',
+      email: '',
+      id: '',
+      name: '',
+      slug: '',
+    );
+  }
+
+  bool get isLogged {
+    if (user.email == '' &&
+        user.name == '' &&
+        user.id == '' &&
+        user.avatar == '') {
+      return false;
+    }
+    return _isLogged.value;
+  }
+
+  set isLogged(bool val) => _isLogged.value = val;
 
   NetlifyAccount get user {
     return _user.value;
@@ -32,9 +72,8 @@ class NetlifyAuthService extends GetxService {
 
   void initAccount() {
     if (_getStorage.hasData(NETLIFY_ACCOUNT)) {
-      final String accountStr = _getStorage.read(NETLIFY_ACCOUNT) as String;
-      final Map<String, String> accountMap =
-          json.decode(accountStr) as Map<String, String>;
+      final Map<String, dynamic> accountMap =
+          _getStorage.read(NETLIFY_ACCOUNT) as Map<String, dynamic>;
       user = NetlifyAccount.fromJson(accountMap);
     }
   }
