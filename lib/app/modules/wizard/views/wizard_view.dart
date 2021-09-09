@@ -14,6 +14,7 @@ import 'package:quatrokantos/installers/pkg_manager_installer.dart';
 import 'package:quatrokantos/installers/webi_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_login.dart';
+import 'package:quatrokantos/services/netlify_auth_service.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
@@ -21,6 +22,7 @@ import '../controllers/wizard_controller.dart';
 
 class WizardView extends GetView<CommandController> {
   final WizardController wctrl = Get.find<WizardController>();
+  final NetlifyAuthService netlifyService = Get.find<NetlifyAuthService>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -503,16 +505,14 @@ $cmdInstalled
                                                   // ignore: lines_longer_than_80_chars
                                                   'Netlify Account Authorized',
                                                   // ignore: lines_longer_than_80_chars
-                                                  'You can Proceed To Next Steep');
-                                              controller.isLoading = false;
-                                              wctrl.netlifyLogged = true;
+                                                  'You can Proceed To Next Step');
                                             }
                                           } else {
                                             Get.snackbar(
                                                 // ignore: lines_longer_than_80_chars
                                                 'Netlify Account Authorized',
                                                 // ignore: lines_longer_than_80_chars
-                                                'You can Proceed To Next Steep');
+                                                'You can Proceed To Next Step');
                                           }
                                         },
                                 ),
