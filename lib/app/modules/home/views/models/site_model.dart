@@ -26,6 +26,15 @@ class SiteDetailsEntity extends Equatable {
         repo_url,
         custom_domain,
       ];
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'name': name,
+        'id': id,
+        'account_slug': account_slug,
+        'default_domain': default_domain,
+        'repo_url': repo_url,
+        'custom_domain': custom_domain,
+      };
 }
 
 class SiteDetails extends SiteDetailsEntity {
@@ -72,6 +81,13 @@ class SiteEntity extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[name, path, linked, details];
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'name': name,
+        'path': path,
+        'linked': linked,
+        'details': details?.toJson(),
+      };
 }
 
 class Site extends SiteEntity {
@@ -91,11 +107,4 @@ class Site extends SiteEntity {
       path: json['path'] as String,
       linked: json['linked'] as bool,
       details: SiteDetails.fromJson(json['details'] as Map<String, dynamic>));
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        'path': path,
-        'linked': linked,
-        'details': details
-      };
 }
