@@ -193,6 +193,31 @@ class ProjectView extends GetView<ProjectController> {
                   child: Column(
                     children: <Widget>[
                       ListTile(
+                        leading: const Icon(Icons.build),
+                        title: const Text('Build Site'),
+                        subtitle: const Text(
+                            // ignore: lines_longer_than_80_chars
+                            'Build Site For Production Prior , Deploying it to Live Site'),
+                        trailing: IconButton(
+                          onPressed: () {
+                            // NPM RUN INSTALL
+                            final Folder folder = Folder(name: controller.path);
+                            folder.open();
+                          },
+                          icon: const Icon(Icons.view_in_ar),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Card(
+                  color: Colors.white30,
+                  child: Column(
+                    children: <Widget>[
+                      ListTile(
                         leading: const Icon(Icons.cloud),
                         title: const Text('Deploy Site'),
                         subtitle: const Text(
