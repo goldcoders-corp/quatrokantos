@@ -17,13 +17,28 @@ class ProjectController extends GetxController {
   final RxString _account_slug = ''.obs;
   final RxString _default_domain = ''.obs;
   final RxString _repo_url = ''.obs;
+  final RxBool _themeInstalled = false.obs;
 
   @override
   void onInit() {
     initData();
     initLinked();
     changeToProjectDirectory();
+    isSiteInstalled(local_name);
+
     super.onInit();
+  }
+
+  bool get themeInstalled => _themeInstalled.value;
+  set themeInstalled(bool val) => _themeInstalled.value = val;
+
+  Future<void> isSiteInstalled(String projectName) async {
+    final String currentTHEMEPATH = p.join(
+      PathHelper.getSitesDIR,
+      projectName,
+      'package.json',
+    );
+    themeInstalled = await File(currentTHEMEPATH).exists();
   }
 
   String get custom_domain => _custom_domain.value;
