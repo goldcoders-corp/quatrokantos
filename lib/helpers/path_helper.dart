@@ -1,5 +1,10 @@
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:path/path.dart' as p;
+import 'package:quatrokantos/helpers/pc_info_helper.dart';
+import 'package:quatrokantos/helpers/replace_helper.dart';
+
 class PathHelper {
   /// #### Accept `List` of String or an `Empty List` and a `Fallback Path`
   /// #### Resolves The Path it found
@@ -97,5 +102,29 @@ class PathHelper {
   ///
   static Future<bool> exists(String path) {
     return FileSystemEntity.isDirectory(path);
+  }
+
+  static String get getThemeDir {
+    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    // ignore: unnecessary_string_escapes
+    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    appFolder = text.replace();
+    return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'themes');
+  }
+
+  static String get getCMSDIR {
+    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    // ignore: unnecessary_string_escapes
+    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    appFolder = text.replace();
+    return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'cms');
+  }
+
+  static String get getSitesDIR {
+    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    // ignore: unnecessary_string_escapes
+    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    appFolder = text.replace();
+    return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'sites');
   }
 }
