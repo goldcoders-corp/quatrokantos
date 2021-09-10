@@ -6,13 +6,11 @@ abstract class Routes {
 
   static const String HOME = _Paths.HOME;
   static const String WIZARD = _Paths.WIZARD;
-  static const String SITES = _Paths.SITES;
   static const String PROJECT = _Paths.PROJECT;
 }
 
 abstract class _Paths {
   static const String HOME = '/home';
   static const String WIZARD = '/wizard';
-  static const String SITES = '/sites';
   static const String PROJECT = '/project/:name';
 }

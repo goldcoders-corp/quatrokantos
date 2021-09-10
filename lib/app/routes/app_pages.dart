@@ -3,8 +3,6 @@ import 'package:quatrokantos/app/modules/home/bindings/home_binding.dart';
 import 'package:quatrokantos/app/modules/home/views/home_view.dart';
 import 'package:quatrokantos/app/modules/project/bindings/project_binding.dart';
 import 'package:quatrokantos/app/modules/project/views/project_view.dart';
-import 'package:quatrokantos/app/modules/sites/bindings/sites_binding.dart';
-import 'package:quatrokantos/app/modules/sites/views/sites_view.dart';
 import 'package:quatrokantos/app/modules/wizard/bindings/wizard_binding.dart';
 import 'package:quatrokantos/app/modules/wizard/views/wizard_view.dart';
 import 'package:quatrokantos/middlewares/set_up_middleware.dart';
@@ -32,14 +30,6 @@ class AppPages {
       binding: WizardBinding(),
       middlewares: <GetMiddleware>[
         SetUpMiddleware(),
-      ],
-    ),
-    GetPage<dynamic>(
-      name: _Paths.SITES,
-      page: () => SitesView(),
-      binding: SitesBinding(),
-      middlewares: <GetMiddleware>[
-        WizardMiddleware(),
       ],
     ),
     GetPage<dynamic>(
