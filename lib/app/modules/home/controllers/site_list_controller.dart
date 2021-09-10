@@ -130,6 +130,7 @@ class SiteListController extends GetxController {
       final List<dynamic> transformSiteList =
           json.decode(_getStorage.read(SITE_LIST) as String) as List<dynamic>;
 
+      // ignore: avoid_function_literals_in_foreach_calls
       transformSiteList.forEach((dynamic element) {
         final Site entrySite = Site(
           name: element['name'] as String,
