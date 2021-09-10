@@ -30,53 +30,49 @@ class ProjectView extends GetView<ProjectController> {
               children: <Widget>[
                 Obx(() {
                   if (controller.themeInstalled == false) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      width: double.infinity,
-                      child: Card(
-                          child: ListTile(
-                        title: DropdownButton<String>(
-                          value: (cmsCtrl.currentTheme == '')
-                              ? null
-                              : cmsCtrl.currentTheme,
-                          isExpanded: true,
-                          onChanged: (String? newValue) {
-                            cmsCtrl.currentTheme = newValue!;
-                          },
-                          hint: const Text(
-                            'Please Pick a Theme To Used',
-                          ),
-                          items: cmsCtrl.themeNames
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text('$value theme'),
-                            );
-                          }).toList(),
+                    return Card(
+                        child: ListTile(
+                      title: DropdownButton<String>(
+                        value: (cmsCtrl.currentTheme == '')
+                            ? null
+                            : cmsCtrl.currentTheme,
+                        isExpanded: true,
+                        onChanged: (String? newValue) {
+                          cmsCtrl.currentTheme = newValue!;
+                        },
+                        hint: const Text(
+                          'Please Pick a Theme To Used',
                         ),
-                        trailing: Obx(() {
-                          if (controller.themeInstalled == false &&
-                              cmsCtrl.isLoading == false) {
-                            return IconButton(
-                              onPressed: () async {
-                                if (cmsCtrl.getChoosen != null) {
-                                  await cmsCtrl.download(controller.local_name,
-                                      cmsCtrl.getChoosen!);
-                                  // ignore: always_specify_types
-                                  Future.delayed(const Duration(seconds: 1));
-                                }
-                              },
-                              icon: const Icon(Icons.download),
-                            );
-                          } else {
-                            return CircularProgressIndicator(
-                              color: Colors.red.shade200,
-                              backgroundColor: Colors.white54,
-                            );
-                          }
-                        }),
-                      )),
-                    );
+                        items: cmsCtrl.themeNames
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text('$value theme'),
+                          );
+                        }).toList(),
+                      ),
+                      trailing: Obx(() {
+                        if (controller.themeInstalled == false &&
+                            cmsCtrl.isLoading == false) {
+                          return IconButton(
+                            onPressed: () async {
+                              if (cmsCtrl.getChoosen != null) {
+                                await cmsCtrl.download(
+                                    controller.local_name, cmsCtrl.getChoosen!);
+                                // ignore: always_specify_types
+                                Future.delayed(const Duration(seconds: 1));
+                              }
+                            },
+                            icon: const Icon(Icons.download),
+                          );
+                        } else {
+                          return CircularProgressIndicator(
+                            color: Colors.red.shade200,
+                            backgroundColor: Colors.white54,
+                          );
+                        }
+                      }),
+                    ));
                   } else {
                     return Card(
                       color: Colors.white30,
