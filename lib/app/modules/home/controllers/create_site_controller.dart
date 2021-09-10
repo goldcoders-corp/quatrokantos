@@ -44,11 +44,6 @@ class CreateSiteController extends GetxController {
   bool get isLoading => _isLoading.value;
   set isLoading(bool val) => _isLoading.value = val;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
   String randomString(int length) {
     final Random _rnd = Random();
     // ignore: always_specify_types
