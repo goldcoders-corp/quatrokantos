@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/home/views/create_new_site_dialog.dart';
 import 'package:quatrokantos/constants/default_size.dart';
-import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 import '../../../../../responsive.dart';
@@ -18,7 +17,6 @@ class SitePanel extends GetView<SiteListController> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    final CommandController ctrl = Get.find<CommandController>();
     final SiteListController sitesCtrl = Get.put(SiteListController());
 
     return Obx(() {
