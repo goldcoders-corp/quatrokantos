@@ -5,8 +5,11 @@ import 'package:quatrokantos/cms/cms_ctrl.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
+import 'package:quatrokantos/helpers/kill_all.dart';
 import 'package:quatrokantos/helpers/url_launcher_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
+import 'package:quatrokantos/netlify/netlify_deploy_prod.dart';
+import 'package:quatrokantos/npm/npm_run.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
@@ -67,7 +70,7 @@ class ProjectView extends GetView<ProjectController> {
                           );
                         } else {
                           return CircularProgressIndicator(
-                            color: Colors.red.shade200,
+                            color: Colors.pink.shade200,
                             backgroundColor: Colors.white54,
                           );
                         }
@@ -79,7 +82,10 @@ class ProjectView extends GetView<ProjectController> {
                       child: Column(
                         children: <Widget>[
                           ListTile(
-                            leading: const Icon(Icons.download_done),
+                            leading: Icon(
+                              Icons.download_done,
+                              color: Colors.teal.shade200,
+                            ),
                             title: const Text('Site Theme Installed At:'),
                             subtitle: Text(controller.path),
                             trailing: IconButton(
@@ -88,7 +94,10 @@ class ProjectView extends GetView<ProjectController> {
                                     Folder(name: controller.path);
                                 folder.open();
                               },
-                              icon: const Icon(Icons.folder),
+                              icon: Icon(
+                                Icons.folder,
+                                color: Colors.yellow.shade200,
+                              ),
                             ),
                           ),
                         ],
@@ -104,23 +113,323 @@ class ProjectView extends GetView<ProjectController> {
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        leading: const Icon(Icons.warning),
-                        title: const Text('Install Site Dependecies'),
-                        subtitle: const Text(
-                            // ignore: lines_longer_than_80_chars
-                            'Before We Can Run Locally We Need to Install Site Dependencies'),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // NPM RUN INSTALL
-                            final Folder folder = Folder(name: controller.path);
-                            folder.open();
-                          },
-                          icon: const Icon(Icons.file_download),
-                        ),
+                        leading: (controller.npmInstalled == false)
+                            ? Icon(Icons.warning, color: Colors.orange.shade200)
+                            : Icon(Icons.check, color: Colors.teal.shade200),
+                        title: (controller.npmInstalled == false)
+                            ? const Text('Install Site Dependecies')
+                            : const Text('Site Dependecies Installed'),
+                        subtitle: (controller.npmInstalled == false)
+                            ? const Text(
+                                // ignore: lines_longer_than_80_chars
+                                'Before We Can Run Locally We Need to Install Site Dependencies')
+                            : const Text(
+                                // ignore: lines_longer_than_80_chars
+                                'You can Re-Install Dependencies in Case Your Facing Issues'),
+                        trailing: Obx(() {
+                          if (controller.isIntalling == false) {
+                            return IconButton(
+                              onPressed: () async {
+                                controller.isIntalling = true;
+                                final NpmRun npm = NpmRun(
+                                    path: controller.path,
+                                    args: <String>['install']);
+                                final String message = await npm.run();
+                                Get.snackbar('Notification', message,
+                                    dismissDirection:
+                                        SnackDismissDirection.HORIZONTAL);
+                                controller.isIntalling = false;
+                              },
+                              icon: (controller.npmInstalled == false)
+                                  ? const Icon(Icons.file_download)
+                                  : Icon(Icons.published_with_changes,
+                                      color: Colors.teal.shade200),
+                            );
+                          } else {
+                            return CircularProgressIndicator(
+                              color: Colors.pink.shade200,
+                              backgroundColor: Colors.white54,
+                            );
+                          }
+                        }),
                       ),
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Obx(() => Card(
+                      color: Colors.white30,
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            minVerticalPadding: 10,
+                            leading: Icon(Icons.dynamic_form,
+                                color: Colors.purple.shade200),
+                            title: (controller.canKillAll == false)
+                                ? const Text('Run CMS')
+                                : const Text('CMS Running'),
+                            subtitle: (controller.canKillAll == true)
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      const Expanded(child: SizedBox()),
+                                      Row(
+                                        children: <Widget>[
+                                          const Text('View Site Offline'),
+                                          IconButton(
+                                            onPressed: () async {
+                                              const UrlLauncher openURL =
+                                                  UrlLauncher(
+                                                      url:
+                                                          'http://localhost:1313');
+                                              await openURL();
+                                            },
+                                            icon: Icon(Icons.travel_explore,
+                                                color: Colors.indigo.shade200),
+                                          ),
+                                        ],
+                                      ),
+                                      const Expanded(child: SizedBox()),
+                                      Row(
+                                        children: <Widget>[
+                                          const Text('Launch CMS'),
+                                          IconButton(
+                                            onPressed: () async {
+                                              const UrlLauncher openURL =
+                                                  UrlLauncher(
+                                                      url:
+                                                          'http://localhost:1234');
+                                              await openURL();
+                                            },
+                                            icon: Icon(
+                                              Icons.launch,
+                                              color: Colors.indigo.shade200,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Expanded(child: SizedBox())
+                                    ],
+                                  )
+                                : Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const <Widget>[
+                                      Text('To Modify Site Content Run CMS'),
+                                    ],
+                                  ),
+                            trailing: (controller.canKillAll == false)
+                                ? IconButton(
+                                    onPressed: () async {
+                                      final NpmRun npm = NpmRun(
+                                          path: controller.path,
+                                          args: <String>['run', 'cms']);
+                                      controller.canKillAll = true;
+
+                                      await npm.run();
+                                    },
+                                    icon: Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.teal.shade200,
+                                    ))
+                                : Stack(
+                                    children: <Widget>[
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        top: 0,
+                                        left: 0,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.pink.shade200,
+                                          backgroundColor: Colors.white54,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              final KillAll kill = KillAll(
+                                                  unix_cmd: 'node',
+                                                  win_cmd: 'node.exe');
+                                              await kill();
+                                              controller.canKillAll = false;
+                                            },
+                                            icon: Icon(
+                                              Icons.stop,
+                                              color: Colors.pink.shade200,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                Obx(() => Card(
+                      color: Colors.white30,
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            leading:
+                                Icon(Icons.build, color: Colors.brown.shade700),
+                            title: const Text('Ready To Deploy Your Site?'),
+                            subtitle: const Text(
+                                // ignore: lines_longer_than_80_chars
+                                'Build Production Grade Site then Deploy Your Site'),
+                            trailing: (controller.isBuilding == false)
+                                ? IconButton(
+                                    onPressed: () async {
+                                      controller.isBuilding = true;
+                                      final KillAll kill = KillAll(
+                                          unix_cmd: 'node',
+                                          win_cmd: 'node.exe');
+                                      await kill();
+
+                                      final NpmRun npm = NpmRun(
+                                          path: controller.path,
+                                          args: <String>['run', 'build']);
+
+                                      final String message = await npm.run();
+                                      Get.snackbar(
+                                        'Notification',
+                                        message,
+                                        dismissDirection:
+                                            SnackDismissDirection.HORIZONTAL,
+                                      );
+                                      controller.isBuilding = false;
+                                    },
+                                    icon: const Icon(
+                                      Icons.view_in_ar,
+                                      color: Colors.lightBlueAccent,
+                                    ),
+                                  )
+                                : Stack(
+                                    children: <Widget>[
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        top: 0,
+                                        left: 0,
+                                        child: CircularProgressIndicator(
+                                          color:
+                                              Colors.lightBlueAccent.shade200,
+                                          backgroundColor: Colors.white54,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              final KillAll kill = KillAll(
+                                                  unix_cmd: 'node',
+                                                  win_cmd: 'node.exe');
+                                              await kill();
+                                              controller.isBuilding = false;
+                                            },
+                                            icon: Icon(
+                                              Icons.stop,
+                                              color: Colors
+                                                  .lightBlueAccent.shade200,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                Obx(() => Card(
+                      color: Colors.white30,
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            leading: Icon(
+                              Icons.cloud,
+                              color: Colors.blue.shade200,
+                            ),
+                            title: const Text('Deploy Site'),
+                            subtitle:
+                                const Text('1 Click and Deploy Your Site Live'),
+                            trailing: (controller.isDeploying == false)
+                                ? IconButton(
+                                    onPressed: () async {
+                                      controller.isDeploying = true;
+                                      final KillAll kill = KillAll(
+                                          unix_cmd: 'node',
+                                          win_cmd: 'node.exe');
+                                      await kill();
+
+                                      final NetlifyDeploy deploy =
+                                          NetlifyDeploy(path: controller.path);
+                                      Map<String, String> response =
+                                          await deploy();
+
+                                      if (response['error'] != null) {
+                                        Get.snackbar(
+                                          'Notification',
+                                          response['error']!,
+                                          dismissDirection:
+                                              SnackDismissDirection.HORIZONTAL,
+                                        );
+                                      }
+
+                                      if (response['website_url'] != null ||
+                                          response['logs_url'] != '' ||
+                                          response['unique_deploy_url'] !=
+                                              ' ') {
+                                        Get.snackbar(
+                                          'Notification',
+                                          // ignore: lines_longer_than_80_chars
+                                          'Visit Live Site: ${response['website_url']}',
+                                          dismissDirection:
+                                              SnackDismissDirection.HORIZONTAL,
+                                        );
+                                      }
+
+                                      controller.isDeploying = false;
+                                    },
+                                    icon: Icon(Icons.cloud_upload,
+                                        color: Colors.lime.shade100),
+                                  )
+                                : Stack(
+                                    children: <Widget>[
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        top: 0,
+                                        left: 0,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.lime.shade100,
+                                          backgroundColor: Colors.white54,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              final KillAll kill = KillAll(
+                                                  unix_cmd: 'node',
+                                                  win_cmd: 'node.exe');
+                                              await kill();
+                                              controller.isBuilding = false;
+                                            },
+                                            icon: Icon(
+                                              Icons.stop,
+                                              color: Colors.lime.shade100,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                    )),
                 const SizedBox(
                   height: 10,
                 ),
@@ -129,116 +438,10 @@ class ProjectView extends GetView<ProjectController> {
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        leading: const Icon(Icons.dynamic_form),
-                        title: const Text('Run CMS'),
-                        subtitle: Column(
-                          children: <Widget>[
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                const Text(
-                                    'Open Local Site at http://localhost:1313'),
-                                IconButton(
-                                  onPressed: () async {
-                                    const UrlLauncher openURL = UrlLauncher(
-                                        url: 'http://localhost:1313');
-                                    await openURL();
-                                  },
-                                  icon: const Icon(Icons.travel_explore),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                const Text(
-                                    'Open Content Management System at http://localhost:1234'),
-                                IconButton(
-                                  onPressed: () async {
-                                    const UrlLauncher openURL = UrlLauncher(
-                                        url: 'http://localhost:1234');
-                                    await openURL();
-                                  },
-                                  icon: const Icon(Icons.travel_explore),
-                                ),
-                              ],
-                            ),
-                          ],
+                        leading: Icon(
+                          Icons.web,
+                          color: Colors.orange.shade200,
                         ),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // NPM RUN INSTALL
-                            final Folder folder = Folder(name: controller.path);
-                            folder.open();
-                          },
-                          icon: const Icon(Icons.play_circle_filled),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  color: Colors.white30,
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: const Icon(Icons.build),
-                        title: const Text('Build Site'),
-                        subtitle: const Text(
-                            // ignore: lines_longer_than_80_chars
-                            'Build Site For Production Prior , Deploying it to Live Site'),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // NPM RUN INSTALL
-                            final Folder folder = Folder(name: controller.path);
-                            folder.open();
-                          },
-                          icon: const Icon(Icons.view_in_ar),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  color: Colors.white30,
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: const Icon(Icons.cloud),
-                        title: const Text('Deploy Site'),
-                        subtitle: const Text(
-                            'Build Your Site For Production and Deploy'),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // NPM RUN INSTALL
-                            final Folder folder = Folder(name: controller.path);
-                            folder.open();
-                          },
-                          icon: const Icon(Icons.cloud_upload),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  color: Colors.white30,
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: const Icon(Icons.web),
                         title: const Text('Visit Live Site'),
                         subtitle:
                             const Text('Check Your Website in Production'),
@@ -254,7 +457,8 @@ class ProjectView extends GetView<ProjectController> {
                               await openURL();
                             }
                           },
-                          icon: const Icon(Icons.search),
+                          icon:
+                              Icon(Icons.search, color: Colors.orange.shade200),
                         ),
                       ),
                     ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:tint/tint.dart';
 
 class NetlifyDeploy {
@@ -24,7 +25,11 @@ class NetlifyDeploy {
     final RegExp logsRegExp = RegExp(r'(?<=Logs:).*?\n');
     final RegExp webURLRegExp = RegExp(r'(?<=Website URL:).*?\n');
 
-    final Process process = await Process.start(command, args);
+    final Process process = await Process.start(command, args,
+        runInShell: true,
+        workingDirectory: path,
+        environment: <String, String>{'PATH': PathEnv.get()});
+
     final Stream<String> lineStream = process.stdout
         .transform(const Utf8Decoder())
         .transform(const LineSplitter());

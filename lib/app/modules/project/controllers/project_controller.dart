@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
+import 'package:quatrokantos/constants/site_constants.dart';
+import 'package:quatrokantos/constants/wizard_contants.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
 import 'package:quatrokantos/helpers/path_helper.dart';
 
 class ProjectController extends GetxController {
+  final GetStorage _getStorage = GetStorage();
+
   final RxString _path = ''.obs;
   final RxString _local_name = ''.obs;
   final RxString _siteId = ''.obs;
@@ -18,6 +23,11 @@ class ProjectController extends GetxController {
   final RxString _default_domain = ''.obs;
   final RxString _repo_url = ''.obs;
   final RxBool _themeInstalled = false.obs;
+  final RxBool _npmInstalled = false.obs;
+  final RxBool _isInstalling = false.obs;
+  final RxBool _canKillAll = false.obs;
+  final RxBool _isBuilding = false.obs;
+  final RxBool _isDeploying = false.obs;
 
   @override
   void onInit() {
@@ -25,12 +35,47 @@ class ProjectController extends GetxController {
     initLinked();
     changeToProjectDirectory();
     isSiteInstalled(local_name);
-
+    isNodeModulesInstalled(local_name);
+    checkBackgroundProcess();
     super.onInit();
   }
 
+  bool get isDeploying => _isDeploying.value;
+  set isDeploying(bool val) => _isDeploying.value = val;
+
+  bool get isBuilding => _isBuilding.value;
+  set isBuilding(bool val) => _isBuilding.value = val;
+
+  bool get canKillAll => _canKillAll.value;
+  set canKillAll(bool val) {
+    _canKillAll.value = val;
+    _getStorage.write(NODE_RUNNING, json.encode(val));
+  }
+
+  bool get isIntalling => _isInstalling.value;
+  set isIntalling(bool val) => _isInstalling.value = val;
+
   bool get themeInstalled => _themeInstalled.value;
   set themeInstalled(bool val) => _themeInstalled.value = val;
+
+  bool get npmInstalled {
+    if (_getStorage.hasData(NODE_INSTALLED)) {
+      return npmInstalled = _getStorage.read(NODE_INSTALLED) as bool;
+    }
+    return _npmInstalled.value;
+  }
+
+  set npmInstalled(bool val) {
+    _npmInstalled.value = val;
+    _getStorage.write(NODE_INSTALLED, val);
+  }
+
+  Future<void> checkBackgroundProcess() async {
+    if (_getStorage.hasData(NODE_RUNNING)) {
+      canKillAll =
+          json.decode(_getStorage.read(NODE_RUNNING) as String) as bool;
+    }
+  }
 
   Future<void> isSiteInstalled(String projectName) async {
     final String currentTHEMEPATH = p.join(
@@ -39,6 +84,15 @@ class ProjectController extends GetxController {
       'package.json',
     );
     themeInstalled = await File(currentTHEMEPATH).exists();
+  }
+
+  Future<void> isNodeModulesInstalled(String projectName) async {
+    final String currentTHEMEPATH = p.join(
+      PathHelper.getSitesDIR,
+      projectName,
+      'package-lock.json',
+    );
+    npmInstalled = await File(currentTHEMEPATH).exists();
   }
 
   String get custom_domain => _custom_domain.value;

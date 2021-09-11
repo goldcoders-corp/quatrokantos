@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
-import 'package:quatrokantos/helpers/path_helper.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:tint/tint.dart';
 
 class NpmRun {
@@ -11,19 +11,21 @@ class NpmRun {
   final String path;
   late List<String> args = <String>[];
 
+  // TODO: We need this to Run as Isolate
+  // Returnt the Process ID so we can Kill it anytime
+  // If We Have an Existing Process Running , Dont Start
+  // Ask User to Killall Process first
+
   NpmRun({required this.path, required this.args}) : super() {
     // change Directory
     // Must Be Only Run Inside Project Page
-    command = whichSync('npm');
-    PathHelper.exists(path).then((bool exists) {
-      if (exists == true) {
-        Directory.current = path;
-      }
-    });
+    command =
+        whichSync('npm', environment: <String, String>{'PATH': PathEnv.get()});
+
     args = args;
   }
 
-  Future<String> call() async {
+  Future<String> run() async {
     final StringBuffer outputbuffer = StringBuffer();
     final StringBuffer breakBuffer = StringBuffer();
     final StringBuffer missingBuffer = StringBuffer();
@@ -38,7 +40,12 @@ class NpmRun {
       if (command == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(command!, args);
+        final Process process = await Process.start(
+          command!,
+          args,
+          runInShell: true,
+          workingDirectory: path,
+        );
 
         final Stream<String> outputStream = process.stdout
             .transform(const Utf8Decoder())
@@ -61,7 +68,6 @@ class NpmRun {
         await for (final String line in errorStream) {
           if (missingScriptRegex.hasMatch('$line\n')) {
             missingBuffer.write('$line\n');
-            print('im triggered');
             process.kill();
             break;
           } else if (PortRegex.hasMatch(line)) {
@@ -90,7 +96,7 @@ class NpmRun {
       if (error.isNotEmpty) {
         return error;
       } else {
-        return 'Undefined Error';
+        return 'Running Command Completed'; // message usually npm audit fix
       }
     }
   }
