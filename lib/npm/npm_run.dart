@@ -45,6 +45,9 @@ class NpmRun {
           args,
           runInShell: true,
           workingDirectory: path,
+          environment: (Platform.isWindows)
+              ? null
+              : <String, String>{'PATH': PathEnv.get()},
         );
 
         final Stream<String> outputStream = process.stdout
