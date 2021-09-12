@@ -157,13 +157,13 @@ class CmsController extends GetxController {
           'https://github.com/thriftapps/goldcoders.dev/archive/refs/heads/main.zip',
     );
 
-    const Cms pitlords = Cms(
-      name: 'pitlords.com',
-      cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
-      themeUrl: 'https://github.com/pitlords/site/archive/refs/heads/main.zip',
-    );
+    // const Cms pitlords = Cms(
+    //   name: 'pitlords.com',
+    //   cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
+    //   themeUrl: 'https://github.com/pitlords/site/archive/refs/heads/main.zip',
+    // );
     _themes.value.add(goldcoders);
-    _themes.value.add(pitlords);
+    // _themes.value.add(pitlords);
     list = list;
   }
 
