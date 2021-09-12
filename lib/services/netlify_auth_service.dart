@@ -31,6 +31,7 @@ class NetlifyAuthService extends GetxService {
     emptyAccount();
     wizard.completed = false;
     stepper.netlifyLogged = false;
+    stepper.complete = false;
     Get.toNamed('/wizard');
   }
 
