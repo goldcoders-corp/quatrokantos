@@ -356,19 +356,84 @@ class ProjectView extends GetView<ProjectController> {
                                           unix_cmd: 'node',
                                           win_cmd: 'node.exe');
                                       await kill();
+                                      String folder =
+                                          dotenv.env['APP_NAME']!.toLowerCase();
+                                      // ignore: unnecessary_string_escapes
+                                      final ReplaceHelper text = ReplaceHelper(
+                                          text: folder, regex: '\\s+');
+                                      folder = text.replace();
+                                      const String filename = 'npm_debug.txt';
+                                      final String filePath = p.join(
+                                          PC.userDirectory,
+                                          '.local',
+                                          'share',
+                                          '.$folder',
+                                          filename);
+                                      final String? command = whichSync('npm',
+                                          environment: (Platform.isWindows)
+                                              ? null
+                                              : <String, String>{
+                                                  'PATH': PathEnv.get()
+                                                });
+                                      try {
+                                        controller.isBuilding = true;
 
-                                      final NpmRun npm = NpmRun(
-                                          path: controller.path,
-                                          args: <String>['run', 'build']);
+                                        final Process process =
+                                            await Process.start(
+                                          command!,
+                                          <String>['run', 'prod'],
+                                          environment: <String, String>{
+                                            'PATH': PathEnv.get()
+                                          },
+                                          workingDirectory: controller.path,
+                                          runInShell: true,
+                                        );
 
-                                      final String message = await npm.run();
-                                      Get.snackbar(
-                                        'Notification',
-                                        message,
-                                        dismissDirection:
-                                            SnackDismissDirection.HORIZONTAL,
-                                      );
-                                      controller.isBuilding = false;
+                                        final Stream<String> outputStream =
+                                            process.stdout
+                                                .transform(const Utf8Decoder())
+                                                .transform(
+                                                    const LineSplitter());
+
+                                        await for (final String line
+                                            in outputStream) {
+                                          WritterHelper.log(
+                                            filePath: filePath,
+                                            stacktrace: line,
+                                          );
+                                        }
+
+                                        final Stream<String> errorStream =
+                                            process.stderr
+                                                .transform(const Utf8Decoder())
+                                                .transform(
+                                                    const LineSplitter());
+                                        await for (final String line
+                                            in errorStream) {
+                                          WritterHelper.log(
+                                            filePath: filePath,
+                                            stacktrace: line,
+                                          );
+                                        }
+                                      } catch (e, stacktrace) {
+                                        WritterHelper.log(
+                                          filePath: filePath,
+                                          stacktrace: stacktrace.toString(),
+                                        );
+                                      } finally {
+                                        controller.isBuilding = false;
+                                        Get.snackbar(
+                                          'Building Site Done',
+                                          // ignore: lines_longer_than_80_chars
+                                          'Site Ready to Be Deployed to Live Site',
+                                          dismissDirection:
+                                              SnackDismissDirection.HORIZONTAL,
+                                        );
+                                        final KillAll kill = KillAll(
+                                            unix_cmd: 'node',
+                                            win_cmd: 'node.exe');
+                                        await kill();
+                                      }
                                     },
                                     icon: const Icon(
                                       Icons.view_in_ar,
