@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 
 class EnvHelper {
@@ -67,5 +68,37 @@ class EnvHelper {
     });
     envBuffer.toString();
     await File(path).writeAsString(envBuffer.toString());
+  }
+
+  // check if we have .env.example on the current directory
+  // if we have copy the it to .env
+  // if we dont have .env.example check for other .env files
+  // if we dont have any .env create a new .env with the default values
+  static Future<void> copyOrCreateDotEnv(String folderPath) async {
+    Directory.current = folderPath;
+    final String dotenvPath = p.join(folderPath, '.env.example');
+
+    final File dotEnvExample = File(dotenvPath);
+    dotEnvExample.exists().then((bool exists) async {
+      if (exists) {
+        dotEnvExample.copy('.env');
+      } else {
+        const String defaultValue = '''
+HUGO_BASEURL=https://goldcoders.dev
+SNOWPACK_PUBLIC_BACKEND_TYPE=git-gateway
+SNOWPACK_PUBLIC_BRANCH=main
+SNOWPACK_PUBLIC_BACKEND=true
+SNOWPACK_PUBLIC_SHOW_PREVIEW_LINKS=true
+SNOWPACK_PUBLIC_MEDIA_FOLDER=static/images
+SNOWPACK_PUBLIC_DOMAIN=goldcoders.dev
+SNOWPACK_PUBLIC_DISPLAY_URL=https://goldcoders.dev
+SNOWPACK_PUBLIC_LOGO_URL=/images/logo.svg
+SNOWPACK_PUBLIC_PUBLIC_FOLDER=/images
+''';
+        final String newDotEnv = p.join(folderPath, '.env');
+
+        await File(newDotEnv).writeAsString(defaultValue);
+      }
+    });
   }
 }
