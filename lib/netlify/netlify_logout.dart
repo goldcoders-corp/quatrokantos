@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:process_run/which.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 
 class NetlifyLogout {
   late final String? command;
@@ -21,7 +22,14 @@ class NetlifyLogout {
       if (command == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(command!, args);
+        final Process process = await Process.start(
+          command!,
+          args,
+          runInShell: true,
+          environment: (Platform.isWindows)
+              ? null
+              : <String, String>{'PATH': PathEnv.get()},
+        );
 
         final Stream<String> outputStream = process.stdout
             .transform(const Utf8Decoder())
