@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:quatrokantos/constants/site_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
+import 'package:quatrokantos/helpers/path_helper.dart';
 import 'package:quatrokantos/netlify/netlify_api.dart';
 import 'package:quatrokantos/netlify/netlify_delete_all_site.dart';
 
@@ -114,6 +116,21 @@ class SiteListController extends GetxController {
     sites.value = siteList;
     final NetlifyDeleteAllSites delete = NetlifyDeleteAllSites();
     await delete.all();
+    await Directory(PathHelper.getSitesDIR).delete(recursive: true);
+    isLoading = false;
+  }
+
+  /// Deliberately Delete All Local Data and Contents from sites folder
+  /// and Delte All Site Remotely
+  Future<void> uninstallSites() async {
+    isLoading = true;
+    final Directory sitesFolder = Directory(PathHelper.getSitesDIR);
+    sitesFolder.exists().then((bool exists) {
+      if (exists) {
+        sitesFolder.delete(recursive: true);
+      }
+    });
+    await emptyLocalSites();
     isLoading = false;
   }
 

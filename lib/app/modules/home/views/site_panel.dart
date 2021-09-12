@@ -3,7 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
 import 'package:quatrokantos/app/modules/home/views/create_new_site_dialog.dart';
+import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
+import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 import '../../../../../responsive.dart';
@@ -71,10 +73,75 @@ class SitePanel extends GetView<SiteListController> {
                 Obx(
                   () => (sitesCtrl.isLoading == false)
                       ? RunBtn(
-                          title: 'Trash All',
+                          title: 'Clear All',
                           icon: Icons.auto_delete_outlined,
                           onTap: () async {
-                            await sitesCtrl.emptyLocalSites();
+                            Get.defaultDialog(
+                              barrierDismissible: false,
+                              cancel: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  onPrimary: Colors.white70,
+                                  primary: appColors[BG],
+                                  onSurface: Colors.white,
+                                  minimumSize: const Size(150, 50),
+                                  shadowColor: Colors.black45,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                ),
+                                label: const Text('Cancel'),
+                                icon: const Icon(Icons.arrow_back),
+                                onPressed: () async {
+                                  Get.back();
+                                },
+                              ),
+                              title: '',
+                              contentPadding: const EdgeInsets.all(20),
+                              content: SizedBox(
+                                width: 450,
+                                height: 125,
+                                child: Column(
+                                  children: const <Widget>[
+                                    Text(
+                                      'You Are About to Delete All Sites.',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                        'Live and Local Sites Will Be Wiped Out!'),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text('This action cannot be undone.'),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text('Are you sure you want to continue?'),
+                                  ],
+                                ),
+                              ),
+                              confirm: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  onPrimary: Colors.red[50],
+                                  primary: Colors.red[500],
+                                  onSurface: Colors.white,
+                                  minimumSize: const Size(150, 50),
+                                  shadowColor: Colors.black45,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                ),
+                                label: const Text('Confirm'),
+                                icon: const Icon(Icons.delete),
+                                onPressed: () async {
+                                  await sitesCtrl.uninstallSites();
+                                  Get.back();
+                                },
+                              ),
+                            );
                           })
                       : SizedBox(
                           height: 70,
