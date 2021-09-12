@@ -9,7 +9,7 @@ import 'package:tint/tint.dart';
 class NpmRun {
   late final String? command;
   final String path;
-  late List<String> args = <String>[];
+  late List<String> args;
 
   // TODO: We need this to Run as Isolate
   // Returnt the Process ID so we can Kill it anytime
@@ -54,31 +54,31 @@ class NpmRun {
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in outputStream) {
-          if (CtrlCRegex.hasMatch('$line\n')) {
-            breakBuffer.write(
-                'Open Browser at: http://localhost:1313 & http://localhost:1234');
-            break;
-          }
+          // if (CtrlCRegex.hasMatch('$line\n')) {
+          //   breakBuffer.write(
+          //       'Open Browser at: http://localhost:1313 & http://localhost:1234');
+          //   break;
+          // }
           outputbuffer.write('$line\n');
         }
-        final String exitEarly = breakBuffer.toString().strip();
-        if (exitEarly.isNotEmpty) {
-          return exitEarly;
-        }
+        // final String exitEarly = breakBuffer.toString().strip();
+        // if (exitEarly.isNotEmpty) {
+        //   return exitEarly;
+        // }
         final Stream<String> errorStream = process.stderr
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in errorStream) {
-          if (missingScriptRegex.hasMatch('$line\n')) {
-            missingBuffer.write('$line\n');
-            process.kill();
-            break;
-          } else if (PortRegex.hasMatch(line)) {
-            portBuffer
-                .write('Please Stop Server First Before Running this Command');
-            process.kill();
-            break;
-          }
+          // if (missingScriptRegex.hasMatch('$line\n')) {
+          //   missingBuffer.write('$line\n');
+          //   process.kill();
+          //   break;
+          // } else if (PortRegex.hasMatch(line)) {
+          //   portBuffer
+          //       .write('Please Stop Server First Before Running this Command');
+          //   process.kill();
+          //   break;
+          // }
           errorStrBuffer.write('$line\n');
         }
       }
