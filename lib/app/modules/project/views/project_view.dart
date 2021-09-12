@@ -1,12 +1,22 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart' as p;
+import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/project/controllers/project_controller.dart';
 import 'package:quatrokantos/cms/cms_ctrl.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
+import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
 import 'package:quatrokantos/helpers/kill_all.dart';
+import 'package:quatrokantos/helpers/pc_info_helper.dart';
+import 'package:quatrokantos/helpers/replace_helper.dart';
 import 'package:quatrokantos/helpers/url_launcher_helper.dart';
+import 'package:quatrokantos/helpers/writter_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_deploy_prod.dart';
 import 'package:quatrokantos/npm/npm_run.dart';
@@ -130,15 +140,89 @@ class ProjectView extends GetView<ProjectController> {
                           if (controller.isIntalling == false) {
                             return IconButton(
                               onPressed: () async {
-                                controller.isIntalling = true;
-                                final NpmRun npm = NpmRun(
-                                    path: controller.path,
-                                    args: <String>['install']);
-                                final String message = await npm.run();
-                                Get.snackbar('Notification', message,
+                                String folder =
+                                    dotenv.env['APP_NAME']!.toLowerCase();
+                                // ignore: unnecessary_string_escapes
+                                final ReplaceHelper text =
+                                    ReplaceHelper(text: folder, regex: '\\s+');
+                                folder = text.replace();
+                                const String filename = 'npm_debug.txt';
+                                final String filePath = p.join(PC.userDirectory,
+                                    '.local', 'share', '.$folder', filename);
+                                final String? command = whichSync('npm',
+                                    environment: (Platform.isWindows)
+                                        ? null
+                                        : <String, String>{
+                                            'PATH': PathEnv.get()
+                                          });
+                                try {
+                                  controller.isIntalling = true;
+                                  final Process process = await Process.start(
+                                    command!,
+                                    <String>['install'],
+                                    environment: <String, String>{
+                                      'PATH': PathEnv.get()
+                                    },
+                                    workingDirectory: controller.path,
+                                    runInShell: true,
+                                  );
+
+                                  if (await process.exitCode == 0) {
+                                    Get.snackbar(
+                                      'EXIT CODE',
+                                      '0',
+                                      dismissDirection:
+                                          SnackDismissDirection.HORIZONTAL,
+                                    );
+                                  } else {
+                                    Get.snackbar(
+                                      'EXIT CODE',
+                                      '${await process.exitCode}',
+                                      dismissDirection:
+                                          SnackDismissDirection.HORIZONTAL,
+                                    );
+                                  }
+
+                                  final Stream<String> outputStream = process
+                                      .stdout
+                                      .transform(const Utf8Decoder())
+                                      .transform(const LineSplitter());
+
+                                  await for (final String line
+                                      in outputStream) {
+                                    WritterHelper.log(
+                                      filePath: filePath,
+                                      stacktrace: line,
+                                    );
+                                  }
+
+                                  final Stream<String> errorStream = process
+                                      .stderr
+                                      .transform(const Utf8Decoder())
+                                      .transform(const LineSplitter());
+                                  await for (final String line in errorStream) {
+                                    WritterHelper.log(
+                                      filePath: filePath,
+                                      stacktrace: line,
+                                    );
+                                  }
+                                } catch (e, stacktrace) {
+                                  WritterHelper.log(
+                                    filePath: filePath,
+                                    stacktrace: stacktrace.toString(),
+                                  );
+                                } finally {
+                                  controller.isIntalling = false;
+                                  Get.snackbar(
+                                    'Notification',
+                                    'Install Command Done!',
                                     dismissDirection:
-                                        SnackDismissDirection.HORIZONTAL);
-                                controller.isIntalling = false;
+                                        SnackDismissDirection.HORIZONTAL,
+                                  );
+                                  final KillAll kill = KillAll(
+                                      unix_cmd: 'node', win_cmd: 'node.exe');
+                                  await kill();
+                                }
                               },
                               icon: (controller.npmInstalled == false)
                                   ? const Icon(Icons.file_download)
@@ -368,7 +452,7 @@ class ProjectView extends GetView<ProjectController> {
 
                                       final NetlifyDeploy deploy =
                                           NetlifyDeploy(path: controller.path);
-                                      Map<String, String> response =
+                                      final Map<String, String> response =
                                           await deploy();
 
                                       if (response['error'] != null) {
@@ -380,16 +464,16 @@ class ProjectView extends GetView<ProjectController> {
                                         );
                                       }
 
-                                      if (response['website_url'] != null ||
+                                      if (response['website_url'] != '' ||
                                           response['logs_url'] != '' ||
-                                          response['unique_deploy_url'] !=
-                                              ' ') {
+                                          response['unique_deploy_url'] != '') {
                                         Get.snackbar(
                                           'Notification',
                                           // ignore: lines_longer_than_80_chars
                                           'Visit Live Site: ${response['website_url']}',
                                           dismissDirection:
                                               SnackDismissDirection.HORIZONTAL,
+                                          duration: const Duration(seconds: 10),
                                         );
                                       }
 
