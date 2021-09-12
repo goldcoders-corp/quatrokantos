@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart' as p;
 import 'package:quatrokantos/constants/wizard_contants.dart';
+import 'package:quatrokantos/helpers/path_helper.dart';
 import 'package:quatrokantos/services/wizard_service.dart';
 
 class WizardController extends GetxController {
@@ -15,10 +20,16 @@ class WizardController extends GetxController {
   final RxBool _nodeInstalled = false.obs;
   final RxBool _netlifyInstalled = false.obs;
   final RxBool _netlifyLogged = false.obs;
+  final RxBool _themeInstalled = false.obs;
 
   @override
   void onInit() {
-    initialState();
+    fetchLocalData();
+    initStep();
+    super.onInit();
+  }
+
+  void fetchLocalData() {
     initWebi();
     // webiInstalled = false;
     initPkg();
@@ -29,9 +40,36 @@ class WizardController extends GetxController {
     // nodeInstalled = false;
     initNetlify();
     // netlifyInstalled = false;
+    checkIfThemeInstalled();
+    // themeInstalled = false;
     initNetlifyAuth();
     // netlifyLogged = false;
-    super.onInit();
+  }
+
+  bool get themeInstalled => _themeInstalled.value;
+  set themeInstalled(bool val) => _themeInstalled.value = val;
+
+  int get currentStep => _currentStep.value;
+  set currentStep(int val) => _currentStep.value = val;
+
+  Future<void> checkIfThemeInstalled() async {
+    final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
+    final String cmZip = p.join(
+      PathHelper.getCMSDIR,
+      zipName,
+    );
+
+    final String themeZip = p.join(
+      PathHelper.getThemeDir,
+      zipName,
+    );
+
+    final bool cmsDownloaded = await File(cmZip).exists();
+    final bool themeDownloaded = await File(themeZip).exists();
+
+    (cmsDownloaded && themeDownloaded)
+        ? themeInstalled = true
+        : themeInstalled = false;
   }
 
   void initNetlifyAuth() {
@@ -94,7 +132,7 @@ class WizardController extends GetxController {
 
   set netlifyLogged(bool val) {
     _getStorage.write(NETLIFY_LOGGED, val);
-    _netlifyLogged.value = _getStorage.read(NETLIFY_LOGGED) as bool;
+    _netlifyLogged.value = val;
   }
 
   bool get netlifyInstalled {
@@ -103,7 +141,7 @@ class WizardController extends GetxController {
 
   set netlifyInstalled(bool val) {
     _getStorage.write(NETLIFY_INSTALLED, val);
-    _netlifyInstalled.value = _getStorage.read(NETLIFY_INSTALLED) as bool;
+    _netlifyInstalled.value = val;
   }
 
   bool get nodeInstalled {
@@ -112,7 +150,7 @@ class WizardController extends GetxController {
 
   set nodeInstalled(bool val) {
     _getStorage.write(NODE_INSTALLED, val);
-    _nodeInstalled.value = _getStorage.read(NODE_INSTALLED) as bool;
+    _nodeInstalled.value = val;
   }
 
   bool get hugoInstalled {
@@ -121,7 +159,7 @@ class WizardController extends GetxController {
 
   set hugoInstalled(bool val) {
     _getStorage.write(HUGO_INSTALLED, val);
-    _hugoInstalled.value = _getStorage.read(HUGO_INSTALLED) as bool;
+    _hugoInstalled.value = val;
   }
 
   bool get pkgInstalled {
@@ -130,7 +168,7 @@ class WizardController extends GetxController {
 
   set pkgInstalled(bool val) {
     _getStorage.write(PKG_INSTALLED, val);
-    _pkgInstalled.value = _getStorage.read(PKG_INSTALLED) as bool;
+    _pkgInstalled.value = val;
   }
 
   bool get webiInstalled {
@@ -139,7 +177,7 @@ class WizardController extends GetxController {
 
   set webiInstalled(bool val) {
     _getStorage.write(WEBI_INSTALLED, val);
-    _webiInstalled.value = _getStorage.read(WEBI_INSTALLED) as bool;
+    _webiInstalled.value = val;
   }
 
   void cancel() {
@@ -158,74 +196,66 @@ class WizardController extends GetxController {
   }
 
   void next() {
-    if (webiInstalled == true &&
-        pkgInstalled != true &&
-        hugoInstalled != true &&
-        nodeInstalled != true &&
-        netlifyInstalled != true &&
-        netlifyLogged != true) {
-      const int stepIndex = 1;
-
-      currentStep = stepIndex;
-    } else if (webiInstalled == true &&
-        pkgInstalled == true &&
-        hugoInstalled != true &&
-        nodeInstalled != true &&
-        netlifyInstalled != true &&
-        netlifyLogged != true) {
-      const int stepIndex = 2;
-
-      currentStep = stepIndex;
-    } else if (webiInstalled == true &&
-        pkgInstalled == true &&
-        hugoInstalled == true &&
-        nodeInstalled != true &&
-        netlifyInstalled != true &&
-        netlifyLogged != true) {
-      const int stepIndex = 3;
-
-      currentStep = stepIndex;
-    } else if (webiInstalled == true &&
-        pkgInstalled == true &&
-        hugoInstalled == true &&
-        nodeInstalled == true &&
-        netlifyInstalled != true &&
-        netlifyLogged != true) {
-      const int stepIndex = 4;
-
-      currentStep = stepIndex;
-    } else if (webiInstalled == true &&
-        pkgInstalled == true &&
-        hugoInstalled == true &&
-        nodeInstalled == true &&
-        netlifyInstalled == true &&
-        netlifyLogged != true) {
-      const int stepIndex = 5;
-
-      currentStep = stepIndex;
-    } else if (webiInstalled == true &&
-        pkgInstalled == true &&
-        hugoInstalled == true &&
-        nodeInstalled == true &&
-        netlifyInstalled == true &&
-        netlifyLogged == true) {
-      currentStep = 5;
-      complete = true;
-      wiz.completed = true;
-      Get.toNamed('/home');
+    if (currentStep == 0) {
+      if (webiInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 1) {
+      if (pkgInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 2) {
+      if (hugoInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 3) {
+      if (nodeInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 4) {
+      if (netlifyInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 5) {
+      if (themeInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 6) {
+      if (netlifyLogged) {
+        complete = true;
+        wiz.completed = true;
+        Get.toNamed('/home');
+      }
+    } else {
+      currentStep++;
+      if (currentStep > 5) {
+        currentStep = 5;
+      }
     }
   }
 
-  void initialState() {
-    _currentStep.value = currentStep;
-  }
-
-  int get currentStep {
-    return _currentStep.value;
-  }
-
-  set currentStep(int step) {
-    _currentStep.value = step;
+  void initStep() {
+    if (netlifyLogged == false) {
+      currentStep = 6;
+    }
+    if (themeInstalled) {
+      currentStep = 5;
+    }
+    if (netlifyInstalled == false) {
+      currentStep = 4;
+    }
+    if (nodeInstalled == false) {
+      currentStep = 3;
+    }
+    if (hugoInstalled == false) {
+      currentStep = 2;
+    }
+    if (pkgInstalled == false) {
+      currentStep = 1;
+    }
+    if (webiInstalled == false) {
+      currentStep = 0;
+    }
   }
 
   bool get complete {
