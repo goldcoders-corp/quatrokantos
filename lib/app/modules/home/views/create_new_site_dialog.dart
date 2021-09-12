@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/create_site_controller.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
+import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_api.dart';
 import 'package:quatrokantos/widgets/routed_input_field.dart';
@@ -127,22 +128,54 @@ Please Fill Up All Fields
                         }
                       };
                       final String bodyStr = json.encode(data);
-                      await NetlifyApi.createSite(bodyStr,
-                          onDone: (String? siteDetails) async {
-                        if (siteDetails != null && siteDetails != '') {
-                          final Map<String, dynamic> siteMap =
-                              json.decode(siteDetails) as Map<String, dynamic>;
-                          await project.addSite(siteMap);
-                        }
-                        project.isLoading = false;
-                      }, onError: (String? error) {
-                        if (error != null && error.isNotEmpty) {
-                          Get.snackbar('Validation Error', '''
+                      // TODO: Issue when no Internet Cannot Create a New One!
+                      // If there is no internet we bypass the Api
+                      // Create a New Site with project.addSite
+
+                      // we Should Add new Data called cloud_service
+                      // they can pick now is netlify
+                      // so we know if when we visit a page we load netlify
+
+                      // We can have a .netlify folder with stats.json
+                      // but sideID is null
+
+                      // On linking we Use Same Data here
+                      // such as name , custom_domain
+
+                      // Deploy Command Will not Work if
+                      // no public folder
+                      // no Internet
+                      // no .netlify folder
+                      // when no .netlify folder means we dont have siteID
+
+                      // check if process is netlify then we load
+                      // NetlifyApi Class
+
+                      // check if we have internet
+                      // then we invoke NetlifyApi.createSite
+                      // and we get the siteID
+                      try {
+                        await NetlifyApi.createSite(bodyStr,
+                            onDone: (String? siteDetails) async {
+                          if (siteDetails != null && siteDetails != '') {
+                            final Map<String, dynamic> siteMap = json
+                                .decode(siteDetails) as Map<String, dynamic>;
+                            await project.addSite(siteMap);
+                          }
+                          project.isLoading = false;
+                        }, onError: (String? error) {
+                          if (error != null && error.isNotEmpty) {
+                            Get.snackbar('Validation Error', '''
 Site Name: ${project.local_name} or Domain Name: ${project.custom_domain} Already Taken
 ''');
-                        }
+                          }
+                          project.isLoading = false;
+                        });
+                      } catch (e, stacktrace) {
+                        CommandFailedException.log(
+                            e.toString(), stacktrace.toString());
                         project.isLoading = false;
-                      });
+                      }
                     },
                   );
                 } else {
