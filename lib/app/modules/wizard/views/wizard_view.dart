@@ -383,6 +383,10 @@ $cmdInstalled
                       ],
                     ),
                   ),
+                  // TODO: Extra Step Here
+                  // Download Default Theme
+                  // So Even if Users Dont Have Internet When Creating
+                  // New Sites they wouldnt be facing an issue
                   Step(
                     title: const Text('Set Up Site Deployer'),
                     isActive: wctrl.currentStep >= 4,
