@@ -2,6 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
+import 'package:path/path.dart' as p;
 import 'package:quatrokantos/helpers/path_helper.dart';
 
 class Downloader {
@@ -42,5 +45,47 @@ class Downloader {
     final File file = File('$dir/$name');
     await file.writeAsBytes(bytes);
     onDone(true);
+  }
+
+  static Future<void> defaultTheme(
+      {required Function(bool downloaded) onDone}) async {
+    final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
+    final String cmZip = p.join(
+      PathHelper.getCMSDIR,
+      zipName,
+    );
+
+    final String themeZip = p.join(
+      PathHelper.getThemeDir,
+      zipName,
+    );
+
+    final bool cmsDownloaded = await File(cmZip).exists();
+    final bool themeDownloaded = await File(themeZip).exists();
+
+    if (themeDownloaded == false) {
+      final Downloader theme = Downloader(
+        url: dotenv.env['DEFAULT_SITE_THEME_URL']!,
+        dir: PathHelper.getThemeDir,
+        name: zipName,
+      );
+      await theme.download((_) {
+        Get.snackbar('Theme Downloaded', 'It Will Be Cached For Later Use',
+            dismissDirection: SnackDismissDirection.HORIZONTAL);
+      });
+    }
+
+    if (cmsDownloaded == false) {
+      final Downloader cms = Downloader(
+        url: dotenv.env['DEFAULT_SITE_CMS_URL']!,
+        dir: PathHelper.getCMSDIR,
+        name: zipName,
+      );
+      await cms.download((_) {
+        Get.snackbar('Cms Downloaded', 'It Will Be Cached For Later Use',
+            dismissDirection: SnackDismissDirection.HORIZONTAL);
+      });
+    }
+    (cmsDownloaded && themeDownloaded) ? onDone(true) : onDone(false);
   }
 }
