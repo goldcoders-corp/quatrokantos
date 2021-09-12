@@ -198,6 +198,9 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
+          environment: (Platform.isWindows)
+              ? null
+              : <String, String>{'PATH': PathEnv.get()},
         ).asStream().listen((ProcessResult process) async {
           output.write(process.stdout.toString());
           if (errorReg.hasMatch(process.stderr.toString().trim())) {
