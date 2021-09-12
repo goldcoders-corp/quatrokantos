@@ -18,7 +18,6 @@ import 'package:quatrokantos/helpers/replace_helper.dart';
 import 'package:quatrokantos/helpers/url_launcher_helper.dart';
 import 'package:quatrokantos/helpers/writter_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
-import 'package:quatrokantos/netlify/netlify_deploy_prod.dart';
 import 'package:quatrokantos/npm/npm_run.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
@@ -166,22 +165,6 @@ class ProjectView extends GetView<ProjectController> {
                                     workingDirectory: controller.path,
                                     runInShell: true,
                                   );
-
-                                  if (await process.exitCode == 0) {
-                                    Get.snackbar(
-                                      'EXIT CODE',
-                                      '0',
-                                      dismissDirection:
-                                          SnackDismissDirection.HORIZONTAL,
-                                    );
-                                  } else {
-                                    Get.snackbar(
-                                      'EXIT CODE',
-                                      '${await process.exitCode}',
-                                      dismissDirection:
-                                          SnackDismissDirection.HORIZONTAL,
-                                    );
-                                  }
 
                                   final Stream<String> outputStream = process
                                       .stdout
@@ -449,35 +432,83 @@ class ProjectView extends GetView<ProjectController> {
                                           unix_cmd: 'node',
                                           win_cmd: 'node.exe');
                                       await kill();
+                                      String folder =
+                                          dotenv.env['APP_NAME']!.toLowerCase();
+                                      // ignore: unnecessary_string_escapes
+                                      final ReplaceHelper text = ReplaceHelper(
+                                          text: folder, regex: '\\s+');
+                                      folder = text.replace();
+                                      const String filename = 'npm_debug.txt';
+                                      final String filePath = p.join(
+                                          PC.userDirectory,
+                                          '.local',
+                                          'share',
+                                          '.$folder',
+                                          filename);
+                                      final String? command = whichSync('ntl',
+                                          environment: (Platform.isWindows)
+                                              ? null
+                                              : <String, String>{
+                                                  'PATH': PathEnv.get()
+                                                });
+                                      try {
+                                        controller.isDeploying = true;
 
-                                      final NetlifyDeploy deploy =
-                                          NetlifyDeploy(path: controller.path);
-                                      final Map<String, String> response =
-                                          await deploy();
+                                        final Process process =
+                                            await Process.start(
+                                          command!,
+                                          <String>['deploy', '--prod'],
+                                          environment: <String, String>{
+                                            'PATH': PathEnv.get()
+                                          },
+                                          workingDirectory: controller.path,
+                                          runInShell: true,
+                                        );
 
-                                      if (response['error'] != null) {
+                                        final Stream<String> outputStream =
+                                            process.stdout
+                                                .transform(const Utf8Decoder())
+                                                .transform(
+                                                    const LineSplitter());
+
+                                        await for (final String line
+                                            in outputStream) {
+                                          WritterHelper.log(
+                                            filePath: filePath,
+                                            stacktrace: line,
+                                          );
+                                        }
+
+                                        final Stream<String> errorStream =
+                                            process.stderr
+                                                .transform(const Utf8Decoder())
+                                                .transform(
+                                                    const LineSplitter());
+                                        await for (final String line
+                                            in errorStream) {
+                                          WritterHelper.log(
+                                            filePath: filePath,
+                                            stacktrace: line,
+                                          );
+                                        }
+                                      } catch (e, stacktrace) {
+                                        WritterHelper.log(
+                                          filePath: filePath,
+                                          stacktrace: stacktrace.toString(),
+                                        );
+                                      } finally {
+                                        controller.isDeploying = false;
                                         Get.snackbar(
-                                          'Notification',
-                                          response['error']!,
+                                          'Done Executing Deploy To Live Site',
+                                          'Check it Out Now on Live Site!',
                                           dismissDirection:
                                               SnackDismissDirection.HORIZONTAL,
                                         );
+                                        final KillAll kill = KillAll(
+                                            unix_cmd: 'node',
+                                            win_cmd: 'node.exe');
+                                        await kill();
                                       }
-
-                                      if (response['website_url'] != '' ||
-                                          response['logs_url'] != '' ||
-                                          response['unique_deploy_url'] != '') {
-                                        Get.snackbar(
-                                          'Notification',
-                                          // ignore: lines_longer_than_80_chars
-                                          'Visit Live Site: ${response['website_url']}',
-                                          dismissDirection:
-                                              SnackDismissDirection.HORIZONTAL,
-                                          duration: const Duration(seconds: 10),
-                                        );
-                                      }
-
-                                      controller.isDeploying = false;
                                     },
                                     icon: Icon(Icons.cloud_upload,
                                         color: Colors.lime.shade100),
@@ -501,7 +532,7 @@ class ProjectView extends GetView<ProjectController> {
                                                   unix_cmd: 'node',
                                                   win_cmd: 'node.exe');
                                               await kill();
-                                              controller.isBuilding = false;
+                                              controller.isDeploying = false;
                                             },
                                             icon: Icon(
                                               Icons.stop,
