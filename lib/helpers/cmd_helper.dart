@@ -221,7 +221,7 @@ class Cmd {
     required List<String> args,
   }) async {
     final CommandController ctrl = Get.find<CommandController>();
-    final StringBuffer outputbuffer = StringBuffer();
+    // final StringBuffer outputbuffer = StringBuffer();
 
     try {
       final Process left = await Process.start(
@@ -230,9 +230,9 @@ class Cmd {
       );
 
       left.stdout.transform(utf8.decoder).listen((String event) {
-        outputbuffer.write('$event\n');
+        // outputbuffer.write('$event\n');
       }).onDone(() {
-        ctrl.results = outputbuffer.toString();
+        ctrl.results = 'Opening Site ${args[0]}';
       });
     } catch (e, stacktrace) {
       CommandFailedException.log(e.toString(), stacktrace.toString());
