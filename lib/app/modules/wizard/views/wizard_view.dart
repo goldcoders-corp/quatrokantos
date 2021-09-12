@@ -5,6 +5,7 @@ import 'package:quatrokantos/app/modules/wizard/components/onboarding_card.dart'
 import 'package:quatrokantos/app/modules/wizard/views/netlify_login_dialog.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
+import 'package:quatrokantos/helpers/download_zip.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/pkg_manager.dart';
 import 'package:quatrokantos/installers/hugo_installer.dart';
@@ -475,9 +476,48 @@ $cmdInstalled
                     ),
                   ),
                   Step(
-                    title: const Text('Create Account / Login Netlify'),
+                    title: const Text('Download Default Site Theme'),
                     isActive: wctrl.currentStep >= 5,
                     state: wctrl.currentStep >= 5
+                        ? StepState.complete
+                        : StepState.disabled,
+                    content: Column(
+                      children: <Widget>[
+                        OnboardingCard(
+                          title: 'Install Thriftshop Site',
+                          button: controller.isLoading == true
+                              ? CircularProgressIndicator(
+                                  color: appColors[ACCENT],
+                                )
+                              : RunBtn(
+                                  title: 'Run',
+                                  icon: Icons.play_arrow,
+                                  onTap: controller.isLoading == true
+                                      ? () {}
+                                      : () async {
+                                          controller.isLoading = true;
+                                          await Downloader.defaultTheme(
+                                              onDone: (bool downloaded) {
+                                            if (downloaded == true) {
+                                              wctrl.themeInstalled = true;
+                                            } else {
+                                              wctrl.themeInstalled = false;
+                                            }
+                                            controller.isLoading = false;
+                                          });
+                                        },
+                                ),
+                          checkbox: (wctrl.themeInstalled == true)
+                              ? const Icon(Icons.check_box)
+                              : const Icon(Icons.check_box_outline_blank),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Step(
+                    title: const Text('Create Account / Login Netlify'),
+                    isActive: wctrl.currentStep >= 6,
+                    state: wctrl.currentStep >= 6
                         ? StepState.complete
                         : StepState.disabled,
                     content: Column(
@@ -502,9 +542,13 @@ $cmdInstalled
                                                 response = await login();
 
                                             if (response['url'] != null) {
+                                              print(
+                                                  'netlify dialog'); // not catch
                                               await NetlifyLoginDialog(response)
                                                   .launch();
                                             } else {
+                                              controller.isLoading = true;
+
                                               Get.snackbar(
                                                   // ignore: lines_longer_than_80_chars
                                                   'Netlify Account Authorized',
@@ -512,6 +556,8 @@ $cmdInstalled
                                                   'You can Proceed To Next Step');
                                             }
                                           } else {
+                                            controller.isLoading = true;
+
                                             Get.snackbar(
                                                 // ignore: lines_longer_than_80_chars
                                                 'Netlify Account Authorized',
