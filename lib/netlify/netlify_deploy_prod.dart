@@ -7,9 +7,9 @@ import 'package:tint/tint.dart';
 class NetlifyDeploy {
   final String command = 'ntl';
   final String path;
-  late List<String> args = <String>[];
+  late List<String> args;
+
   NetlifyDeploy({required this.path}) : super() {
-    Directory.current = Directory(path);
     args = <String>['deploy', '--prod'];
   }
 
