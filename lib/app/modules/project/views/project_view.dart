@@ -10,6 +10,7 @@ import 'package:quatrokantos/app/modules/project/controllers/project_controller.
 import 'package:quatrokantos/cms/cms_ctrl.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
 import 'package:quatrokantos/constants/default_size.dart';
+import 'package:quatrokantos/helpers/env_helper.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
 import 'package:quatrokantos/helpers/kill_all.dart';
@@ -72,6 +73,8 @@ class ProjectView extends GetView<ProjectController> {
                                 await cmsCtrl.download(
                                     controller.local_name, cmsCtrl.getChoosen!);
                                 // ignore: always_specify_types
+                                await EnvHelper.copyOrCreateDotEnv(
+                                    controller.path);
                                 Future.delayed(const Duration(seconds: 1));
                               }
                             },
