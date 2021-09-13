@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:quatrokantos/constants/site_constants.dart';
-import 'package:quatrokantos/constants/wizard_contants.dart';
 import 'package:quatrokantos/helpers/folder_launcher.dart';
 import 'package:quatrokantos/helpers/path_helper.dart';
 
@@ -59,15 +58,15 @@ class ProjectController extends GetxController {
   set themeInstalled(bool val) => _themeInstalled.value = val;
 
   bool get npmInstalled {
-    if (_getStorage.hasData(NODE_INSTALLED)) {
-      return npmInstalled = _getStorage.read(NODE_INSTALLED) as bool;
-    }
+    // if (_getStorage.hasData(NODE_INSTALLED)) {
+    //   return npmInstalled = _getStorage.read(NODE_INSTALLED) as bool;
+    // }
     return _npmInstalled.value;
   }
 
   set npmInstalled(bool val) {
     _npmInstalled.value = val;
-    _getStorage.write(NODE_INSTALLED, val);
+    // _getStorage.write(NODE_INSTALLED, val);
   }
 
   Future<void> checkBackgroundProcess() async {
