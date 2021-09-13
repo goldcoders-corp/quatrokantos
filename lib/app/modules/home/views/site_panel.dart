@@ -52,24 +52,6 @@ class SitePanel extends GetView<SiteListController> {
                     onTap: () async {
                       await CreateNewSiteDialog.launch();
                     }),
-                // TODO: Add Sync Button Later On
-                // Obx(
-                //   () => (ctrl.isLoading == false)
-                //       ? RunBtn(
-                //           title: 'Sync',
-                //           icon: Icons.update,
-                //           onTap: () async {
-                //             controller.fetchSites();
-                //           },
-                //         )
-                //       : SizedBox(
-                //           height: 70,
-                //           width: 70,
-                //           child: CircularProgressIndicator(
-                //             color: Colors.pink.shade200,
-                //           ),
-                //         ),
-                // ),
                 Obx(
                   () => (sitesCtrl.isLoading == false)
                       ? RunBtn(
@@ -86,7 +68,8 @@ class SitePanel extends GetView<SiteListController> {
                                   minimumSize: const Size(150, 50),
                                   shadowColor: Colors.black45,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30)),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
                                 ),
                                 label: const Text('Cancel'),
                                 icon: const Icon(Icons.arrow_back),
@@ -111,8 +94,8 @@ class SitePanel extends GetView<SiteListController> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text(
-                                        'Live and Local Sites Will Be Wiped Out!'),
+                                    Text('''
+                                    Live and Local Sites Will Be Wiped Out!'''),
                                     SizedBox(
                                       height: 10,
                                     ),
