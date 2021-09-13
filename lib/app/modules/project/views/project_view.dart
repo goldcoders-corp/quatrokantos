@@ -19,7 +19,7 @@ import 'package:quatrokantos/helpers/replace_helper.dart';
 import 'package:quatrokantos/helpers/url_launcher_helper.dart';
 import 'package:quatrokantos/helpers/writter_helper.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
-import 'package:quatrokantos/npm/npm_run.dart';
+import 'package:quatrokantos/npm/yarn.dart';
 import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
@@ -120,112 +120,45 @@ class ProjectView extends GetView<ProjectController> {
                 const SizedBox(
                   height: 10,
                 ),
-                Card(
-                  color: Colors.white30,
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: (controller.npmInstalled == false)
-                            ? Icon(Icons.warning, color: Colors.orange.shade200)
-                            : Icon(Icons.check, color: Colors.teal.shade200),
-                        title: (controller.npmInstalled == false)
-                            ? const Text('Install Site Dependecies')
-                            : const Text('Site Dependecies Installed'),
-                        subtitle: (controller.npmInstalled == false)
-                            ? const Text(
-                                // ignore: lines_longer_than_80_chars
-                                'Before We Can Run Locally We Need to Install Site Dependencies')
-                            : const Text(
-                                // ignore: lines_longer_than_80_chars
-                                'You can Re-Install Dependencies in Case Your Facing Issues'),
-                        trailing: Obx(() {
-                          if (controller.isIntalling == false) {
-                            return IconButton(
-                              onPressed: () async {
-                                String folder =
-                                    dotenv.env['APP_NAME']!.toLowerCase();
-                                // ignore: unnecessary_string_escapes
-                                final ReplaceHelper text =
-                                    ReplaceHelper(text: folder, regex: '\\s+');
-                                folder = text.replace();
-                                const String filename = 'npm_debug.txt';
-                                final String filePath = p.join(PC.userDirectory,
-                                    '.local', 'share', '.$folder', filename);
-                                final String? command = whichSync('npm',
-                                    environment: (Platform.isWindows)
-                                        ? null
-                                        : <String, String>{
-                                            'PATH': PathEnv.get()
-                                          });
-                                try {
-                                  controller.isIntalling = true;
-                                  final Process process = await Process.start(
-                                    command!,
-                                    <String>['install'],
-                                    environment: <String, String>{
-                                      'PATH': PathEnv.get()
-                                    },
-                                    workingDirectory: controller.path,
-                                    runInShell: true,
-                                  );
-
-                                  final Stream<String> outputStream = process
-                                      .stdout
-                                      .transform(const Utf8Decoder())
-                                      .transform(const LineSplitter());
-
-                                  await for (final String line
-                                      in outputStream) {
-                                    WritterHelper.log(
-                                      filePath: filePath,
-                                      stacktrace: line,
-                                    );
-                                  }
-
-                                  final Stream<String> errorStream = process
-                                      .stderr
-                                      .transform(const Utf8Decoder())
-                                      .transform(const LineSplitter());
-                                  await for (final String line in errorStream) {
-                                    WritterHelper.log(
-                                      filePath: filePath,
-                                      stacktrace: line,
-                                    );
-                                  }
-                                } catch (e, stacktrace) {
-                                  WritterHelper.log(
-                                    filePath: filePath,
-                                    stacktrace: stacktrace.toString(),
-                                  );
-                                } finally {
-                                  controller.isIntalling = false;
-                                  Get.snackbar(
-                                    'Notification',
-                                    'Install Command Done!',
-                                    dismissDirection:
-                                        SnackDismissDirection.HORIZONTAL,
-                                  );
-                                  final KillAll kill = KillAll(
-                                      unix_cmd: 'node', win_cmd: 'node.exe');
-                                  await kill();
-                                }
-                              },
-                              icon: (controller.npmInstalled == false)
-                                  ? const Icon(Icons.file_download)
-                                  : Icon(Icons.published_with_changes,
-                                      color: Colors.teal.shade200),
-                            );
-                          } else {
-                            return CircularProgressIndicator(
-                              color: Colors.pink.shade200,
-                              backgroundColor: Colors.white54,
-                            );
-                          }
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
+                Obx(() {
+                  return Card(
+                    color: Colors.white30,
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: (controller.npmInstalled == false)
+                              ? Icon(Icons.warning,
+                                  color: Colors.orange.shade200)
+                              : Icon(Icons.check, color: Colors.teal.shade200),
+                          title: (controller.npmInstalled == false)
+                              ? const Text('Install Site Dependecies')
+                              : const Text('Site Dependecies Installed'),
+                          subtitle: (controller.npmInstalled == false)
+                              ? const Text(
+                                  // ignore: lines_longer_than_80_chars
+                                  'Before We Can Run Locally We Need to Install Site Dependencies')
+                              : const Text(
+                                  // ignore: lines_longer_than_80_chars
+                                  'You can Re-Install Dependencies in Case Your Facing Issues'),
+                          trailing: (controller.isIntalling == false)
+                              ? IconButton(
+                                  onPressed: () async {
+                                    await Yarn.install(controller);
+                                  },
+                                  icon: (controller.npmInstalled == false)
+                                      ? const Icon(Icons.file_download)
+                                      : Icon(Icons.published_with_changes,
+                                          color: Colors.teal.shade200),
+                                )
+                              : CircularProgressIndicator(
+                                  color: Colors.pink.shade200,
+                                  backgroundColor: Colors.white54,
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
                 const SizedBox(
                   height: 10,
                 ),
@@ -294,12 +227,7 @@ class ProjectView extends GetView<ProjectController> {
                             trailing: (controller.canKillAll == false)
                                 ? IconButton(
                                     onPressed: () async {
-                                      final NpmRun npm = NpmRun(
-                                          path: controller.path,
-                                          args: <String>['run', 'cms']);
-                                      controller.canKillAll = true;
-
-                                      await npm.run();
+                                      await Yarn.cms(controller);
                                     },
                                     icon: Icon(
                                       Icons.play_arrow,
