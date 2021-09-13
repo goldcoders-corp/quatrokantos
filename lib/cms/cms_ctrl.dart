@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
@@ -43,7 +44,8 @@ class CmsController extends GetxController {
 
   int getIndex(String name) => list.indexWhere((Cms cms) => cms.name == name);
 
-  Cms? get getChoosen => list.firstWhere((Cms cms) => cms.name == currentTheme);
+  Cms? get getChoosen =>
+      list.firstWhereOrNull((Cms cms) => cms.name == currentTheme);
 
   set list(List<Cms> val) {
     _themes.value = val;

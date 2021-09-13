@@ -84,10 +84,10 @@ class SiteListController extends GetxController {
   }
 
   Site? findByName(String name) =>
-      sites.value.firstWhere((Site site) => site.name == name);
+      sites.value.firstWhereOrNull((Site site) => site.name == name);
 
   Site? findById(String id) =>
-      sites.value.firstWhere((Site site) => site.details?.id == id);
+      sites.value.firstWhereOrNull((Site site) => site.details?.id == id);
 
   int getIndex(String id) =>
       sites.value.indexWhere((Site site) => site.details?.id == id);
