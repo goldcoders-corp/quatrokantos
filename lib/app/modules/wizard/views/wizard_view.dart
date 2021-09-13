@@ -13,6 +13,7 @@ import 'package:quatrokantos/installers/netlify_install.dart';
 import 'package:quatrokantos/installers/node_installer.dart';
 import 'package:quatrokantos/installers/pkg_manager_installer.dart';
 import 'package:quatrokantos/installers/webi_installer.dart';
+import 'package:quatrokantos/installers/yarn_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_login.dart';
 import 'package:quatrokantos/services/netlify_auth_service.dart';
@@ -350,13 +351,10 @@ $cmdInstalled
                                                 NodeInstall();
                                             await nodeInstaller(onDone: (
                                               bool installed,
-                                            ) {
-                                              if (installed == true) {
-                                                final String? cmdInstalled =
-                                                    whichSync(
-                                                  command,
-                                                  environment: env,
-                                                );
+                                            ) async {
+                                              final YarnInstaller yarn =
+                                                  YarnInstaller();
+                                              await yarn(onDone: (bool yarn) {
                                                 wctrl.nodeInstalled = true;
                                                 Get.defaultDialog(
                                                     title: 'Step #4 Done:',
@@ -371,8 +369,18 @@ $cmdInstalled
                                                       },
                                                       child: const Text('OK'),
                                                     ));
-                                              }
-                                              controller.isLoading = false;
+                                                controller.isLoading = false;
+                                              });
+//                                               if (installed == true) {
+//                                                 final String? cmdInstalled =
+//                                                     whichSync(
+//                                                   command,
+//                                                   environment: env,
+//                                                 );
+//                                                 wctrl.nodeInstalled = true;
+
+//                                               }
+//                                               controller.isLoading = false;
                                             });
                                           }
                                         },
