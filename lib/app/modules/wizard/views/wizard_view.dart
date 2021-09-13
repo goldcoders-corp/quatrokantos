@@ -540,23 +540,25 @@ $cmdInstalled
                                                 NetlifyLogged();
                                             final Map<String, dynamic>
                                                 response = await login();
-
+                                            final String message =
+                                                response['message'] as String;
                                             if (response['url'] != null) {
-                                              print(
-                                                  'netlify dialog'); // not catch
                                               await NetlifyLoginDialog(response)
                                                   .launch();
-                                            } else {
-                                              controller.isLoading = true;
-
+                                            } else if (message.isNotEmpty) {
+                                              if (message.contains(
+                                                  'Already logged in')) {
+                                                wctrl.netlifyLogged = true;
+                                              }
                                               Get.snackbar(
                                                   // ignore: lines_longer_than_80_chars
                                                   'Netlify Account Authorized',
                                                   // ignore: lines_longer_than_80_chars
-                                                  'You can Proceed To Next Step');
+                                                  response['message']
+                                                      as String);
                                             }
                                           } else {
-                                            controller.isLoading = true;
+                                            wctrl.netlifyLogged = true;
 
                                             Get.snackbar(
                                                 // ignore: lines_longer_than_80_chars
@@ -564,6 +566,7 @@ $cmdInstalled
                                                 // ignore: lines_longer_than_80_chars
                                                 'You can Proceed To Next Step');
                                           }
+                                          controller.isLoading = false;
                                         },
                                 ),
                           checkbox: (wctrl.netlifyLogged == true)
