@@ -51,3 +51,4 @@ app.*.map.json
 
 .extra/
 *.bak
+node_modules

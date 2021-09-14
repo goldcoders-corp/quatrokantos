@@ -315,9 +315,11 @@ class ProjectView extends GetView<ProjectController> {
                                             await Process.start(
                                           command!,
                                           <String>['run', 'prod'],
-                                          environment: <String, String>{
-                                            'PATH': PathEnv.get()
-                                          },
+                                          environment: (Platform.isWindows)
+                                              ? null
+                                              : <String, String>{
+                                                  'PATH': PathEnv.get()
+                                                },
                                           workingDirectory: controller.path,
                                           runInShell: true,
                                         );
@@ -456,9 +458,11 @@ class ProjectView extends GetView<ProjectController> {
                                             await Process.start(
                                           command!,
                                           <String>['deploy', '--prod'],
-                                          environment: <String, String>{
-                                            'PATH': PathEnv.get()
-                                          },
+                                          environment: (Platform.isWindows)
+                                              ? null
+                                              : <String, String>{
+                                                  'PATH': PathEnv.get()
+                                                },
                                           workingDirectory: controller.path,
                                           runInShell: true,
                                         );

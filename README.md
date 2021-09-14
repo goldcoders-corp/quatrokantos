@@ -1,6 +1,12 @@
 # Quatrokantos App
 
-> Build Site On the Go
+netlify install wont work
+
+thriftshop cms install needs twice click on next
+
+The system cannot find the file specified
+
+## > Build Site On the Go
 
 - Manage Unlimited Sites
 - No Need Internet Once All Assets Are Downloaded Locally

@@ -504,15 +504,25 @@ $cmdInstalled
                                       ? () {}
                                       : () async {
                                           controller.isLoading = true;
-                                          await Downloader.defaultTheme(
-                                              onDone: (bool downloaded) {
-                                            if (downloaded == true) {
-                                              wctrl.themeInstalled = true;
-                                            } else {
-                                              wctrl.themeInstalled = false;
-                                            }
-                                            controller.isLoading = false;
-                                          });
+                                          if (wctrl.themeInstalled == false) {
+                                            await Downloader.defaultTheme(
+                                                onDone: (bool downloaded) {
+                                              if (downloaded == true) {
+                                                wctrl.themeInstalled = true;
+                                                Get.snackbar('Step 6 Done',
+                                                    'Theme Already Installed');
+                                              } else {
+                                                wctrl.themeInstalled = false;
+                                                Get.snackbar(
+                                                    'Installation Failed',
+                                                    'Please Try Again later');
+                                              }
+                                              controller.isLoading = false;
+                                            });
+                                          } else {
+                                            Get.snackbar('Step 6 Done',
+                                                'Theme Already Installed');
+                                          }
                                         },
                                 ),
                           checkbox: (wctrl.themeInstalled == true)

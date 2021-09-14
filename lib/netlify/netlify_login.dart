@@ -36,9 +36,11 @@ class NetlifyLogged {
         throw CommandFailedException();
       } else {
         final Process process = await Process.start(
-          command,
+          cmdPathOrNull,
           args,
-          environment: <String, String>{'PATH': PathEnv.get()},
+          environment: (Platform.isWindows)
+              ? null
+              : <String, String>{'PATH': PathEnv.get()},
         );
 
         final Stream<String> outputStream = process.stdout
