@@ -35,7 +35,11 @@ class NetlifyLogged {
       if (cmdPathOrNull == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(command, args);
+        final Process process = await Process.start(
+          command,
+          args,
+          environment: <String, String>{'PATH': PathEnv.get()},
+        );
 
         final Stream<String> outputStream = process.stdout
             .transform(const Utf8Decoder())
