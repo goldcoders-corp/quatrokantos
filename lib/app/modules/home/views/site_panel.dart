@@ -95,7 +95,7 @@ class SitePanel extends GetView<SiteListController> {
                                       height: 10,
                                     ),
                                     Text('''
-                                    Live and Local Sites Will Be Wiped Out!'''),
+Live and Local Sites Will Be Wiped Out!'''),
                                     SizedBox(
                                       height: 10,
                                     ),
