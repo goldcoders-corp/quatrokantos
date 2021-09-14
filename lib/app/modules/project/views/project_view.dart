@@ -144,6 +144,8 @@ class ProjectView extends GetView<ProjectController> {
                               ? IconButton(
                                   onPressed: () async {
                                     await Yarn.install(controller);
+                                    controller.isNodeModulesInstalled(
+                                        controller.local_name);
                                   },
                                   icon: (controller.npmInstalled == false)
                                       ? const Icon(Icons.file_download)
