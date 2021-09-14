@@ -154,6 +154,8 @@ Please Fill Up All Fields
                       // check if we have internet
                       // then we invoke NetlifyApi.createSite
                       // and we get the siteID
+
+                      // SocketException(message)
                       try {
                         await NetlifyApi.createSite(bodyStr,
                             onDone: (String? siteDetails) async {
@@ -164,10 +166,21 @@ Please Fill Up All Fields
                           }
                           project.isLoading = false;
                         }, onError: (String? error) {
-                          if (error != null && error.isNotEmpty) {
-                            Get.snackbar('Validation Error', '''
-Site Name: ${project.local_name} or Domain Name: ${project.custom_domain} Already Taken
-''');
+                          if (error != null &&
+                              error.isNotEmpty &&
+                              error == 'No Internet Connection') {
+                            Get.snackbar('Creation Failed', error);
+                          } else if (error != null &&
+                              error.contains('JSONHTTPError') == true) {
+                            Get.snackbar(
+                              'Site Creation Failed',
+                              '''
+Site Name Already Taken: ${project.local_name} or Domain Already Taken: ${project.custom_domain}
+                            ''',
+                              dismissDirection:
+                                  SnackDismissDirection.HORIZONTAL,
+                              duration: const Duration(seconds: 5),
+                            );
                           }
                           project.isLoading = false;
                         });

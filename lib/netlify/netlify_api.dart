@@ -192,6 +192,9 @@ class NetlifyApi {
     final StringBuffer errorBuffer = StringBuffer();
     String? siteDetails;
     String? errorMessage;
+    final StringBuffer networkErrorBuffer = StringBuffer();
+    final RegExp netRegex = RegExp(r'\bFetchError\b');
+
     if (cmdPathOrNull != null) {
       try {
         Process.run(
@@ -202,15 +205,32 @@ class NetlifyApi {
               ? null
               : <String, String>{'PATH': PathEnv.get()},
         ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-          if (errorReg.hasMatch(process.stderr.toString().trim())) {
-            errorBuffer.write(process.stderr.toString());
+          final String _stdout = process.stdout.toString().trim();
+          final String _stderr = process.stderr.toString().trim();
+          if (_stdout != '') {
+            output.write(_stdout);
+          }
+          if (errorReg.hasMatch(_stderr)) {
+            errorBuffer.write(_stderr);
+          }
+          if (netRegex.hasMatch(_stderr)) {
+            networkErrorBuffer.write('No Internet Connection');
           }
         }, onDone: () {
           siteDetails = output.toString();
           errorMessage = errorBuffer.toString();
-          onDone(siteDetails);
-          onError(errorMessage);
+
+          if (siteDetails != '') {
+            onDone(siteDetails);
+          }
+
+          if (networkErrorBuffer.toString() != '') {
+            // No Internet Error
+            errorMessage = networkErrorBuffer.toString();
+          }
+          if (errorMessage != '') {
+            onError(errorMessage);
+          }
         });
       } catch (e, stacktrace) {
         CommandFailedException.log(e.toString(), stacktrace.toString());
