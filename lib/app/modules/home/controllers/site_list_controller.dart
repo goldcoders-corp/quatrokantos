@@ -36,11 +36,13 @@ class SiteListController extends GetxController {
   @override
   void onClose() {}
 
-  Future<void> checkSitesDelete() async {
+  Future<void> checkSitesEmpty() async {
     final String sitesFolder = p.join(
       PathHelper.getSitesDIR,
     );
     if (await PathHelper.exists(sitesFolder) == true) {
+      sitesEmpty = false;
+    } else {
       sitesEmpty = true;
     }
   }
