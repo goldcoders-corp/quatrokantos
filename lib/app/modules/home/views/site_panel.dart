@@ -121,6 +121,13 @@ Live and Local Sites Will Be Wiped Out!'''),
                                 icon: const Icon(Icons.delete),
                                 onPressed: () async {
                                   await sitesCtrl.uninstallSites();
+                                  await sitesCtrl.checkSitesDelete();
+                                  if (sitesCtrl.sitesEmpty == true) {
+                                    Get.snackbar(
+                                        'Sites Deletion Successful', '''
+All Sites Locally and Remotely Have Been Deleted!
+                                        ''');
+                                  }
                                   Get.back();
                                 },
                               ),

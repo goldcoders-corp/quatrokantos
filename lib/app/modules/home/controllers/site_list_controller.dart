@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart' as p;
 import 'package:quatrokantos/app/modules/home/views/models/site_model.dart';
 import 'package:quatrokantos/constants/site_constants.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
@@ -20,6 +21,7 @@ class SiteListController extends GetxController {
   final Rx<List<Site>> sites = Rx<List<Site>>(<Site>[]);
 
   final RxBool _isLoading = false.obs;
+  final RxBool _sitesEmpty = true.obs;
 
   bool get isLoading => _isLoading.value;
   set isLoading(bool val) => _isLoading.value = val;
@@ -33,6 +35,18 @@ class SiteListController extends GetxController {
 
   @override
   void onClose() {}
+
+  Future<void> checkSitesDelete() async {
+    final String sitesFolder = p.join(
+      PathHelper.getSitesDIR,
+    );
+    if (await PathHelper.exists(sitesFolder) == true) {
+      sitesEmpty = true;
+    }
+  }
+
+  bool get sitesEmpty => _sitesEmpty.value;
+  set sitesEmpty(bool val) => _sitesEmpty.value = val;
 
   Function listEquals = const DeepCollectionEquality().equals;
   Future<void> fetchSites() async {
@@ -123,15 +137,31 @@ class SiteListController extends GetxController {
   /// Deliberately Delete All Local Data and Contents from sites folder
   /// and Delte All Site Remotely
   Future<void> uninstallSites() async {
-    isLoading = true;
-    final Directory sitesFolder = Directory(PathHelper.getSitesDIR);
-    sitesFolder.exists().then((bool exists) {
-      if (exists) {
-        sitesFolder.delete(recursive: true);
+    try {
+      final List<InternetAddress> result =
+          await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isLoading = true;
+        final Directory sitesFolder = Directory(PathHelper.getSitesDIR);
+        sitesFolder.exists().then((bool exists) {
+          if (exists) {
+            sitesFolder.delete(recursive: true);
+          }
+        });
+        await emptyLocalSites();
+        isLoading = false;
       }
-    });
-    await emptyLocalSites();
-    isLoading = false;
+    } on SocketException catch (_) {
+      Get.back();
+      Future.delayed(const Duration(seconds: 1)).then((_) {
+        Get.snackbar(
+          'Sites Deletion Failed',
+          'Make Sure Your Connected to Internet',
+          duration: const Duration(seconds: 3),
+          dismissDirection: SnackDismissDirection.HORIZONTAL,
+        );
+      });
+    }
   }
 
   Future<void> emptyLocalSites() async {
