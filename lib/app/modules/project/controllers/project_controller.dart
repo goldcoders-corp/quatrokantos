@@ -86,12 +86,33 @@ class ProjectController extends GetxController {
   }
 
   Future<void> isNodeModulesInstalled(String projectName) async {
-    final String currentTHEMEPATH = p.join(
+    final String packageLock = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'package-lock.json',
     );
-    npmInstalled = await File(currentTHEMEPATH).exists();
+
+    final String yarnLock = p.join(
+      PathHelper.getSitesDIR,
+      projectName,
+      'yarn.lock',
+    );
+
+    final String nodeModules = p.join(
+      PathHelper.getSitesDIR,
+      projectName,
+      'node_module',
+    );
+
+    if (await File(packageLock).exists() == true) {
+      npmInstalled = true;
+    }
+    if (await File(yarnLock).exists() == true) {
+      npmInstalled = true;
+    }
+    if (await PathHelper.exists(nodeModules) == true) {
+      npmInstalled = true;
+    }
   }
 
   String get custom_domain => _custom_domain.value;
