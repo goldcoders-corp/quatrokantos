@@ -52,12 +52,12 @@ class Downloader {
     final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
     final String cmZip = p.join(
       PathHelper.getCMSDIR,
-      zipName,
+      '$zipName.zip',
     );
 
     final String themeZip = p.join(
       PathHelper.getThemeDir,
-      zipName,
+      '$zipName.zip',
     );
 
     final bool cmsDownloaded = await File(cmZip).exists();
