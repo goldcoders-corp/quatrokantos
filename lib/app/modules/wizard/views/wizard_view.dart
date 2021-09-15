@@ -57,7 +57,7 @@ class WizardView extends GetView<CommandController> {
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           final String path = PathEnv.get();
                                           const String command = 'webi';
@@ -95,25 +95,33 @@ $cmdInstalled
                                               bool installed,
                                             ) {
                                               if (installed == true) {
-                                                final String? cmdInstalled =
-                                                    whichSync(
-                                                  command,
-                                                  environment: env,
-                                                );
-                                                wctrl.webiInstalled = true;
-                                                Get.defaultDialog(
-                                                    title: 'Step #1 Done:',
-                                                    middleText: '''
+                                                Process.run(
+                                                    'powershell', <String>[
+                                                  r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+                                                ]).asStream().listen(
+                                                    (ProcessResult
+                                                        process) async {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.webiInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #1 Done:',
+                                                      middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
 '''
-                                                        .trim(),
-                                                    confirm: TextButton(
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ));
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                });
                                               }
                                               controller.isLoading = false;
                                             });
@@ -145,7 +153,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           final String path = PathEnv.get();
                                           final String pkgmanager =
@@ -186,28 +194,36 @@ $cmdInstalled
                                               bool installed,
                                             ) {
                                               if (installed == true) {
-                                                final String? cmdInstalled =
-                                                    whichSync(
-                                                  pkgmanager,
-                                                  environment:
-                                                      (Platform.isWindows)
-                                                          ? null
-                                                          : env,
-                                                );
-                                                wctrl.pkgInstalled = true;
-                                                Get.defaultDialog(
-                                                    title: 'Step #2 Done:',
-                                                    middleText: '''
+                                                Process.run(
+                                                    'powershell', <String>[
+                                                  r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+                                                ]).asStream().listen(
+                                                    (ProcessResult
+                                                        process) async {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    pkgmanager,
+                                                    environment:
+                                                        (Platform.isWindows)
+                                                            ? null
+                                                            : env,
+                                                  );
+                                                  wctrl.pkgInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #2 Done:',
+                                                      middleText: '''
 ${pkgmanager.toUpperCase()} Installed at
 $cmdInstalled
 '''
-                                                        .trim(),
-                                                    confirm: TextButton(
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ));
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                });
                                               }
                                               controller.isLoading = false;
                                             });
@@ -239,7 +255,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           final String path = PathEnv.get();
                                           const String command = 'hugo';
@@ -279,28 +295,33 @@ $cmdInstalled
                                               bool installed,
                                             ) {
                                               if (installed == true) {
-                                                final String? cmdInstalled =
-                                                    whichSync(
-                                                  command,
-                                                  environment:
-                                                      (Platform.isWindows)
-                                                          ? null
-                                                          : env,
-                                                );
-                                                wctrl.hugoInstalled = true;
-                                                Get.defaultDialog(
-                                                    title: 'Step #3 Done:',
-                                                    middleText: '''
+                                                Process.run(
+                                                    'powershell', <String>[
+                                                  r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+                                                ]).asStream().listen(
+                                                    (ProcessResult
+                                                        process) async {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment: env,
+                                                  );
+                                                  wctrl.hugoInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #1 Done:',
+                                                      middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
 '''
-                                                        .trim(),
-                                                    confirm: TextButton(
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ));
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                });
                                               }
                                               controller.isLoading = false;
                                             });
@@ -332,7 +353,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           final String path = PathEnv.get();
                                           const String command = 'node';
@@ -374,19 +395,36 @@ $cmdInstalled
                                                   YarnInstaller();
                                               await yarn(onDone: (bool yarn) {
                                                 wctrl.nodeInstalled = true;
-                                                Get.defaultDialog(
-                                                    title: 'Step #4 Done:',
-                                                    middleText: '''
+                                                Process.run(
+                                                    'powershell', <String>[
+                                                  r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+                                                ]).asStream().listen(
+                                                    (ProcessResult
+                                                        process) async {
+                                                  final String? cmdInstalled =
+                                                      whichSync(
+                                                    command,
+                                                    environment:
+                                                        (Platform.isWindows)
+                                                            ? null
+                                                            : env,
+                                                  );
+                                                  wctrl.nodeInstalled = true;
+                                                  Get.defaultDialog(
+                                                      title: 'Step #4 Done:',
+                                                      middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
 '''
-                                                        .trim(),
-                                                    confirm: TextButton(
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ));
+                                                          .trim(),
+                                                      confirm: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text('OK'),
+                                                      ));
+                                                });
                                                 controller.isLoading = false;
                                               });
                                             });
@@ -400,10 +438,6 @@ $cmdInstalled
                       ],
                     ),
                   ),
-                  // TODO: Extra Step Here
-                  // Download Default Theme
-                  // So Even if Users Dont Have Internet When Creating
-                  // New Sites they wouldnt be facing an issue
                   Step(
                     title: const Text('Set Up Site Deployer'),
                     isActive: wctrl.currentStep >= 4,
@@ -422,7 +456,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           final String path = PathEnv.get();
                                           const String command = 'netlify';
@@ -514,7 +548,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           controller.isLoading = true;
                                           if (wctrl.themeInstalled == false) {
@@ -524,17 +558,19 @@ $cmdInstalled
                                                 wctrl.themeInstalled = true;
                                                 Get.snackbar('Step 6 Done',
                                                     'Theme Already Installed');
+                                                controller.isLoading = false;
                                               } else {
                                                 wctrl.themeInstalled = false;
                                                 Get.snackbar(
                                                     'Installation Failed',
                                                     'Please Try Again later');
+                                                controller.isLoading = false;
                                               }
-                                              controller.isLoading = false;
                                             });
                                           } else {
                                             Get.snackbar('Step 6 Done',
                                                 'Theme Already Installed');
+                                            controller.isLoading = false;
                                           }
                                         },
                                 ),
@@ -563,7 +599,7 @@ $cmdInstalled
                                   title: 'Run',
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
-                                      ? () {}
+                                      ? null
                                       : () async {
                                           if (wctrl.netlifyLogged != true) {
                                             controller.isLoading = true;
@@ -573,7 +609,8 @@ $cmdInstalled
                                                 response = await login();
                                             final String message =
                                                 response['message'] as String;
-                                            if (response['url'] != null) {
+                                            if (response['url'] != null ||
+                                                response['url'] != '') {
                                               await NetlifyLoginDialog(response)
                                                   .launch();
                                             } else if (message.isNotEmpty) {
@@ -587,6 +624,7 @@ $cmdInstalled
                                                   // ignore: lines_longer_than_80_chars
                                                   response['message']
                                                       as String);
+                                              controller.isLoading = false;
                                             }
                                           } else {
                                             wctrl.netlifyLogged = true;
@@ -596,8 +634,8 @@ $cmdInstalled
                                                 'Netlify Account Authorized',
                                                 // ignore: lines_longer_than_80_chars
                                                 'You can Proceed To Next Step');
+                                            controller.isLoading = false;
                                           }
-                                          controller.isLoading = false;
                                         },
                                 ),
                           checkbox: (wctrl.netlifyLogged == true)

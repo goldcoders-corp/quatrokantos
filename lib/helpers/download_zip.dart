@@ -86,6 +86,13 @@ class Downloader {
             dismissDirection: SnackDismissDirection.HORIZONTAL);
       });
     }
-    (cmsDownloaded && themeDownloaded) ? onDone(true) : onDone(false);
+    final bool checkAgainCMS = await File(cmZip).exists();
+    final bool checkAgainTheme = await File(themeZip).exists();
+
+    if (checkAgainCMS == true && checkAgainTheme == true) {
+      onDone(true);
+    } else {
+      onDone(false);
+    }
   }
 }

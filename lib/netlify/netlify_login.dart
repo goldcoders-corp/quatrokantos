@@ -22,7 +22,9 @@ class NetlifyLogged {
 
   Future<Map<String, dynamic>> call() async {
     final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()});
 
     final StringBuffer outputbuffer = StringBuffer();
     final StringBuffer errorBuffer = StringBuffer();
