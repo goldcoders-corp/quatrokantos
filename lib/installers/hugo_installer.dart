@@ -50,7 +50,9 @@ class HugoInstall {
 
   Future<void> call({required Function(bool installed) onDone}) async {
     final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()});
 
     bool installed;
     if (cmdPathOrNull != null) {
@@ -84,7 +86,7 @@ class HugoInstall {
 
   Future<void> _installOnWindows(
       {required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command,
+    final String? cmdPathOrNull = whichSync(command1,
         environment: (Platform.isWindows)
             ? null
             : <String, String>{'PATH': PathEnv.get()});
