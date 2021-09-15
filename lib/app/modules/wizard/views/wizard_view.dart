@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:process_run/shell.dart';
@@ -67,7 +69,9 @@ class WizardView extends GetView<CommandController> {
                                           final String? cmdInstalled =
                                               whichSync(
                                             command,
-                                            environment: env,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
                                           );
                                           if (cmdInstalled != null) {
                                             wctrl.webiInstalled = true;
@@ -150,10 +154,13 @@ $cmdInstalled
                                               <String, String>{
                                             'PATH': path,
                                           };
+
                                           final String? cmdInstalled =
                                               whichSync(
                                             pkgmanager,
-                                            environment: env,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
                                           );
                                           if (cmdInstalled != null) {
                                             wctrl.pkgInstalled = true;
@@ -182,7 +189,10 @@ $cmdInstalled
                                                 final String? cmdInstalled =
                                                     whichSync(
                                                   pkgmanager,
-                                                  environment: env,
+                                                  environment:
+                                                      (Platform.isWindows)
+                                                          ? null
+                                                          : env,
                                                 );
                                                 wctrl.pkgInstalled = true;
                                                 Get.defaultDialog(
@@ -238,10 +248,13 @@ $cmdInstalled
                                               <String, String>{
                                             'PATH': path,
                                           };
+
                                           final String? cmdInstalled =
                                               whichSync(
                                             command,
-                                            environment: env,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
                                           );
                                           if (cmdInstalled != null) {
                                             wctrl.hugoInstalled = true;
@@ -269,7 +282,10 @@ $cmdInstalled
                                                 final String? cmdInstalled =
                                                     whichSync(
                                                   command,
-                                                  environment: env,
+                                                  environment:
+                                                      (Platform.isWindows)
+                                                          ? null
+                                                          : env,
                                                 );
                                                 wctrl.hugoInstalled = true;
                                                 Get.defaultDialog(
@@ -328,7 +344,9 @@ $cmdInstalled
                                           final String? cmdInstalled =
                                               whichSync(
                                             command,
-                                            environment: env,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
                                           );
                                           if (cmdInstalled != null) {
                                             wctrl.nodeInstalled = true;
@@ -371,16 +389,6 @@ $cmdInstalled
                                                     ));
                                                 controller.isLoading = false;
                                               });
-//                                               if (installed == true) {
-//                                                 final String? cmdInstalled =
-//                                                     whichSync(
-//                                                   command,
-//                                                   environment: env,
-//                                                 );
-//                                                 wctrl.nodeInstalled = true;
-
-//                                               }
-//                                               controller.isLoading = false;
                                             });
                                           }
                                         },
@@ -426,7 +434,9 @@ $cmdInstalled
                                           final String? cmdInstalled =
                                               whichSync(
                                             command,
-                                            environment: env,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
                                           );
                                           if (cmdInstalled != null) {
                                             wctrl.netlifyInstalled = true;
@@ -454,7 +464,10 @@ $cmdInstalled
                                                 final String? cmdInstalled =
                                                     whichSync(
                                                   command,
-                                                  environment: env,
+                                                  environment:
+                                                      (Platform.isWindows)
+                                                          ? null
+                                                          : env,
                                                 );
                                                 wctrl.netlifyInstalled = true;
                                                 Get.defaultDialog(
