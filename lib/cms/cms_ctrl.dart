@@ -213,14 +213,7 @@ cmsSetup: $cmsSetUp
           '''
               .trim());
       await cmsSetUp.unzip((bool unzip) async {
-        await WritterHelper.log(
-            filePath: filePath,
-            stacktrace: '''
-unzip: $unzip
-          '''
-                .trim());
-        Get.snackbar('CMS Installed', 'Start Running CMS',
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
+        cmsInstalled = true;
       });
     }
 
@@ -237,12 +230,7 @@ themeSetUp: $themeSetUp
               .trim());
 
       await themeSetUp.unzip((bool unzip) async {
-        await WritterHelper.log(
-            filePath: filePath,
-            stacktrace: '''
-unzip: $unzip
-          '''
-                .trim());
+        themeInstalled = true;
       });
     }
     if (themeInstalled && cmsInstalled) {
