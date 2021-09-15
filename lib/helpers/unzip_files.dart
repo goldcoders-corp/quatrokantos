@@ -1,11 +1,6 @@
 import 'dart:io';
 
 import 'package:archive/archive.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:quatrokantos/helpers/pc_info_helper.dart';
-import 'package:quatrokantos/helpers/replace_helper.dart';
-import 'package:quatrokantos/helpers/writter_helper.dart';
-import 'package:path/path.dart' as p;
 
 /// Example Usage:
 /// ```
@@ -44,7 +39,6 @@ class UnzipFile {
 
     for (final ArchiveFile file in archive) {
       String filename = file.name;
-      // possible we are stuck here
       final RegExp regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
 

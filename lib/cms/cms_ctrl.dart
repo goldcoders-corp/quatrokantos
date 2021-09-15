@@ -138,8 +138,8 @@ name: $zipName
     if (cmsDownloaded == false) {
       await WritterHelper.log(filePath: filePath, stacktrace: '''
 downloading cms: themeURL:
-${file.themeUrl}
-dir: ${PathHelper.getThemeDir}
+${file.cmsUrl}
+dir: ${PathHelper.getCMSDIR}
 name: $zipName
           ''');
       final Downloader cms = Downloader(

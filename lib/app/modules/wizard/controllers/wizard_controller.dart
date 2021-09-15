@@ -45,8 +45,8 @@ class WizardController extends GetxController {
     // yarnInstalled = false;
     initNetlify();
     // netlifyInstalled = false;
-    checkIfThemeInstalled();
-    // themeInstalled = false;
+    // checkIfThemeInstalled();
+    themeInstalled = false;
     initNetlifyAuth();
     // netlifyLogged = false;
   }
@@ -68,12 +68,12 @@ class WizardController extends GetxController {
     final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
     final String cmZip = p.join(
       PathHelper.getCMSDIR,
-      zipName,
+      '$zipName.zip',
     );
 
     final String themeZip = p.join(
       PathHelper.getThemeDir,
-      zipName,
+      '$zipName.zip',
     );
 
     final bool cmsDownloaded = await File(cmZip).exists();
