@@ -49,8 +49,8 @@ class Downloader {
 
   static Future<void> defaultTheme(
       {required Function(bool downloaded) onDone}) async {
-    bool checkAgainCMS = false;
-    bool checkAgainTheme = false;
+    bool installedCMS = false;
+    bool installedTheme = false;
 
     final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
     final String cmZip = p.join(
@@ -73,8 +73,7 @@ class Downloader {
         name: zipName,
       );
       await theme.download((_) {
-        Get.snackbar('Theme Downloaded', 'It Will Be Cached For Later Use',
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
+        installedTheme = true;
       });
     }
 
@@ -85,22 +84,9 @@ class Downloader {
         name: zipName,
       );
       await cms.download((_) {
-        Get.snackbar('Cms Downloaded', 'It Will Be Cached For Later Use',
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
+        installedCMS = true;
       });
     }
-    await File(cmZip).exists().then((bool cmsExists) {
-      if (cmsExists) {
-        File(themeZip).exists().then((bool themeExists) {
-          if (themeExists) {
-            onDone(true);
-          } else {
-            onDone(false);
-          }
-        });
-      } else {
-        onDone(false);
-      }
-    });
+    onDone(installedCMS && installedTheme);
   }
 }
