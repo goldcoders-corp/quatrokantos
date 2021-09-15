@@ -49,6 +49,9 @@ class Downloader {
 
   static Future<void> defaultTheme(
       {required Function(bool downloaded) onDone}) async {
+    bool checkAgainCMS = false;
+    bool checkAgainTheme = false;
+
     final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
     final String cmZip = p.join(
       PathHelper.getCMSDIR,
@@ -86,13 +89,18 @@ class Downloader {
             dismissDirection: SnackDismissDirection.HORIZONTAL);
       });
     }
-    final bool checkAgainCMS = await File(cmZip).exists();
-    final bool checkAgainTheme = await File(themeZip).exists();
-
-    if (checkAgainCMS == true && checkAgainTheme == true) {
-      onDone(true);
-    } else {
-      onDone(false);
-    }
+    await File(cmZip).exists().then((bool cmsExists) {
+      if (cmsExists) {
+        File(themeZip).exists().then((bool themeExists) {
+          if (themeExists) {
+            onDone(true);
+          } else {
+            onDone(false);
+          }
+        });
+      } else {
+        onDone(false);
+      }
+    });
   }
 }
