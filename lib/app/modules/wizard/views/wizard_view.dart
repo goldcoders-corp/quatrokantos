@@ -18,7 +18,6 @@ import 'package:quatrokantos/installers/webi_installer.dart';
 import 'package:quatrokantos/installers/yarn_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_login.dart';
-import 'package:quatrokantos/npm/yarn.dart';
 import 'package:quatrokantos/services/netlify_auth_service.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';

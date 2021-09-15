@@ -45,8 +45,8 @@ class WizardController extends GetxController {
     // yarnInstalled = false;
     initNetlify();
     // netlifyInstalled = false;
-    // checkIfThemeInstalled();
-    themeInstalled = false;
+    checkIfThemeInstalled();
+    // themeInstalled = false;
     initNetlifyAuth();
     // netlifyLogged = false;
   }
