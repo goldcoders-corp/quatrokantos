@@ -1,6 +1,11 @@
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:quatrokantos/helpers/pc_info_helper.dart';
+import 'package:quatrokantos/helpers/replace_helper.dart';
+import 'package:quatrokantos/helpers/writter_helper.dart';
+import 'package:path/path.dart' as p;
 
 /// Example Usage:
 /// ```
@@ -34,12 +39,42 @@ class UnzipFile {
   );
 
   Future<void> unzip(Function(bool done) onDone) async {
+    // ADDED FOR DEBUGGING
+    String folder = dotenv.env['APP_NAME']!.toLowerCase();
+
+    final ReplaceHelper text = ReplaceHelper(text: folder, regex: '\\s+');
+    folder = text.replace();
+    const String filename = 'debug_download.txt';
+    final String filePath =
+        p.join(PC.userDirectory, '.local', 'share', '.$folder', filename);
+    // END ADDED FOR DEBUGGING
+    await WritterHelper.log(
+        filePath: filePath,
+        stacktrace: '''
+Inside unzip function
+path: $path
+destination: $destination
+          '''
+            .trim());
     final Archive archive =
         ZipDecoder().decodeBytes(File(path).readAsBytesSync());
+    await WritterHelper.log(
+        filePath: filePath,
+        stacktrace: '''
+Archive ${archive.toString()}
+          '''
+            .trim());
     for (final ArchiveFile file in archive) {
       String filename = file.name;
+      // possible we are stuck here
       final RegExp regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
+      await WritterHelper.log(
+          filePath: filePath,
+          stacktrace: '''
+filename String Match: $filename
+          '''
+              .trim());
       if (file.isFile) {
         final List<int> data = file.content as List<int>;
         File(destination + filename)
