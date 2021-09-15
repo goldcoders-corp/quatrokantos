@@ -105,7 +105,10 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
                                                   final String? cmdInstalled =
                                                       whichSync(
                                                     command,
-                                                    environment: env,
+                                                    environment:
+                                                        (Platform.isWindows)
+                                                            ? null
+                                                            : env,
                                                   );
                                                   wctrl.webiInstalled = true;
                                                   Get.defaultDialog(
@@ -305,7 +308,10 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
                                                   final String? cmdInstalled =
                                                       whichSync(
                                                     command,
-                                                    environment: env,
+                                                    environment:
+                                                        (Platform.isWindows)
+                                                            ? null
+                                                            : env,
                                                   );
                                                   wctrl.hugoInstalled = true;
                                                   Get.defaultDialog(
