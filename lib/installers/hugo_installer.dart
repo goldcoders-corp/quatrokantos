@@ -23,6 +23,7 @@ class HugoInstall {
   HugoInstall() : super() {
     command = 'hugo';
     if (Platform.isWindows) {
+      command1 = 'scoop';
       args1.add('install');
       args1.add('hugo-extended');
     } else if (Platform.isMacOS) {
@@ -83,8 +84,12 @@ class HugoInstall {
 
   Future<void> _installOnWindows(
       {required Function(bool installed) onDone}) async {
+    final String? cmdPathOrNull = whichSync(command,
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()});
     Process.run(
-      command1,
+      cmdPathOrNull!,
       args1,
       runInShell: true,
       workingDirectory: PC.userDirectory,
