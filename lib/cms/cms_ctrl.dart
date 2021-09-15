@@ -107,13 +107,13 @@ class CmsController extends GetxController {
       PathHelper.getSitesDIR,
       projectName,
       'cms',
-      'package.json',
+      'yarn.lock',
     );
 
     final String currentTHEMEPATH = p.join(
       PathHelper.getSitesDIR,
       projectName,
-      'package.json',
+      'yarn.lock',
     );
     final bool cmsInstalled = await File(currentCMSPATH).exists();
     final bool themeInstalled = await File(currentTHEMEPATH).exists();

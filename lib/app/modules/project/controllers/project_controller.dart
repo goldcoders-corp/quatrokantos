@@ -80,7 +80,7 @@ class ProjectController extends GetxController {
     final String currentTHEMEPATH = p.join(
       PathHelper.getSitesDIR,
       projectName,
-      'package.json',
+      'yarn.lock',
     );
     themeInstalled = await File(currentTHEMEPATH).exists();
   }
