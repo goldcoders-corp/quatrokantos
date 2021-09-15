@@ -18,6 +18,7 @@ import 'package:quatrokantos/installers/webi_installer.dart';
 import 'package:quatrokantos/installers/yarn_installer.dart';
 import 'package:quatrokantos/maps/app_colors.dart';
 import 'package:quatrokantos/netlify/netlify_login.dart';
+import 'package:quatrokantos/npm/yarn.dart';
 import 'package:quatrokantos/services/netlify_auth_service.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
@@ -397,10 +398,7 @@ $cmdInstalled
                                             await nodeInstaller(onDone: (
                                               bool installed,
                                             ) async {
-                                              final YarnInstaller yarn =
-                                                  YarnInstaller();
-                                              await yarn(onDone: (bool yarn) {
-                                                wctrl.nodeInstalled = true;
+                                              if (installed == true) {
                                                 Process.run(
                                                     'powershell', <String>[
                                                   r'''
@@ -416,7 +414,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
                                                             ? null
                                                             : env,
                                                   );
-                                                  wctrl.nodeInstalled = true;
+
                                                   Get.defaultDialog(
                                                       title: 'Step #4 Done:',
                                                       middleText: '''
@@ -431,8 +429,10 @@ $cmdInstalled
                                                         child: const Text('OK'),
                                                       ));
                                                 });
-                                                controller.isLoading = false;
-                                              });
+                                                wctrl.nodeInstalled = true;
+                                              }
+                                              //
+                                              controller.isLoading = false;
                                             });
                                           }
                                         },
@@ -445,9 +445,107 @@ $cmdInstalled
                     ),
                   ),
                   Step(
-                    title: const Text('Set Up Site Deployer'),
+                    title: const Text('Set Site Package Manager'),
                     isActive: wctrl.currentStep >= 4,
                     state: wctrl.currentStep >= 4
+                        ? StepState.complete
+                        : StepState.disabled,
+                    content: Column(
+                      children: <Widget>[
+                        OnboardingCard(
+                          title: 'Install Yarn',
+                          button: controller.isLoading == true
+                              ? CircularProgressIndicator(
+                                  color: appColors[ACCENT],
+                                )
+                              : RunBtn(
+                                  title: 'Run',
+                                  icon: Icons.play_arrow,
+                                  onTap: controller.isLoading == true
+                                      ? null
+                                      : () async {
+                                          final String path = PathEnv.get();
+                                          const String command = 'yarn';
+
+                                          final Map<String, String> env =
+                                              <String, String>{
+                                            'PATH': path,
+                                          };
+                                          final String? cmdInstalled =
+                                              whichSync(
+                                            command,
+                                            environment: (Platform.isWindows)
+                                                ? null
+                                                : env,
+                                          );
+
+                                          if (cmdInstalled != null) {
+                                            wctrl.nodeInstalled = true;
+
+                                            Get.defaultDialog(
+                                                title: 'Step #5 Done:',
+                                                middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                    .trim(),
+                                                confirm: TextButton(
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  child: const Text('OK'),
+                                                ));
+                                          } else {
+                                            final YarnInstaller yarn =
+                                                YarnInstaller();
+                                            await yarn(onDone: (bool yarn) {
+                                              wctrl.yarnInstalled = true;
+                                              Process.run(
+                                                  'powershell', <String>[
+                                                r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+                                              ]).asStream().listen(
+                                                  (ProcessResult
+                                                      process) async {
+                                                final String? cmdInstalled =
+                                                    whichSync(
+                                                  command,
+                                                  environment:
+                                                      (Platform.isWindows)
+                                                          ? null
+                                                          : env,
+                                                );
+                                                wctrl.yarnInstalled = true;
+                                                Get.defaultDialog(
+                                                    title: 'Step #5 Done:',
+                                                    middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                                                        .trim(),
+                                                    confirm: TextButton(
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                      child: const Text('OK'),
+                                                    ));
+                                              });
+                                              controller.isLoading = false;
+                                            });
+                                          }
+                                        },
+                                ),
+                          checkbox: (wctrl.yarnInstalled == true)
+                              ? const Icon(Icons.check_box)
+                              : const Icon(Icons.check_box_outline_blank),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Step(
+                    title: const Text('Set Up Site Deployer'),
+                    isActive: wctrl.currentStep >= 5,
+                    state: wctrl.currentStep >= 5
                         ? StepState.complete
                         : StepState.disabled,
                     content: Column(
@@ -482,7 +580,7 @@ $cmdInstalled
                                             wctrl.netlifyInstalled = true;
 
                                             Get.defaultDialog(
-                                                title: 'Step #5 Done:',
+                                                title: 'Step #6 Done:',
                                                 middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
@@ -511,7 +609,7 @@ $cmdInstalled
                                                 );
                                                 wctrl.netlifyInstalled = true;
                                                 Get.defaultDialog(
-                                                    title: 'Step #5 Done:',
+                                                    title: 'Step #6 Done:',
                                                     middleText: '''
 ${command.toUpperCase()} Installed at
 $cmdInstalled
@@ -538,8 +636,8 @@ $cmdInstalled
                   ),
                   Step(
                     title: const Text('Download Default Site Theme'),
-                    isActive: wctrl.currentStep >= 5,
-                    state: wctrl.currentStep >= 5
+                    isActive: wctrl.currentStep >= 6,
+                    state: wctrl.currentStep >= 6
                         ? StepState.complete
                         : StepState.disabled,
                     content: Column(
@@ -562,7 +660,7 @@ $cmdInstalled
                                                 onDone: (bool downloaded) {
                                               if (downloaded == true) {
                                                 wctrl.themeInstalled = true;
-                                                Get.snackbar('Step 6 Done',
+                                                Get.snackbar('Step #7 Done',
                                                     'Theme Already Installed');
                                                 controller.isLoading = false;
                                               } else {
@@ -574,7 +672,7 @@ $cmdInstalled
                                               }
                                             });
                                           } else {
-                                            Get.snackbar('Step 6 Done',
+                                            Get.snackbar('Step #7 Done',
                                                 'Theme Already Installed');
                                             controller.isLoading = false;
                                           }
@@ -589,8 +687,8 @@ $cmdInstalled
                   ),
                   Step(
                     title: const Text('Create Account / Login Netlify'),
-                    isActive: wctrl.currentStep >= 6,
-                    state: wctrl.currentStep >= 6
+                    isActive: wctrl.currentStep >= 7,
+                    state: wctrl.currentStep >= 7
                         ? StepState.complete
                         : StepState.disabled,
                     content: Column(

@@ -23,6 +23,7 @@ class WizardController extends GetxController {
   final RxBool _netlifyInstalled = false.obs;
   final RxBool _netlifyLogged = false.obs;
   final RxBool _themeInstalled = false.obs;
+  final RxBool _yarnInstalled = false.obs;
 
   @override
   void onInit() {
@@ -40,6 +41,8 @@ class WizardController extends GetxController {
     // hugoInstalled = false;
     initNode();
     // nodeInstalled = false;
+    initYarn();
+    // yarnInstalled = false;
     initNetlify();
     // netlifyInstalled = false;
     checkIfThemeInstalled();
@@ -50,6 +53,13 @@ class WizardController extends GetxController {
 
   bool get themeInstalled => _themeInstalled.value;
   set themeInstalled(bool val) => _themeInstalled.value = val;
+
+  bool get yarnInstalled => _yarnInstalled.value;
+
+  set yarnInstalled(bool val) {
+    _getStorage.write(YARN_INSTALLED, val);
+    _yarnInstalled.value = val;
+  }
 
   int get currentStep => _currentStep.value;
   set currentStep(int val) => _currentStep.value = val;
@@ -196,7 +206,9 @@ class WizardController extends GetxController {
 
   // ignore: use_setters_to_change_properties
   void tap(int step) {
-    currentStep = step;
+    if (cmd.isLoading == false) {
+      currentStep = step;
+    }
   }
 
   void next() {
@@ -217,14 +229,18 @@ class WizardController extends GetxController {
         currentStep++;
       }
     } else if (currentStep == 4) {
-      if (netlifyInstalled) {
+      if (yarnInstalled) {
         currentStep++;
       }
     } else if (currentStep == 5) {
-      if (themeInstalled) {
+      if (netlifyInstalled) {
         currentStep++;
       }
     } else if (currentStep == 6) {
+      if (themeInstalled) {
+        currentStep++;
+      }
+    } else if (currentStep == 7) {
       if (netlifyLogged) {
         complete = true;
         wiz.completed = true;
@@ -232,20 +248,23 @@ class WizardController extends GetxController {
       }
     } else {
       currentStep++;
-      if (currentStep > 5) {
-        currentStep = 5;
+      if (currentStep >= 7) {
+        currentStep = 7;
       }
     }
   }
 
   void initStep() {
     if (netlifyLogged == false) {
-      currentStep = 6;
+      currentStep = 7;
     }
     if (themeInstalled) {
-      currentStep = 5;
+      currentStep = 6;
     }
     if (netlifyInstalled == false) {
+      currentStep = 5;
+    }
+    if (yarnInstalled == false) {
       currentStep = 4;
     }
     if (nodeInstalled == false) {
@@ -268,5 +287,14 @@ class WizardController extends GetxController {
 
   set complete(bool done) {
     _complete.value = done;
+  }
+
+  void initYarn() {
+    final bool? node = _getStorage.read(YARN_INSTALLED);
+    if (node == null) {
+      yarnInstalled = false;
+    } else {
+      yarnInstalled = node;
+    }
   }
 }
