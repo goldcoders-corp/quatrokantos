@@ -33,6 +33,7 @@ C:\\ProgramData\\scoop\\shims
 C:\\ProgramData\\chocolatey\\bin
 C:\\ProgramData\\scoop\\shims
 ${PC.userDirectory}\\AppData\\Local\\Microsoft\\WindowsApps
+${PC.userDirectory}\\scoop\\apps\\yarn\\current\\global\\bin
 ${PC.userDirectory}\\.local\\bin
 ${PC.userDirectory}\\scoops\\shims
 ${PC.userDirectory}\\scoop\\apps\\nodejs-lts\\current
