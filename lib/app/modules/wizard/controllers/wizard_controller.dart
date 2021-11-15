@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:quatrokantos/constants/wizard_contants.dart';
+import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/helpers/path_helper.dart';
 import 'package:quatrokantos/services/wizard_service.dart';
 
 class WizardController extends GetxController {
   final GetStorage _getStorage = GetStorage();
   final WizardService wiz = Get.find<WizardService>();
+  final CommandController cmd = Get.find<CommandController>();
 
   final RxInt _currentStep = 0.obs;
   final RxBool _complete = false.obs;
@@ -181,11 +183,13 @@ class WizardController extends GetxController {
   }
 
   void cancel() {
-    if (currentStep == 0) {
-      return;
-    } else {
-      if (currentStep > 0) {
-        currentStep--;
+    if (cmd.isLoading == false) {
+      if (currentStep == 0) {
+        return;
+      } else {
+        if (currentStep > 0) {
+          currentStep--;
+        }
       }
     }
   }

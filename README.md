@@ -1,5 +1,11 @@
 # Quatrokantos App
 
+## Issues
+- Missing DLL files in windows , get it from system3sssss
+- Add Set Execution Policy on Windows for CurrentUser Scope
+- path returning null, try to refresh session env
+- Disable Step back when Running Script , add check of controller.isLoading dont step back
+- hugo download not downloading, missing dependencies
 > Build Site On the Go
 
 - Manage Unlimited Sites
