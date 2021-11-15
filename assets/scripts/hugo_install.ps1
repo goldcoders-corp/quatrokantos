@@ -1,4 +1,4 @@
-# ./hugo_install -version 0.89.2
+# ./hugo_install -version 0.89.2 -HUGO hugo
 param (
     [string]$version= "",
     [string]$HUGO = "hugo_extended"
