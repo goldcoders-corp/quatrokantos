@@ -36,10 +36,12 @@ class UnzipFile {
   Future<void> unzip(Function(bool done) onDone) async {
     final Archive archive =
         ZipDecoder().decodeBytes(File(path).readAsBytesSync());
+
     for (final ArchiveFile file in archive) {
       String filename = file.name;
       final RegExp regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
+
       if (file.isFile) {
         final List<int> data = file.content as List<int>;
         File(destination + filename)

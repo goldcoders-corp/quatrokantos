@@ -71,6 +71,7 @@ class WebiInstall {
   Future<void> _injectPath({required Function(bool installed) onDone}) async {
     final String envpath = PathEnv.get();
     if (Platform.isWindows) {
+      // Enable powershell script execution
       await Process.run('powershell', <String>[
         'Set-ExecutionPolicy',
         '-ExecutionPolicy',
@@ -78,7 +79,6 @@ class WebiInstall {
         '-Scope',
         'CurrentUser'
       ]);
-
       Process.run(
         'powershell',
         <String>[

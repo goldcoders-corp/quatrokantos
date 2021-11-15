@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:quatrokantos/helpers/path_helper.dart';
 
@@ -23,9 +22,9 @@ class Downloader {
   /// const String cmsURL =
   ///       'https://github.com/thriftapps/cms/archive/ce25c8fca76d999c22c3a6e2f3670abf0da3240f.zip';
   ///   const String themeURL =
-  ///       'https://github.com/thriftapps/goldcoders.dev/archive/refs/heads/main.zip';
+  ///       'https://github.com/thriftapps/netlify/archive/refs/heads/main.zip';
   ///   const String cmsName = 'cms.zip';
-  ///   const String themeName = 'goldcoders.zip';
+  ///   const String themeName = 'thriftshop.zip';
   ///   final String path =
   ///       p.join(PC.userDirectory, '.local', 'share', 'quatrokantos');
   ///   const String filename = 'goldcoders.zip';
@@ -47,17 +46,21 @@ class Downloader {
     onDone(true);
   }
 
+// error here empty cms zip
   static Future<void> defaultTheme(
       {required Function(bool downloaded) onDone}) async {
+    bool installedCMS = false;
+    bool installedTheme = false;
+
     final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
     final String cmZip = p.join(
       PathHelper.getCMSDIR,
-      zipName,
+      '$zipName.zip',
     );
 
     final String themeZip = p.join(
       PathHelper.getThemeDir,
-      zipName,
+      '$zipName.zip',
     );
 
     final bool cmsDownloaded = await File(cmZip).exists();
@@ -70,8 +73,7 @@ class Downloader {
         name: zipName,
       );
       await theme.download((_) {
-        Get.snackbar('Theme Downloaded', 'It Will Be Cached For Later Use',
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
+        installedTheme = true;
       });
     }
 
@@ -82,10 +84,9 @@ class Downloader {
         name: zipName,
       );
       await cms.download((_) {
-        Get.snackbar('Cms Downloaded', 'It Will Be Cached For Later Use',
-            dismissDirection: SnackDismissDirection.HORIZONTAL);
+        installedCMS = true;
       });
     }
-    (cmsDownloaded && themeDownloaded) ? onDone(true) : onDone(false);
+    onDone(installedCMS && installedTheme);
   }
 }

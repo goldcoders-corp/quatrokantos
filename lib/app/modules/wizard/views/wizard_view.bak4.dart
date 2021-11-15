@@ -58,78 +58,7 @@ class WizardView extends GetView<CommandController> {
                                   icon: Icons.play_arrow,
                                   onTap: controller.isLoading == true
                                       ? null
-                                      : () async {
-                                          final String path = PathEnv.get();
-                                          const String command = 'webi';
-
-                                          final Map<String, String> env =
-                                              <String, String>{
-                                            'PATH': path,
-                                          };
-                                          final String? cmdInstalled =
-                                              whichSync(
-                                            command,
-                                            environment: (Platform.isWindows)
-                                                ? null
-                                                : env,
-                                          );
-                                          if (cmdInstalled != null) {
-                                            wctrl.webiInstalled = true;
-                                            Get.defaultDialog(
-                                                title: 'Step #1 Done:',
-                                                middleText: '''
-${command.toUpperCase()} Installed at
-$cmdInstalled
-'''
-                                                    .trim(),
-                                                confirm: TextButton(
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                  child: const Text('OK'),
-                                                ));
-                                          } else {
-                                            final WebiInstall webi =
-                                                WebiInstall();
-                                            await webi(onDone: (
-                                              bool installed,
-                                            ) {
-                                              if (installed == true) {
-                                                Process.run(
-                                                    'powershell', <String>[
-                                                  r'''
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
-                                                ]).asStream().listen(
-                                                    (ProcessResult
-                                                        process) async {
-                                                  final String? cmdInstalled =
-                                                      whichSync(
-                                                    command,
-                                                    environment:
-                                                        (Platform.isWindows)
-                                                            ? null
-                                                            : env,
-                                                  );
-                                                  wctrl.webiInstalled = true;
-                                                  Get.defaultDialog(
-                                                      title: 'Step #1 Done:',
-                                                      middleText: '''
-${command.toUpperCase()} Installed at
-$cmdInstalled
-'''
-                                                          .trim(),
-                                                      confirm: TextButton(
-                                                        onPressed: () {
-                                                          Get.back();
-                                                        },
-                                                        child: const Text('OK'),
-                                                      ));
-                                                });
-                                              }
-                                              controller.isLoading = false;
-                                            });
-                                          }
-                                        },
+                                      : null, //
                                 ),
                           checkbox: (wctrl.webiInstalled == true)
                               ? const Icon(Icons.check_box)
@@ -823,4 +752,77 @@ $cmdInstalled
       }),
     );
   }
+
+  Future<void> injectENV() async {
+    {
+      final String path = PathEnv.get();
+      const String command = 'webi';
+
+      final Map<String, String> env = <String, String>{
+        'PATH': path,
+      };
+      final String? cmdInstalled = whichSync(
+        command,
+        environment: (Platform.isWindows) ? null : env,
+      );
+      if (cmdInstalled != null) {
+        wctrl.webiInstalled = true;
+        Get.defaultDialog(
+            title: 'Step #1 Done:',
+            middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+                .trim(),
+            confirm: TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text('OK'),
+            ));
+      } else {
+        final WebiInstall webi = WebiInstall();
+        await webi(onDone: (
+          bool installed,
+        ) {
+          if (installed == true) {
+            injectPathOnWindows(command);
+          }
+          controller.isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> injectPathOnWindows(String command) async {
+    final bool runInShell = Platform.isWindows;
+
+    Process.run(
+      'powershell',
+      <String>[
+        r'''
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
+      ],
+    ).asStream().listen((ProcessResult process) async {
+      final String? cmdInstalled = whichSync(
+        command,
+      );
+      wctrl.webiInstalled = true;
+      Get.defaultDialog(
+          title: 'Step #1 Done:',
+          middleText: '''
+${command.toUpperCase()} Installed at
+$cmdInstalled
+'''
+              .trim(),
+          confirm: TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('OK'),
+          ));
+    });
+  }
+
+  Future<void> refreshEnv() async {}
 }

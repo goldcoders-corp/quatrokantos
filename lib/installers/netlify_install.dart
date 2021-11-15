@@ -51,6 +51,9 @@ class NetlifyInstall {
           cmdPathOrNull,
           args1,
           runInShell: true,
+          environment: (Platform.isWindows)
+              ? <String, String>{'PATH': PathEnv.get()}
+              : null,
         ).asStream().listen((ProcessResult process) async {
           print(process.stdout);
           print(process.stderr);

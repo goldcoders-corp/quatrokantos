@@ -24,7 +24,9 @@ class YarnInstaller {
 
   Future<void> call({required Function(bool installed) onDone}) async {
     final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()});
 
     bool installed;
     if (cmdPathOrNull != null) {
@@ -43,14 +45,17 @@ class YarnInstaller {
   }
 
   Future<void> _install({required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command1,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final Map<String, String>? env =
+        (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()};
+    final String? cmdPathOrNull = whichSync(command1, environment: env);
+
     if (cmdPathOrNull != null) {
       try {
         Process.run(
           cmdPathOrNull,
           args1,
           runInShell: true,
+          environment: env,
         ).asStream().listen((ProcessResult process) async {
           print(process.stdout);
           print(process.stderr);

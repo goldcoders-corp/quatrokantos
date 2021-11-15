@@ -91,7 +91,9 @@ class Yarn {
       final Process process = await Process.start(
         command!,
         <String>['install'],
-        environment: <String, String>{'PATH': PathEnv.get()},
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()},
         workingDirectory: controller.path,
         // ignore: avoid_bool_literals_in_conditional_expressions
         runInShell: Platform.isWindows ? true : false,
@@ -146,7 +148,9 @@ class Yarn {
       final Process process = await Process.start(
         command!,
         <String>['cms'],
-        environment: <String, String>{'PATH': PathEnv.get()},
+        environment: (Platform.isWindows)
+            ? null
+            : <String, String>{'PATH': PathEnv.get()},
         workingDirectory: controller.path,
         runInShell: true,
       );

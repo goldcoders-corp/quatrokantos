@@ -104,6 +104,7 @@ class SiteCard extends GetView<SiteListController> {
                 width: 40,
                 child: TextButton(
                     onPressed: () async {
+                      // switch logic here
                       if (site.details?.default_domain != null ||
                           site.details?.default_domain != '') {
                         final UrlLauncher openURL = UrlLauncher(

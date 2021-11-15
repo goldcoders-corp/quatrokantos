@@ -21,8 +21,14 @@ class NetlifyLogged {
   }
 
   Future<Map<String, dynamic>> call() async {
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String path = PathEnv.get();
+    final Map<String, String> env = <String, String>{
+      'PATH': path,
+    };
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: (Platform.isWindows) ? null : env,
+    );
 
     final StringBuffer outputbuffer = StringBuffer();
     final StringBuffer errorBuffer = StringBuffer();
@@ -36,9 +42,9 @@ class NetlifyLogged {
         throw CommandFailedException();
       } else {
         final Process process = await Process.start(
-          command,
+          cmdPathOrNull,
           args,
-          environment: <String, String>{'PATH': PathEnv.get()},
+          environment: env,
         );
 
         final Stream<String> outputStream = process.stdout
