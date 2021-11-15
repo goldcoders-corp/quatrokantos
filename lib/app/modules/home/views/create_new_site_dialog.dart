@@ -73,7 +73,7 @@ class CreateNewSiteDialog {
                 labelText: 'Domain Name',
                 labelStyle: TextStyle(color: Colors.purple.shade300),
                 helperText:
-                    'It can be purchased at later time, e.g: goldcoders.dev',
+                    'It can be purchased at later time, e.g: thriftshop.site',
                 border: OutlineInputBorder(
                   gapPadding: 1.0,
                   borderRadius: const BorderRadius.all(Radius.circular(25.0)),

@@ -1,5 +1,30 @@
 # Quatrokantos App
 
+## Urgent
+- Inject PATH on firts step on windows
+- Remove Download of Theme on Wizard
+- Dissect Install Theme , Download Theme, Init Theme
+- Edit Project Meta Data
+- Show Project Meta Data
+- Dont Allow User to Build , Deploy if Install Dependecies Not Yet Done
+
+
+## Todo
+- State for Internet Connection added as a Singleton
+- Check each step for Internet Connection
+- Site Creation Should be Offline First
+- Add Extra Step on Project Page
+- That Will Link The Site
+    - .env
+    - .netlify
+- Block Other Steps If Not Yet Finisehd on Required Steps
+
+## Common Issue
+- zip file empty
+- yarn lock present because some stupid person click install dependencies first
+- Command Not Found for Some Instances the local installed node packages are incomplete , we should re install it again
+
+
 netlify install wont work
 
 thriftshop cms install needs twice click on next
@@ -13,10 +38,10 @@ The system cannot find the file specified
 - No Hassle Monthly Fee
 - Lifetime Usage
 
-> Comes with 2 Default Free Template
+> Comes with 1 Default Free Template
 
-- goldcoders.dev
-- pitlords.com
+- thriftshop.site
+
 
 More Themes Coming Soon, Theme Shop to Be Added Soon!
 
@@ -41,8 +66,9 @@ So If You Have Shopify Sites? , Its Possible to Manage and Modify Site Locally
 
 > Local in The PH
 - [x] Paymongo
+
+> Premium Theme using BUX + vercel + supabase
 - [x] Bux.ph
 
-> For International
+> Premium Theme using Stripe + Vercel + Stripe
 - [ ] Stripe (TBA)
-- [ ] Paypal (TBA)

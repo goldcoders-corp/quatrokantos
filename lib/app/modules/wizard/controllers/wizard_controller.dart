@@ -33,22 +33,22 @@ class WizardController extends GetxController {
   }
 
   void fetchLocalData() {
-    initWebi();
-    // webiInstalled = false;
-    initPkg();
-    // pkgInstalled = false;
-    initHugo();
-    // hugoInstalled = false;
-    initNode();
-    // nodeInstalled = false;
-    initYarn();
-    // yarnInstalled = false;
-    initNetlify();
-    // netlifyInstalled = false;
-    checkIfThemeInstalled();
-    // themeInstalled = false;
-    initNetlifyAuth();
-    // netlifyLogged = false;
+    // initWebi();
+    webiInstalled = false;
+    // initPkg();
+    pkgInstalled = false;
+    // initHugo();
+    hugoInstalled = false;
+    // initNode();
+    nodeInstalled = false;
+    // initYarn();
+    yarnInstalled = false;
+    // initNetlify();
+    netlifyInstalled = false;
+    // checkIfThemeInstalled();
+    themeInstalled = false;
+    // initNetlifyAuth();
+    netlifyLogged = false;
   }
 
   bool get themeInstalled => _themeInstalled.value;

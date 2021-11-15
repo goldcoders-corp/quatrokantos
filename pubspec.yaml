@@ -46,3 +46,12 @@ flutter:
     - .env
     - assets/images/
     - assets/svg/
+msix_config:
+  display_name: codeitlikemiley
+  publisher_display_name: codeitlikemiley
+  identity_name: dev.goldcoders.thriftshop
+  msix_version: 1.0.0.0
+  logo_path: 'C:\Users\masterpowers\Code\Flutter\quatrokantos\assets\images\app.png'
+  capabilities: 'internetClient,'
+  icons_background_color: '#00275B'
+

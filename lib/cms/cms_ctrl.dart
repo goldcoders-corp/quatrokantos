@@ -112,8 +112,8 @@ class CmsController extends GetxController {
     if (themeDownloaded == false) {
       // ADDED FOR DEBUGGING
       await WritterHelper.log(filePath: filePath, stacktrace: '''
-downloading theme: themeURL:
-${file.themeUrl}
+downloading theme: ${file.name}
+themeURL: ${file.themeUrl}
 dir: ${PathHelper.getThemeDir}
 name: $zipName
           ''');
@@ -247,11 +247,12 @@ project.themeInstalled: ${project.themeInstalled}
   }
 
   void loadDefaultThemes() {
-    const Cms goldcoders = Cms(
-      name: 'goldcoders.dev',
+    // This should be fetch on using supabase
+    const Cms thriftshop = Cms(
+      name: 'thriftshop.site',
       cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
       themeUrl:
-          'https://github.com/thriftapps/goldcoders.dev/archive/refs/heads/main.zip',
+          'https://github.com/thriftapps/netlify/archive/refs/heads/main.zip',
     );
 
     // const Cms pitlords = Cms(
@@ -259,7 +260,7 @@ project.themeInstalled: ${project.themeInstalled}
     //   cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
     //   themeUrl: 'https://github.com/pitlords/site/archive/refs/heads/main.zip',
     // );
-    _themes.value.add(goldcoders);
+    _themes.value.add(thriftshop);
     // _themes.value.add(pitlords);
     list = list;
   }

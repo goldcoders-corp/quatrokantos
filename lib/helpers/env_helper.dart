@@ -84,14 +84,14 @@ class EnvHelper {
         dotEnvExample.copy('.env');
       } else {
         const String defaultValue = '''
-HUGO_BASEURL=https://goldcoders.dev
+HUGO_BASEURL=https://thriftshop.site
 SNOWPACK_PUBLIC_BACKEND_TYPE=git-gateway
 SNOWPACK_PUBLIC_BRANCH=main
 SNOWPACK_PUBLIC_BACKEND=true
 SNOWPACK_PUBLIC_SHOW_PREVIEW_LINKS=true
 SNOWPACK_PUBLIC_MEDIA_FOLDER=static/images
-SNOWPACK_PUBLIC_DOMAIN=goldcoders.dev
-SNOWPACK_PUBLIC_DISPLAY_URL=https://goldcoders.dev
+SNOWPACK_PUBLIC_DOMAIN=thriftshop.site
+SNOWPACK_PUBLIC_DISPLAY_URL=https://thriftshop.site
 SNOWPACK_PUBLIC_LOGO_URL=/images/logo.svg
 SNOWPACK_PUBLIC_PUBLIC_FOLDER=/images
 ''';
