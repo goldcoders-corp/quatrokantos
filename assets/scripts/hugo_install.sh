@@ -35,6 +35,7 @@ fi
 # On linux OS
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ];
     then
+    OS="Linux"
     # check for arch if 64 bit
     if [ "$(uname -m)" == "x86_64" ];
     then
@@ -64,11 +65,10 @@ if [[ ! -d $EXECPATH ]]; then
 fi
 
 # download hugo
-curl -u codeitlikemiley:86a5e26161dfcb02cc725398e65cd8aa50d1d3bc -LJO "https://github.com/gohugoio/hugo/releases/download/v${version}/${HUGO}_${version}_${OS}-${ARCH}.tar.gz"
-
-
+curl -LJO "https://github.com/gohugoio/hugo/releases/download/v${version}/${HUGO}_${version}_${OS}-${ARCH}.tar.gz"
 # find tarball
-tarball="$(find . -name "*$OS-$ARCH.tar.gz")"
+
+tarball="$(find . -name "${HUGO}_${version}_${OS}-${ARCH}.tar.gz")"
 # move to folder
 mv $tarball ~/.local/opt/$FOLDER
 # change directory to FOLDER
