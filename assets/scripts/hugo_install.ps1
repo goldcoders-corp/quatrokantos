@@ -9,6 +9,7 @@ $ARCH=""
 $FOLDER="${h}_v${v}"
 $OPTPATH = "$HOME\.local\opt"
 $EXECPATH= "$OPTPATH\$FOLDER"
+$BIN="$HOME\.local\bin"
 $HUGOCMD ="$OPTPATH\$FOLDER\hugo.exe"
 $CWD = Get-Location
 if ([Environment]::Is64BitProcess)
