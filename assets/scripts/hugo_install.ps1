@@ -10,7 +10,6 @@ $FOLDER="${h}_v${v}"
 $OPTPATH = "$HOME\.local\opt"
 $EXECPATH= "$OPTPATH\$FOLDER"
 $HUGOCMD ="$OPTPATH\$FOLDER\hugo.exe"
-$HUGOPATH = "$HOME\.local\bin\hugo"
 $CWD = Get-Location
 if ([Environment]::Is64BitProcess)
 {
@@ -32,8 +31,6 @@ Invoke-WebRequest -Uri $URI -OutFile $FOLDER
 # unzip hugo
 Expand-Archive $TEMPDIR\$FOLDER -DestinationPath $EXECPATH -Force
 
-# create SymbolicLink
-$link = New-Item -ItemType SymbolicLink -Path $HUGOPATH -Target $HUGOCMD -Force
-$link | Select-Object LinkType, Target
+Copy-Item -Path $HUGOCMD -Destination $BIN -Force
 
 Push-Location $CWD
