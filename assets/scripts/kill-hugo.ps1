@@ -1,0 +1,1 @@
+Get-Process | where {$_.ProcessName -like "*hugo*"} | Select-Object Id | ForEach-Object {taskkill /F /PID $_.Id}
