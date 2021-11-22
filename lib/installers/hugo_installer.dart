@@ -93,7 +93,7 @@ class HugoInstall {
     Process.run(
       cmdPathOrNull!,
       args1,
-      runInShell: true,
+      runInShell: Platform.isWindows,
       workingDirectory: PC.userDirectory,
     ).asStream().listen((ProcessResult data) {
       ctrl.results = data.stdout.toString();
