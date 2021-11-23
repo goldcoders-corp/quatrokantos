@@ -1,12 +1,25 @@
 # Quatrokantos App
 
-## Issues
-- Missing DLL files in windows , get it from system3sssss
-- Add Set Execution Policy on Windows for CurrentUser Scope
-- path returning null, try to refresh session env
-- Disable Step back when Running Script , add check of controller.isLoading dont step back
-- hugo download not downloading, missing dependencies
-> Build Site On the Go
+On windows we need to get the username of user
+Install-Module -Name localaccount
+
+https://adamtheautomator.com/powershell-get-credential/
+
+```
+$password = ConvertTo-SecureString 'MySecretPassword' -AsPlainText -Force
+```
+
+```
+$credential = New-Object System.Management.Automation.PSCredential ('root', $password)
+```
+
+```
+$ScriptLocation = "C:\Users\masterpowers\Code\Flutter\quatrokantos\hugo_install.ps1"
+```
+
+```
+Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -NoExit -File $ScriptLocation -v 0.89.3" -Credential $Cred
+```
 ## Urgent
 - Inject PATH on firts step on windows
 - Remove Download of Theme on Wizard
@@ -22,7 +35,7 @@
 - Site Creation Should be Offline First
 - Add Extra Step on Project Page
 - That Will Link The Site
-    - .env
+    - .envgcm`
     - .netlify
 - Block Other Steps If Not Yet Finisehd on Required Steps
 
@@ -39,7 +52,6 @@ thriftshop cms install needs twice click on next
 The system cannot find the file specified
 
 ## > Build Site On the Go
-
 
 - Manage Unlimited Sites
 - No Need Internet Once All Assets Are Downloaded Locally
@@ -80,5 +92,3 @@ So If You Have Shopify Sites? , Its Possible to Manage and Modify Site Locally
 
 > Premium Theme using Stripe + Vercel + Stripe
 - [ ] Stripe (TBA)
-- [ ] Paypal (TBA)
-
