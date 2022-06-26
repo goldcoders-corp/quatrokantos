@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
@@ -71,7 +72,7 @@ class SiteListController extends GetxController {
             linked: false,
             path: Folder(name: element['name'] as String).folder(),
             details: SiteDetails(
-              // TODO: This is throwing an error at this LINE
+              // TODO(uriah): This is throwing an error at this LINE
               id: element['details']['id'] as String,
               name: element['details']['name'] as String,
               account_slug: element['details']['account_slug'] as String,
@@ -115,7 +116,7 @@ class SiteListController extends GetxController {
         'Site Deleted',
         'Site with id: $id Deleted Successfully',
         snackPosition: SnackPosition.BOTTOM,
-        dismissDirection: SnackDismissDirection.HORIZONTAL,
+        dismissDirection: DismissDirection.horizontal,
       );
       final int index = getIndex(id);
       sites.value.removeAt(index);
@@ -155,12 +156,12 @@ class SiteListController extends GetxController {
       }
     } on SocketException catch (_) {
       Get.back();
-      Future.delayed(const Duration(seconds: 1)).then((_) {
+      Future<void>.delayed(const Duration(seconds: 1)).then((_) {
         Get.snackbar(
           'Sites Deletion Failed',
           'Make Sure Your Connected to Internet',
           duration: const Duration(seconds: 3),
-          dismissDirection: SnackDismissDirection.HORIZONTAL,
+          dismissDirection: DismissDirection.horizontal,
         );
       });
     }

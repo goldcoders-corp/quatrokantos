@@ -18,6 +18,7 @@ class SideMenu extends StatelessWidget {
         child: Container(
       color: appColors[BG_DARK],
       child: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           DrawerHeader(
               child: CircleAvatar(

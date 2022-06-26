@@ -8,7 +8,7 @@ void minWindowSize() {
       GetPlatform.isLinux == true ||
       GetPlatform.isMacOS == true) {
     setWindowTitle(dotenv.env['APP_NAME']!);
-    setWindowMinSize(const Size(800, 500));
+    setWindowMinSize(const Size(650, 665));
     setWindowMaxSize(Size.infinite);
   }
 }

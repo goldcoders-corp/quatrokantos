@@ -41,7 +41,7 @@ class NetlifyLoginDialog {
                 duration: const Duration(milliseconds: 30000),
                 icon: const Icon(Icons.warning, color: Colors.red),
                 snackPosition: SnackPosition.BOTTOM,
-                dismissDirection: SnackDismissDirection.HORIZONTAL,
+                dismissDirection: DismissDirection.horizontal,
               );
               controller.isLoading = false;
             },

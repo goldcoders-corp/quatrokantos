@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -30,6 +29,7 @@ class CmsController extends GetxController {
   void onInit() {
     loadDefaultThemes();
     generateThemesList();
+    super.onInit();
   }
 
   String get currentTheme => _currentTheme.value;
@@ -278,13 +278,13 @@ project.themeInstalled: ${project.themeInstalled}
     if (_getStorage.hasData(CMS_LIST)) {
       final List<dynamic> transformList =
           json.decode(_getStorage.read(SITE_LIST) as String) as List<dynamic>;
-      transformList.forEach((dynamic element) {
+      for (final dynamic element in transformList) {
         final Cms entryCms = Cms(
             name: element['name'] as String,
             cmsUrl: element['cmsUrl'] as String,
             themeUrl: element['themeUrl'] as String);
         themeList.add(entryCms);
-      });
+      }
       list = themeList;
     }
   }

@@ -1,13 +1,10 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
 import 'package:quatrokantos/controllers/command_controller.dart';
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
-import 'package:quatrokantos/helpers/cmd_helper.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
-import 'package:quatrokantos/helpers/path_helper.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class WinEnvPaths {

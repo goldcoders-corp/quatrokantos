@@ -75,7 +75,8 @@ class ProjectView extends GetView<ProjectController> {
                                 // ignore: always_specify_types
                                 await EnvHelper.copyOrCreateDotEnv(
                                     controller.path);
-                                Future.delayed(const Duration(seconds: 1));
+                                Future<void>.delayed(
+                                    const Duration(seconds: 1));
                               }
                             },
                             icon: const Icon(Icons.download),
@@ -362,7 +363,7 @@ class ProjectView extends GetView<ProjectController> {
                                           // ignore: lines_longer_than_80_chars
                                           'Site Ready to Be Deployed to Live Site',
                                           dismissDirection:
-                                              SnackDismissDirection.HORIZONTAL,
+                                              DismissDirection.horizontal,
                                         );
                                         final KillAll kill = KillAll(
                                             unix_cmd: 'node',
@@ -504,7 +505,7 @@ class ProjectView extends GetView<ProjectController> {
                                           'Done Executing Deploy To Live Site',
                                           'Check it Out Now on Live Site!',
                                           dismissDirection:
-                                              SnackDismissDirection.HORIZONTAL,
+                                              DismissDirection.horizontal,
                                         );
                                         final KillAll kill = KillAll(
                                             unix_cmd: 'node',

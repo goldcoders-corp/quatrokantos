@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 
 class CommandController extends GetxController {
   final RxString _results = ''.obs;
@@ -24,7 +24,7 @@ class CommandController extends GetxController {
     Get.snackbar(
       'Notification',
       message,
-      dismissDirection: SnackDismissDirection.HORIZONTAL,
+      dismissDirection: DismissDirection.horizontal,
     );
   }
 }

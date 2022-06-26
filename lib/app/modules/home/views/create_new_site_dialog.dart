@@ -128,7 +128,7 @@ Please Fill Up All Fields
                         }
                       };
                       final String bodyStr = json.encode(data);
-                      // TODO: Issue when no Internet Cannot Create a New One!
+                      // TODO(uriah): Issue when no Internet Cannot Create a New One!
                       // If there is no internet we bypass the Api
                       // Create a New Site with project.addSite
 
@@ -177,8 +177,7 @@ Please Fill Up All Fields
                               '''
 Site Name Already Taken: ${project.local_name} or Domain Already Taken: ${project.custom_domain}
                             ''',
-                              dismissDirection:
-                                  SnackDismissDirection.HORIZONTAL,
+                              dismissDirection: DismissDirection.horizontal,
                               duration: const Duration(seconds: 5),
                             );
                           }

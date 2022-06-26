@@ -1,5 +1,11 @@
 # Quatrokantos App
 
+## System Tray
+https://github.com/antler119/system_tray
+
+## MenuBar
+https://api.flutter.dev/flutter/widgets/PlatformMenuBar-class.html
+
 ## Issues
 - Missing DLL files in windows , get it from system3sssss
 - Add Set Execution Policy on Windows for CurrentUser Scope
