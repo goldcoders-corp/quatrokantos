@@ -67,3 +67,4 @@ env.g.dart
 # Supabase
 **/supabase/.branches
 **/supabase/.temp
+.fvm/flutter_sdk
