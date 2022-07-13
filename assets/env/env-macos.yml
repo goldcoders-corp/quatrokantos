@@ -1,0 +1,16 @@
+var:
+  THRIFTSHOP_APP_PATH: ~/.
+
+path:
+  - /bin
+  - /sbin
+  - /usr/bin
+  - /usr/sbin
+  - /usr/local/bin
+  - /usr/local/sbin
+  - /opt/homebrew/bin
+  - /opt/homebrew/sbin
+  - $HOME/.local/bin
+  - $HOME/.lobal/opt/brew/bin
+  - $HOME/.local/opt/brew/sbin
+  - $HOME/.local/opt/node/bin

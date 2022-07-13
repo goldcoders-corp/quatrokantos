@@ -34,8 +34,6 @@ class MyMenuBarApp extends StatefulWidget {
 }
 
 class _MyMenuBarAppState extends State<MyMenuBarApp> {
-  // String _message = 'Hello';
-  bool _showMessage = false;
 
   void _handleMenuSelection(MenuSelection value) {
     switch (value) {
@@ -46,11 +44,8 @@ class _MyMenuBarAppState extends State<MyMenuBarApp> {
           applicationVersion: 'V1.0.0',
         );
         break;
-      // case MenuSelection.showMessage:
-      //   setState(() {
-      //     _showMessage = !_showMessage;
-      //   });
-      //   break;
+      default:
+        break;
     }
   }
 

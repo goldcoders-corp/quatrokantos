@@ -1,0 +1,13 @@
+var:
+  THRIFTSHOP_SITE_PATH: ~/.local/share/.thriftshop_desktop_site_manager/site
+  THRIFTSHOP_CMS_PATH: ~/.local/share/.thriftshop_desktop_site_manager/cms
+  THRIFTSHOP_THEME_PATH: ~/.local/share/.thriftshop_desktop_site_manager/theme
+
+path:
+  - /bin
+  - /sbin
+  - /usr/bin
+  - /usr/sbin
+  - /usr/local/bin
+  - /usr/local/sbin
+  - $HOME/.local/bin

@@ -1,0 +1,22 @@
+var:
+  THRIFTSHOP_SITE_PATH: '%USERPROFILE%\\.local\\share\\.thriftshop_desktop_site_manager\\site'
+  THRIFTSHOP_CMS_PATH: '%USERPROFILE%\\.local\\share\\.thriftshop_desktop_site_manager\\cms'
+  THRIFTSHOP_THEME_PATH: '%USERPROFILE%\\.local\\share\\.thriftshop_desktop_site_manager\\theme'
+
+path:
+  - 'C:\\Windows'
+  - 'C:\\Windows\\System32'
+  - 'C:\\Windows\\System32\Wbem'
+  - 'C:\\Windows\\System32\WindowsPowershell\\v1.0'
+  - 'C:\\ProgramData\\scoop\\shims'
+  - 'C:\\ProgramData\\chocolatey\\bin'
+  - '%LOCALAPPDATA%\\Microsoft\\WindowsApps'
+  - '%USERPROFILE%\\scoop\\apps\\yarn\\current\\global\\bin'
+  - '%USERPROFILE%\\.local\\bin'
+  - '%USERPROFILE%\\scoops\\shims'
+  - '%USERPROFILE%\\scoop\\apps\nodejs-lts\\current'
+  - '%USERPROFILE%\\scoop\\apps\nodejs-lts\\current\\bin'
+  - '%USERPROFILE%\\scoop\\apps\nodejs\\current'
+  - '%USERPROFILE%\\scoop\\apps\nodejs\\current\\bin'
+  - '%USERPROFILE%\\.local\\bin'
+  - '%USERPROFILE%\\.local\\opt\\node\\bin'

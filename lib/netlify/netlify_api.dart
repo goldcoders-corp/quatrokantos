@@ -186,8 +186,11 @@ class NetlifyApi {
       args.add('--data');
       args.add(data);
     }
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+      includeParentEnvironment: true,
+    );
     final StringBuffer output = StringBuffer();
     final StringBuffer errorBuffer = StringBuffer();
     String? siteDetails;
