@@ -68,3 +68,5 @@ env.g.dart
 **/supabase/.branches
 **/supabase/.temp
 .fvm/flutter_sdk
+
+.certs/
