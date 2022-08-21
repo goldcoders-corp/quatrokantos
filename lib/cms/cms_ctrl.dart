@@ -252,7 +252,7 @@ project.themeInstalled: ${project.themeInstalled}
       name: 'thriftshop.site',
       cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
       themeUrl:
-          'https://github.com/thriftapps/netlify/archive/refs/heads/main.zip',
+          'https://github.com/goldcoders/paramountpetroleum.ph/archive/refs/heads/main.zip',
     );
 
     // const Cms pitlords = Cms(

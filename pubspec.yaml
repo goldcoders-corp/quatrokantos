@@ -29,7 +29,7 @@ dependencies:
   tint: ^2.0.0
   window_size:
     git:
-      url: git://github.com/google/flutter-desktop-embedding.git
+      url: https://github.com/google/flutter-desktop-embedding.git
       path: plugins/window_size
 
 dev_dependencies:
@@ -49,6 +49,7 @@ msix_config:
   publisher_display_name: codeitlikemiley
   identity_name: dev.goldcoders.thriftshop
   msix_version: 1.0.0.0
-  logo_path: 'C:\Users\masterpowers\Code\Flutter\quatrokantos\assets\images\app.png'
-  capabilities: "internetClient,"
+  logo_path: 'C:\Users\uriah\Code\quatrokantos\assets\images\app.png'
+  capabilities: "internetClientServer,"
   icons_background_color: "#00275B"
+  execution_alias: "thriftshop"
