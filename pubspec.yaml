@@ -45,7 +45,7 @@ flutter:
     - assets/svg/
     - assets/scripts/
 msix_config:
-  display_name: codeitlikemiley
+  display_name: "thriftshop"
   publisher_display_name: codeitlikemiley
   identity_name: dev.goldcoders.thriftshop
   msix_version: 1.0.0.0
@@ -53,3 +53,5 @@ msix_config:
   capabilities: "internetClientServer,"
   icons_background_color: "#00275B"
   execution_alias: "thriftshop"
+  certificate_path: 'C:\Users\uriah\Code\quatrokantos\.certs\GOLDCODERS.pfx'
+  certificate_password: goldcoders
