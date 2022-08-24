@@ -44,14 +44,15 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/scripts/
+
 msix_config:
-  display_name: "thriftshop"
-  publisher_display_name: codeitlikemiley
-  identity_name: dev.goldcoders.thriftshop
+  display_name: Thiftshop App
+  publisher: 53614Goldcoders.ThriftshopApp
+  publisher_display_name: Goldcoders
+  identity_name: 53614Goldcoders.ThriftshopApp
   msix_version: 1.0.0.0
   logo_path: 'C:\Users\uriah\Code\quatrokantos\assets\images\app.png'
   capabilities: "internetClientServer,"
   icons_background_color: "#00275B"
   execution_alias: "thriftshop"
-  certificate_path: 'C:\Users\uriah\Code\quatrokantos\.certs\GOLDCODERS.pfx'
-  certificate_password: goldcoders
+  store: true
