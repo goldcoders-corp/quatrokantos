@@ -18,7 +18,7 @@ class HomeView extends GetView<SiteListController> {
     return Scaffold(
       appBar: TopBar(title: 'Thriftshop Desktop Site Manager'),
       drawer: const SideMenu(),
-      body: const MyMenuBarApp(),
+      body: const DashBoardBody(),
     );
   }
 }
@@ -28,14 +28,14 @@ enum MenuSelection {
   // showMessage,
 }
 
-class MyMenuBarApp extends StatefulWidget {
-  const MyMenuBarApp({super.key});
+class DashBoardBody extends StatefulWidget {
+  const DashBoardBody({super.key});
 
   @override
-  State<MyMenuBarApp> createState() => _MyMenuBarAppState();
+  State<DashBoardBody> createState() => _DashBoardBodyState();
 }
 
-class _MyMenuBarAppState extends State<MyMenuBarApp> {
+class _DashBoardBodyState extends State<DashBoardBody> {
   // ignore: unused_element
   void _handleMenuSelection(MenuSelection value) {
     switch (value) {
@@ -54,41 +54,25 @@ class _MyMenuBarAppState extends State<MyMenuBarApp> {
 
   @override
   Widget build(BuildContext context) {
-    ////////////////////////////////////
-    // THIS SAMPLE ONLY WORKS ON MACOS.
-    ////////////////////////////////////
-
-    // This builds a menu hierarchy that looks like this:
-    // Flutter API Sample
-    //  ├ About
-    //  ├ ────────  (group divider)
-    //  ├ Hide/Show Message
-    //  ├ Messages
-    //  │  ├ I am not throwing away my shot.
-    //  │  └ There's a million things I haven't done, but just you wait.
-    //  └ Quit
-    return PlatformMenuBar(
-      menus: const <PlatformMenuItem>[],
-      child: Ink(
-        padding: const EdgeInsets.all(defaultPadding),
-        color: appColors[BG],
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // We want this side menu only for large screen
-            if (Responsive.isDesktop(context))
-              const Expanded(
-                // default flex = 1
-                // and it takes 1/6 part of the screen
-                child: SideMenu(),
-              ),
+    return Ink(
+      padding: const EdgeInsets.all(defaultPadding),
+      color: appColors[BG],
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // We want this side menu only for large screen
+          if (Responsive.isDesktop(context))
             const Expanded(
-              // It takes 5/6 part of the screen
-              flex: 4,
-              child: DashboardScreen(),
+              // default flex = 1
+              // and it takes 1/6 part of the screen
+              child: SideMenu(),
             ),
-          ],
-        ),
+          const Expanded(
+            // It takes 5/6 part of the screen
+            flex: 4,
+            child: DashboardScreen(),
+          ),
+        ],
       ),
     );
   }
