@@ -29,6 +29,6 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>LSApplicationCategoryType</key>
-	<string>developer-tools</string>
+	<string>public.app-category.developer-tools</string>
 </dict>
 </plist>
