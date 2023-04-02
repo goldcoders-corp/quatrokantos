@@ -32,7 +32,7 @@ class NetlifyCreateSite {
     args.add('-a');
     args.add(account_slug);
     final Process process = await Process.start('netlify', args);
-    final dynamic lineStream = process.stdout
+    final Stream<String> lineStream = process.stdout
         .transform(const Utf8Decoder())
         .transform(const LineSplitter());
 

@@ -10,6 +10,7 @@ void triggerBottomSheet(List<Menu> menus) {
       color: appColors[BG_DARK]!.withOpacity(1),
       child: ListView.builder(
         itemCount: menus.length,
+        shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
             leading: menus[index].icon,

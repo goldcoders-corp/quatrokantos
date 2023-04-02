@@ -41,7 +41,7 @@ class NetlifyLoginDialog {
                 duration: const Duration(milliseconds: 30000),
                 icon: const Icon(Icons.warning, color: Colors.red),
                 snackPosition: SnackPosition.BOTTOM,
-                dismissDirection: SnackDismissDirection.HORIZONTAL,
+                dismissDirection: DismissDirection.horizontal,
               );
               controller.isLoading = false;
             },
@@ -91,9 +91,9 @@ class NetlifyLoginDialog {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.purple[50],
-                      primary: appColors[ACCENT],
-                      onSurface: Colors.lightBlue,
+                      foregroundColor: Colors.purple[50],
+                      backgroundColor: appColors[ACCENT],
+                      disabledBackgroundColor: Colors.lightBlue,
                       elevation: 20,
                       minimumSize: const Size(350, 50),
                       shadowColor: Colors.purple[100],
@@ -135,9 +135,9 @@ class NetlifyLoginDialog {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.purple[50],
-                      primary: appColors[ACCENT],
-                      onSurface: Colors.lightBlue,
+                      foregroundColor: Colors.purple[50],
+                      backgroundColor: appColors[ACCENT],
+                      disabledForegroundColor: Colors.lightBlue,
                       elevation: 20,
                       minimumSize: const Size(350, 50),
                       shadowColor: Colors.purple[100],

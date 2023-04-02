@@ -18,6 +18,7 @@ class SideMenu extends StatelessWidget {
         child: Container(
       color: appColors[BG_DARK],
       child: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           DrawerHeader(
               child: CircleAvatar(
@@ -58,11 +59,11 @@ class SideMenu extends StatelessWidget {
 
 class DrawerListTile extends StatelessWidget {
   const DrawerListTile({
-    Key? key,
     // For selecting those three line once press "Command+D"
     required this.title,
     required this.svgSrc,
     required this.press,
+    Key? key,
   }) : super(key: key);
 
   // ignore: avoid_multiple_declarations_per_line

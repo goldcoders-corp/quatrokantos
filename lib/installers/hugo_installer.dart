@@ -25,7 +25,7 @@ class HugoInstall {
     if (Platform.isWindows) {
       command1 = 'scoop';
       args1.add('install');
-      args1.add('hugo-extended');
+      args1.add('hugo-extended@0.88.1');
     } else if (Platform.isMacOS) {
       command1 = 'curl';
       args1.add('-sS');

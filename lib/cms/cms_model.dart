@@ -12,7 +12,6 @@ class CmsEntity extends Equatable {
   });
 
   @override
-  // TODO: implement props
   List<Object?> get props => <Object?>[name, themeUrl, cmsUrl];
 }
 

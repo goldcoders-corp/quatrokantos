@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:process_run/shell.dart';
 import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
@@ -55,8 +56,10 @@ class NetlifyInstall {
               ? <String, String>{'PATH': PathEnv.get()}
               : null,
         ).asStream().listen((ProcessResult process) async {
-          print(process.stdout);
-          print(process.stderr);
+          if (kDebugMode) {
+            print(process.stdout);
+            print(process.stderr);
+          }
         }, onDone: () {
           onDone(true);
         });

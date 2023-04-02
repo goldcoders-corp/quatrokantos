@@ -27,7 +27,7 @@ class NodeInstall {
     } else if (Platform.isMacOS) {
       // args1 = <String>['install', 'node@14'];
       command1 = 'webi';
-      args1 = <String>['node@14.17.1'];
+      args1 = <String>['node@14.20.0'];
     } else {
       args1 = <String>['install', 'node'];
     }

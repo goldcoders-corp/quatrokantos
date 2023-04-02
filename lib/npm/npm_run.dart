@@ -11,7 +11,7 @@ class NpmRun {
   final String path;
   late List<String> args;
 
-  // TODO: We need this to Run as Isolate
+  // TODO (Uriah): We need this to Run as Isolate
   // Returnt the Process ID so we can Kill it anytime
   // If We Have an Existing Process Running , Dont Start
   // Ask User to Killall Process first
@@ -27,14 +27,14 @@ class NpmRun {
 
   Future<String> run() async {
     final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer breakBuffer = StringBuffer();
+    // final StringBuffer breakBuffer = StringBuffer();
     final StringBuffer missingBuffer = StringBuffer();
     final StringBuffer errorStrBuffer = StringBuffer();
     final StringBuffer portBuffer = StringBuffer();
 
-    final RegExp missingScriptRegex = RegExp(r'(?<=missing\sscript:).*?\n');
-    final RegExp CtrlCRegex = RegExp(r'\bPress\sCtrl\+C\sto\sstop\b');
-    final RegExp PortRegex = RegExp(r'\bEADDRINUSE\b');
+    // final RegExp missingScriptRegex = RegExp(r'(?<=missing\sscript:).*?\n');
+    // final RegExp CtrlCRegex = RegExp(r'\bPress\sCtrl\+C\sto\sstop\b');
+    // final RegExp PortRegex = RegExp(r'\bEADDRINUSE\b');
 
     try {
       if (command == null) {
@@ -75,7 +75,7 @@ class NpmRun {
           //   break;
           // } else if (PortRegex.hasMatch(line)) {
           //   portBuffer
-          //       .write('Please Stop Server First Before Running this Command');
+          //     .write('Please Stop Server First Before Running this Command');
           //   process.kill();
           //   break;
           // }

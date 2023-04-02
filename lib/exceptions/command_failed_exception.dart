@@ -17,7 +17,7 @@ class CommandFailedException implements Exception {
         icon: const Icon(Icons.warning, color: Colors.red),
         snackPosition: SnackPosition.BOTTOM,
         isDismissible: true,
-        dismissDirection: SnackDismissDirection.HORIZONTAL,
+        dismissDirection: DismissDirection.horizontal,
       );
     } else {
       String folder = dotenv.env['APP_NAME']!.toLowerCase();

@@ -45,10 +45,28 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-.env*
-!.env.example
-!.env.test
+# added flutter_sdk on gitignore
+.fvm/flutter_sdk
 
-.extra/
+# add vscode settings
+.vscode/settings.json
+
+# env files
+.env
+.env.dev
+!.env.example
+env.g.dart
+**/*.g.dart
+**/*.freezed.dart
+
+# added .bak files
 *.bak
-node_modules
+
+# added *.gs
+*.gs
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
+.fvm/flutter_sdk
+
+.certs/

@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -24,9 +26,10 @@ import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
 class ProjectView extends GetView<ProjectController> {
-  final CmsController cmsCtrl = Get.put(CmsController());
+  const ProjectView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final CmsController cmsCtrl = Get.put(CmsController());
     return Scaffold(
       appBar: TopBar(
         title: controller.local_name,
@@ -75,7 +78,8 @@ class ProjectView extends GetView<ProjectController> {
                                 // ignore: always_specify_types
                                 await EnvHelper.copyOrCreateDotEnv(
                                     controller.path);
-                                Future.delayed(const Duration(seconds: 1));
+                                Future<void>.delayed(
+                                    const Duration(seconds: 1));
                               }
                             },
                             icon: const Icon(Icons.download),
@@ -362,7 +366,7 @@ class ProjectView extends GetView<ProjectController> {
                                           // ignore: lines_longer_than_80_chars
                                           'Site Ready to Be Deployed to Live Site',
                                           dismissDirection:
-                                              SnackDismissDirection.HORIZONTAL,
+                                              DismissDirection.horizontal,
                                         );
                                         final KillAll kill = KillAll(
                                             unix_cmd: 'node',
@@ -504,7 +508,7 @@ class ProjectView extends GetView<ProjectController> {
                                           'Done Executing Deploy To Live Site',
                                           'Check it Out Now on Live Site!',
                                           dismissDirection:
-                                              SnackDismissDirection.HORIZONTAL,
+                                              DismissDirection.horizontal,
                                         );
                                         final KillAll kill = KillAll(
                                             unix_cmd: 'node',

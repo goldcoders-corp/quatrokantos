@@ -110,14 +110,15 @@ class AmplifyConfigure {
   ///   path2: path2,
   /// );
   ///```
-  static Future<void> pipeTo(
-      {required String command1,
-      required List<String> args1,
-      String? path1,
-      required String command2,
-      required List<String> args2,
-      String? path2,
-      required Function(bool installed) onDone}) async {
+  static Future<void> pipeTo({
+    required String command1,
+    required List<String> args1,
+    required String command2,
+    required List<String> args2,
+    required Function(bool installed) onDone,
+    String? path1,
+    String? path2,
+  }) async {
     final CommandController ctrl = Get.find<CommandController>();
     final StringBuffer outputbuffer = StringBuffer();
 

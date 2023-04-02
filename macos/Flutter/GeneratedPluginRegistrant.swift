@@ -5,12 +5,12 @@
 import FlutterMacOS
 import Foundation
 
-import menubar
-import path_provider_macos
+import path_provider_foundation
+import system_tray
 import window_size
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  MenubarPlugin.register(with: registry.registrar(forPlugin: "MenubarPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  SystemTrayPlugin.register(with: registry.registrar(forPlugin: "SystemTrayPlugin"))
   WindowSizePlugin.register(with: registry.registrar(forPlugin: "WindowSizePlugin"))
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -45,10 +47,10 @@ class CreateSiteController extends GetxController {
   set isLoading(bool val) => _isLoading.value = val;
 
   String randomString(int length) {
-    final Random _rnd = Random();
+    final Random rnd = Random();
     // ignore: always_specify_types
     return String.fromCharCodes(Iterable.generate(
-        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+        length, (_) => _chars.codeUnitAt(rnd.nextInt(_chars.length))));
   }
 
   void _setUpFolder() {

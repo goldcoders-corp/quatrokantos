@@ -753,12 +753,8 @@ $cmdInstalled
                 onStepContinue: wctrl.next,
                 onStepTapped: wctrl.tap,
                 onStepCancel: wctrl.cancel,
-                controlsBuilder: (
-                  BuildContext context, {
-                  VoidCallback? onStepCancel,
-                  VoidCallback? onStepContinue,
-                  VoidCallback? onStepTapped,
-                }) {
+                controlsBuilder:
+                    (BuildContext context, ControlsDetails ControlsDetails) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: Row(

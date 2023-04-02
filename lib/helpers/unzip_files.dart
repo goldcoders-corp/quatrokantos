@@ -34,6 +34,11 @@ class UnzipFile {
   );
 
   Future<void> unzip(Function(bool done) onDone) async {
+    //! TODO: add try catch since we are having error here
+    //! if the url i add is private
+    //! Also when we delete our site folder
+    //! we need to catch it and remove our site from UI
+    //FileSystemException
     final Archive archive =
         ZipDecoder().decodeBytes(File(path).readAsBytesSync());
 

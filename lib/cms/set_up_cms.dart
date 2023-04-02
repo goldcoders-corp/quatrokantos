@@ -1,3 +1,6 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:quatrokantos/helpers/download_zip.dart';
 import 'package:quatrokantos/helpers/path_helper.dart';
@@ -20,12 +23,16 @@ class SetUpCMS {
     final Downloader theme = Downloader(
         url: themeURL, dir: PathHelper.getThemeDir, name: '$name.zip');
     await theme.download((_) {
-      print('done downloading theme');
+      if (kDebugMode) {
+        print('done downloading theme');
+      }
     });
     final Downloader cms =
         Downloader(url: cmsURL, dir: PathHelper.getCMSDIR, name: '$name.zip');
     await cms.download((_) {
-      print('done downloading cms');
+      if (kDebugMode) {
+        print('done downloading cms');
+      }
     });
 
     final String themeZip = p.join(PathHelper.getThemeDir, '$name.zip');
@@ -37,11 +44,15 @@ class SetUpCMS {
     final UnzipFile cmsSetUp = UnzipFile(cmZip, cmsPath);
 
     await themeSetUp.unzip((_) {
-      print('Done Extracting Theme');
+      if (kDebugMode) {
+        print('Done Extracting Theme');
+      }
     });
 
     await cmsSetUp.unzip((_) {
-      print('Done Extracting CMS');
+      if (kDebugMode) {
+        print('Done Extracting CMS');
+      }
     });
   }
 }

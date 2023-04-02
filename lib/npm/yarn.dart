@@ -1,9 +1,12 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 // import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
@@ -35,15 +38,15 @@ class Yarn {
     // this is to allow us to execute the scripts
     // if running on linux we should also
     // update permissions of the scripts to be executable
-    final String script =
-        await rootBundle.loadString('assets/scripts/example.sh');
+    // final String script =
+    //     await rootBundle.loadString('assets/scripts/example.sh');
 
-    final Shell shell = Shell(
-        workingDirectory: PC.userDirectory,
-        environment: <String, String>{'PATH': PathEnv.get()});
-    shell.run(
-      script,
-    );
+    // final Shell shell = Shell(
+    //     workingDirectory: PC.userDirectory,
+    //     environment: <String, String>{'PATH': PathEnv.get()});
+    // shell.run(
+    //   script,
+    // );
     // This is an example if we wanted to ship default theme zip file
     // so we can avoid downloading it
     // we can then save the file to the cms or themes directory
@@ -58,7 +61,9 @@ class Yarn {
       final RegExp regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
       if (file.isFile) {
-        print(file.name);
+        if (kDebugMode) {
+          print(file.name);
+        }
         final List<int> data = file.content as List<int>;
 
         File(destination + filename)
@@ -122,14 +127,14 @@ class Yarn {
           'Warning Logs',
           errorBuffer.toString(),
           duration: const Duration(seconds: 5),
-          dismissDirection: SnackDismissDirection.HORIZONTAL,
+          dismissDirection: DismissDirection.horizontal,
         );
       } else {
         Get.snackbar(
           'Output Logs',
           outputbuffer.toString(),
           duration: const Duration(seconds: 5),
-          dismissDirection: SnackDismissDirection.HORIZONTAL,
+          dismissDirection: DismissDirection.horizontal,
         );
       }
     }
@@ -178,14 +183,14 @@ class Yarn {
           'Warning Logs',
           errorBuffer.toString(),
           duration: const Duration(seconds: 5),
-          dismissDirection: SnackDismissDirection.HORIZONTAL,
+          dismissDirection: DismissDirection.horizontal,
         );
       } else {
         Get.snackbar(
           'Output Logs',
           outputbuffer.toString(),
           duration: const Duration(seconds: 5),
-          dismissDirection: SnackDismissDirection.HORIZONTAL,
+          dismissDirection: DismissDirection.horizontal,
         );
       }
     }

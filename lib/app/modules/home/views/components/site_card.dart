@@ -9,8 +9,8 @@ import 'package:quatrokantos/maps/app_colors.dart';
 
 class SiteCard extends GetView<SiteListController> {
   const SiteCard({
-    Key? key,
     required this.site,
+    Key? key,
   }) : super(key: key);
 
   final Site site;
@@ -68,7 +68,7 @@ class SiteCard extends GetView<SiteListController> {
               //       onPressed: () {
               //         Get.snackbar('Cloning Site', 'Copying Theme');
               //       },
-              //       // TODO: /Users/uriah/Code/Goldcoders/site/.netlify/state.json
+              //       // TODO(uriah): /Users/uriah/Code/Goldcoders/site/.netlify/state.json
               //       // Read this json file from path provided
               //       // then find by id
               //       child: Obx(() => Icon(
@@ -87,7 +87,7 @@ class SiteCard extends GetView<SiteListController> {
               //       onPressed: () {
               //         Get.snackbar('Linking Site', 'Site will be Linked');
               //       },
-              //       // TODO: /Users/uriah/Code/Goldcoders/site/.netlify/state.json
+              //       // TODO(uriah): /Users/uriah/Code/Goldcoders/site/.netlify/state.json
               //       // Read this json file from path provided
               //       // then find by id
               //       child: Obx(() => Icon(
@@ -140,7 +140,7 @@ class SiteCard extends GetView<SiteListController> {
                 width: 40,
                 child: TextButton(
                     onPressed: () {
-                      // TODO: check this after we finished
+                      // TODO(uriah): check this after we finished
                       // Site Creation , we can then navigate to the extra page
                       final Map<String, dynamic> siteMap = site.toJson();
                       final Map<String, String> params = <String, String>{
