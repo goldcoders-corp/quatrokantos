@@ -101,9 +101,9 @@ class CreateNewSiteDialog {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.purple[50],
-                      primary: appColors[ACCENT],
-                      onSurface: Colors.lightBlue,
+                      foregroundColor: Colors.purple[50],
+                      backgroundColor: appColors[ACCENT],
+                      disabledForegroundColor: Colors.lightBlue,
                       elevation: 20,
                       minimumSize: const Size(500, 50),
                       shadowColor: Colors.purple[100],

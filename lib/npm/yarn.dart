@@ -1,8 +1,11 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 
 // import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -58,7 +61,9 @@ class Yarn {
       final RegExp regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
       if (file.isFile) {
-        print(file.name);
+        if (kDebugMode) {
+          print(file.name);
+        }
         final List<int> data = file.content as List<int>;
 
         File(destination + filename)

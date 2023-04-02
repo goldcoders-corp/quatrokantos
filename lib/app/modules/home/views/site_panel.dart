@@ -18,6 +18,7 @@ class SitePanel extends GetView<SiteListController> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
     final Size _size = MediaQuery.of(context).size;
     final SiteListController sitesCtrl = Get.put(SiteListController());
 
@@ -32,7 +33,7 @@ class SitePanel extends GetView<SiteListController> {
                 children: <Widget>[
                   Text(
                     'Site Listings',
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(
                     height: 50,
@@ -62,9 +63,9 @@ class SitePanel extends GetView<SiteListController> {
                               barrierDismissible: false,
                               cancel: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  onPrimary: Colors.white70,
-                                  primary: appColors[BG],
-                                  onSurface: Colors.white,
+                                  foregroundColor: Colors.white70,
+                                  backgroundColor: appColors[BG],
+                                  disabledForegroundColor: Colors.white,
                                   minimumSize: const Size(150, 50),
                                   shadowColor: Colors.black45,
                                   shape: RoundedRectangleBorder(
@@ -109,9 +110,9 @@ Live and Local Sites Will Be Wiped Out!'''),
                               ),
                               confirm: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  onPrimary: Colors.red[50],
-                                  primary: Colors.red[500],
-                                  onSurface: Colors.white,
+                                  foregroundColor: Colors.red[50],
+                                  backgroundColor: Colors.red[500],
+                                  disabledForegroundColor: Colors.white,
                                   minimumSize: const Size(150, 50),
                                   shadowColor: Colors.black45,
                                   shape: RoundedRectangleBorder(

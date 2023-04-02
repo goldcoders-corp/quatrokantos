@@ -14,12 +14,10 @@ class CommandController extends GetxController {
   set isLoading(bool val) => _loading.value = val;
   @override
   void onInit() {
-    // TODO: implement onInit
     ever(_results, notify);
     super.onInit();
   }
 
-  // TODO: replace this later on
   void notify(String message) {
     Get.snackbar(
       'Notification',

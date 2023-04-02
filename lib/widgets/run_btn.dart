@@ -5,7 +5,7 @@ class RunBtn extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
 
-  Icon TouchIcon(IconData icon, Color color) {
+  Icon touchIcon(IconData icon, Color color) {
     return Icon(icon, color: color);
   }
 
@@ -23,6 +23,7 @@ class RunBtn extends StatelessWidget {
 
   const RunBtn({
     required this.title,
+    Key? key,
     this.onTap,
     this.height = 70,
     this.width = 70,
@@ -34,7 +35,7 @@ class RunBtn extends StatelessWidget {
     this.splashColor = Colors.black54,
     this.icon = Icons.add_link,
     this.iconColor = Colors.white,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class RunBtn extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  TouchIcon(icon, iconColor),
+                  touchIcon(icon, iconColor),
                   Text(title, style: TextStyle(fontSize: fontSize)),
                 ],
               ),

@@ -9,8 +9,8 @@ import 'package:quatrokantos/maps/app_colors.dart';
 
 class SiteCard extends GetView<SiteListController> {
   const SiteCard({
-    Key? key,
     required this.site,
+    Key? key,
   }) : super(key: key);
 
   final Site site;

@@ -11,12 +11,14 @@ import 'package:quatrokantos/widgets/top_bar.dart';
 import '../controllers/site_list_controller.dart';
 
 class HomeView extends GetView<SiteListController> {
+  const HomeView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(title: 'Thriftshop Desktop Site Manager'),
       drawer: const SideMenu(),
-      body: MyMenuBarApp(),
+      body: const MyMenuBarApp(),
     );
   }
 }
@@ -64,7 +66,7 @@ class _MyMenuBarAppState extends State<MyMenuBarApp> {
     //  │  └ There's a million things I haven't done, but just you wait.
     //  └ Quit
     return PlatformMenuBar(
-      menus: [],
+      menus: const <PlatformMenuItem>[],
       child: Ink(
         padding: const EdgeInsets.all(defaultPadding),
         color: appColors[BG],
@@ -78,7 +80,7 @@ class _MyMenuBarAppState extends State<MyMenuBarApp> {
                 // and it takes 1/6 part of the screen
                 child: SideMenu(),
               ),
-            Expanded(
+            const Expanded(
               // It takes 5/6 part of the screen
               flex: 4,
               child: DashboardScreen(),

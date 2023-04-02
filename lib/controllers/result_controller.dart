@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class ResultController extends GetxController {
@@ -18,10 +19,14 @@ class ResultController extends GetxController {
   }
 
   void logResults(String value) {
-    print('Result: $value');
+    if (kDebugMode) {
+      print('Result: $value');
+    }
   }
 
   void logErrors(String value) {
-    print('Error: $value');
+    if (kDebugMode) {
+      print('Error: $value');
+    }
   }
 }

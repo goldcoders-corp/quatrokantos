@@ -16,7 +16,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final double? fontSize;
   final List<Menu> menus = Menus;
 
-  TopBar({this.title, this.fontSize = 22.0});
+  TopBar({Key? key, this.title, this.fontSize = 22.0}) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(50);

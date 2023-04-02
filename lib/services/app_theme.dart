@@ -4,16 +4,20 @@ import 'package:quatrokantos/maps/app_colors.dart';
 
 class AppTheme {
   final ThemeData lightTheme = ThemeData.light().copyWith(
-      brightness: Brightness.light,
-      primaryColor: appColors[PRIMARY],
-      backgroundColor: appColors[BG],
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: appColors[ACCENT]));
+    brightness: Brightness.light,
+    primaryColor: appColors[PRIMARY],
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+      secondary: appColors[ACCENT],
+      background: appColors[BG],
+    ),
+  );
 
   final ThemeData darkTheme = ThemeData.dark().copyWith(
-      brightness: Brightness.dark,
-      primaryColor: appColors[PRIMARY_DARK],
-      backgroundColor: appColors[BG_DARK],
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: appColors[ACCENT_DARK]));
+    brightness: Brightness.dark,
+    primaryColor: appColors[PRIMARY_DARK],
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+      secondary: appColors[ACCENT_DARK],
+      background: appColors[BG_DARK],
+    ),
+  );
 }

@@ -20,27 +20,27 @@ class RoundedInputField extends StatelessWidget {
     return Icon(icon, color: color);
   }
 
-  const RoundedInputField(
-      {Key? key,
-      required this.hintText,
-      required this.labelText,
-      required this.helperText,
-      this.onChanged,
-      this.color,
-      this.icon,
-      this.prefixText,
-      this.suffixText,
-      this.textStyle = const TextStyle(color: Color(0xFFFF4081)),
-      this.helperStyle = const TextStyle(color: Color(0xFFFF4081)),
-      this.hintStyle = const TextStyle(color: Colors.white30),
-      this.labelStyle = const TextStyle(color: Color(0xffb69859)),
-      this.border = const OutlineInputBorder(
-        gapPadding: 1.0,
-        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-        borderSide: BorderSide(color: Color(0xffb69859)),
-      ),
-      this.focusColor})
-      : super(key: key);
+  const RoundedInputField({
+    required this.hintText,
+    required this.labelText,
+    required this.helperText,
+    this.onChanged,
+    this.color,
+    this.icon,
+    this.prefixText,
+    this.suffixText,
+    this.textStyle = const TextStyle(color: Color(0xFFFF4081)),
+    this.helperStyle = const TextStyle(color: Color(0xFFFF4081)),
+    this.hintStyle = const TextStyle(color: Colors.white30),
+    this.labelStyle = const TextStyle(color: Color(0xffb69859)),
+    this.border = const OutlineInputBorder(
+      gapPadding: 1.0,
+      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      borderSide: BorderSide(color: Color(0xffb69859)),
+    ),
+    this.focusColor,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

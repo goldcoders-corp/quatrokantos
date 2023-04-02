@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -24,9 +26,10 @@ import 'package:quatrokantos/widgets/side_menu.dart';
 import 'package:quatrokantos/widgets/top_bar.dart';
 
 class ProjectView extends GetView<ProjectController> {
-  final CmsController cmsCtrl = Get.put(CmsController());
+  const ProjectView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final CmsController cmsCtrl = Get.put(CmsController());
     return Scaffold(
       appBar: TopBar(
         title: controller.local_name,
