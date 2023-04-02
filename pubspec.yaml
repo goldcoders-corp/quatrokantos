@@ -51,7 +51,7 @@ msix_config:
   publisher_display_name: Goldcoders
   identity_name: 53614Goldcoders.ThriftshopApp
   msix_version: 1.0.0.0
-  logo_path: 'C:\Users\uriah\Code\quatrokantos\assets\images\app.png'
+  logo_path: 'C:\Users\builder\clone\assets\images\app.png'
   capabilities: "internetClientServer,"
   icons_background_color: "#00275B"
   execution_alias: "thriftshop"
