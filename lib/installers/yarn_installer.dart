@@ -9,6 +9,11 @@ import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 
 class YarnInstaller {
+  YarnInstaller() : super() {
+    command = 'yarn';
+    command1 = 'npm';
+    args1 = <String>['install', '-g', 'yarn', '--force'];
+  }
   late final String command;
   late final String command1;
   late final List<String> args1;
@@ -17,17 +22,13 @@ class YarnInstaller {
   final WizardController wctrl = Get.find<WizardController>();
   final CommandController ctrl = Get.find<CommandController>();
 
-  YarnInstaller() : super() {
-    command = 'yarn';
-    command1 = 'npm';
-    args1 = <String>['install', '-g', 'yarn', '--force'];
-  }
-
+  // ignore: inference_failure_on_function_return_type
   Future<void> call({required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command,
-        environment: (Platform.isWindows)
-            ? null
-            : <String, String>{'PATH': PathEnv.get()});
+    final cmdPathOrNull = whichSync(
+      command,
+      environment:
+          (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()},
+    );
 
     bool installed;
     if (cmdPathOrNull != null) {
@@ -41,14 +42,15 @@ class YarnInstaller {
     } else {
       ctrl.isLoading = true;
 
-      _install(onDone: onDone);
+      await _install(onDone: onDone);
     }
   }
 
+  // ignore: inference_failure_on_function_return_type
   Future<void> _install({required Function(bool installed) onDone}) async {
-    final Map<String, String>? env =
+    final env =
         (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()};
-    final String? cmdPathOrNull = whichSync(command1, environment: env);
+    final cmdPathOrNull = whichSync(command1, environment: env);
 
     if (cmdPathOrNull != null) {
       try {
@@ -57,20 +59,25 @@ class YarnInstaller {
           args1,
           runInShell: true,
           environment: env,
-        ).asStream().listen((ProcessResult process) async {
-          if (kDebugMode) {
-            print(process.stdout);
-            print(process.stderr);
-          }
-        }, onDone: () {
-          onDone(true);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            if (kDebugMode) {
+              print(process.stdout);
+              print(process.stderr);
+            }
+          },
+          onDone: () {
+            onDone(true);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'NodeJS is not yet Installed');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'NodeJS is not yet Installed',
+      );
       onDone(false);
     }
   }

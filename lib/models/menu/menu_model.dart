@@ -3,18 +3,12 @@ import 'package:quatrokantos/models/menu/menu_entity.dart';
 
 class Menu extends MenuEntity {
   const Menu({
-    String? name,
-    String? route,
-    Icon? icon,
-    Function? callback,
-    bool? isAuth,
-  }) : super(
-          name: name,
-          route: route,
-          icon: icon,
-          callback: callback,
-          isAuth: isAuth,
-        );
+    super.name,
+    super.route,
+    super.icon,
+    super.callback,
+    super.isAuth,
+  });
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
         name: json['name'] as String?,

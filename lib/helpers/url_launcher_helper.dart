@@ -6,9 +6,8 @@ import 'package:quatrokantos/helpers/cmd_helper.dart';
 /// #### Just Create New Instance passing the URL
 /// #### then invoke `()` or `call()` method
 class UrlLauncher {
-  final String url;
-
   const UrlLauncher({required this.url});
+  final String url;
 
   String _getOpenCMD() {
     if (Platform.isMacOS) {
@@ -26,8 +25,8 @@ class UrlLauncher {
 
   /// Quickly Launch Text Editor
   Future<void> call() async {
-    final String command = _getOpenCMD();
-    final List<String> args = _getArgs(url);
+    final command = _getOpenCMD();
+    final args = _getArgs(url);
 
     await Cmd.open(command: command, args: args);
   }

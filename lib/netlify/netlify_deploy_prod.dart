@@ -5,27 +5,25 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:tint/tint.dart';
 
 class NetlifyDeploy {
+  NetlifyDeploy({required this.path}) : super() {
+    args = <String>['deploy', '--prod'];
+  }
   final String command = 'ntl';
   final String path;
   late List<String> args;
 
-  NetlifyDeploy({required this.path}) : super() {
-    args = <String>['deploy', '--prod'];
-  }
-
   Future<Map<String, String>> call() async {
-    final StringBuffer buffer = StringBuffer();
-    final RegExp jsonErrorRegExp =
-        RegExp(r'\bWill\sproceed\swithout\sdeploying\b');
-    final RegExp siteErrorRegExp =
+    final buffer = StringBuffer();
+    final jsonErrorRegExp = RegExp(r'\bWill\sproceed\swithout\sdeploying\b');
+    final siteErrorRegExp =
         RegExp(r"\bThis\sfolder\sisn\'t\slinked\sto\sa\ssite\syet\b");
-    final StringBuffer errorMessage = StringBuffer();
+    final errorMessage = StringBuffer();
 
-    final RegExp uniqueURLRegExp = RegExp(r'(?<=Unique Deploy URL:).*?\n');
-    final RegExp logsRegExp = RegExp(r'(?<=Logs:).*?\n');
-    final RegExp webURLRegExp = RegExp(r'(?<=Website URL:).*?\n');
+    final uniqueURLRegExp = RegExp(r'(?<=Unique Deploy URL:).*?\n');
+    final logsRegExp = RegExp(r'(?<=Logs:).*?\n');
+    final webURLRegExp = RegExp(r'(?<=Website URL:).*?\n');
 
-    final Process process = await Process.start(
+    final process = await Process.start(
       command,
       args,
       runInShell: true,
@@ -34,7 +32,7 @@ class NetlifyDeploy {
           (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()},
     );
 
-    final Stream<String> lineStream = process.stdout
+    final lineStream = process.stdout
         .transform(const Utf8Decoder())
         .transform(const LineSplitter());
     await for (final String line in lineStream) {
@@ -50,37 +48,38 @@ class NetlifyDeploy {
         buffer.write('$line\n');
       }
     }
-    final String error = errorMessage.toString().strip();
-    final String output = buffer.toString();
+    final error = errorMessage.toString().strip();
+    final output = buffer.toString();
     if (error.isNotEmpty) {
-      final Map<String, String> errorMap = <String, String>{
+      final errorMap = <String, String>{
         'error': error,
       };
       return errorMap;
     } else if (output.isNotEmpty) {
-      String? website_url;
-      String? logs_url;
-      String? unique_deploy_url;
+      String? websiteUrl;
+      String? logsUrl;
+      String? uniqueDeployUrl;
       if (webURLRegExp.hasMatch(output)) {
-        website_url = webURLRegExp.stringMatch(output).toString().strip();
+        websiteUrl = webURLRegExp.stringMatch(output).toString().strip();
       }
       if (logsRegExp.hasMatch(output)) {
-        logs_url = logsRegExp.stringMatch(output).toString().strip();
+        logsUrl = logsRegExp.stringMatch(output).toString().strip();
       }
       if (webURLRegExp.hasMatch(output)) {
-        unique_deploy_url =
+        uniqueDeployUrl =
             uniqueURLRegExp.stringMatch(output).toString().strip();
       }
+      // ignore: todo
       // TODO: return a list of URLS
       // ignore: lines_longer_than_80_chars
-      final Map<String, String> outputMap = <String, String>{
-        'website_url': website_url ?? '',
-        'logs_url': logs_url ?? '',
-        'unique_deploy_url': unique_deploy_url ?? '',
+      final outputMap = <String, String>{
+        'website_url': websiteUrl ?? '',
+        'logs_url': logsUrl ?? '',
+        'unique_deploy_url': uniqueDeployUrl ?? '',
       };
       return outputMap;
     } else {
-      final Map<String, String> errorMap = <String, String>{
+      final errorMap = <String, String>{
         'error': 'Unexpected Error Happened On Deploy Process'
       };
       return errorMap;

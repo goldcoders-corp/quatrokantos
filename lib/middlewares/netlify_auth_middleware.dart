@@ -7,9 +7,9 @@ import 'package:quatrokantos/services/wizard_service.dart';
 class NetlifyAuthMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    final NetlifyAuthService netlify = Get.find<NetlifyAuthService>();
-    final WizardService wizard = Get.find<WizardService>();
-    final WizardController stepper = Get.find<WizardController>();
+    final netlify = Get.find<NetlifyAuthService>();
+    final wizard = Get.find<WizardService>();
+    final stepper = Get.find<WizardController>();
     if (netlify.isLogged == false) {
       // when logged out
       // force wizard completed false

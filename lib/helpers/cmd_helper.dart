@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_getters_setters
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,37 +9,6 @@ import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 
 class Cmd {
-  late final String _command;
-  late final List<String> _args;
-  late final String? _path;
-  final CommandController ctrl = Get.find<CommandController>();
-
-  late final Map<String, String>? _env;
-
-  late final bool _runInShell;
-
-  set args(List<String> args) => _args = args;
-
-  List<String> get args => _args;
-
-  set command(String command) => _command = command;
-
-  String get command => _command;
-
-  set path(String? path) => _path = path;
-
-  String? get path => _path;
-
-  set env(Map<String, String>? env) {
-    _env = env;
-  }
-
-  bool get runInShell => _runInShell;
-
-  set runInShell(bool runInShell) => _runInShell = runInShell;
-
-  Map<String, String>? get env => _env;
-
   /// #### CLI Helper to Execute Any Commands
   ///
   /// Example Usage:
@@ -78,6 +49,36 @@ class Cmd {
         _path = path,
         _runInShell = runInShell,
         _env = env;
+  late final String _command;
+  late final List<String> _args;
+  late final String? _path;
+  final CommandController ctrl = Get.find<CommandController>();
+
+  late final Map<String, String>? _env;
+
+  late final bool _runInShell;
+
+  set args(List<String> args) => _args = args;
+
+  List<String> get args => _args;
+
+  set command(String command) => _command = command;
+
+  String get command => _command;
+
+  set path(String? path) => _path = path;
+
+  String? get path => _path;
+
+  set env(Map<String, String>? env) {
+    _env = env;
+  }
+
+  bool get runInShell => _runInShell;
+
+  set runInShell(bool runInShell) => _runInShell = runInShell;
+
+  Map<String, String>? get env => _env;
 
   /// #### `command` executed is relative to `cwd`
   /// ####  When `CommandFailedException` is Thrown on `DEBUG=TRUE` at `.env`
@@ -90,12 +91,13 @@ class Cmd {
   /// ```
   ///       Obx(() => Text('Version: ${ctrl.results}'))
   /// ```
+  // ignore: inference_failure_on_function_return_type
   Future<void> execute({required Function(String output) onResult}) async {
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
 
     try {
-      final Process process = await Process.start(
+      final process = await Process.start(
         command,
         args,
         environment:
@@ -104,7 +106,7 @@ class Cmd {
         runInShell: runInShell,
       );
 
-      final Stream<String> outputStream = process.stdout
+      final outputStream = process.stdout
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
 
@@ -112,7 +114,7 @@ class Cmd {
         outputbuffer.write('$line\n');
       }
 
-      final Stream<String> errorStream = process.stderr
+      final errorStream = process.stderr
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
@@ -122,9 +124,9 @@ class Cmd {
       errorBuffer.write(stacktrace);
     }
 
-    final String error = errorBuffer.toString();
-    final String output = outputbuffer.toString();
-    String result = '';
+    final error = errorBuffer.toString();
+    final output = outputbuffer.toString();
+    var result = '';
 
     try {
       if (error.isNotEmpty) {
@@ -139,13 +141,16 @@ class Cmd {
       }
       onResult(result);
     } on CommandFailedException catch (e, stacktrace) {
-      CommandFailedException.log(
-          e.toString(), '$error\n${stacktrace.toString()}');
+      await CommandFailedException.log(
+        e.toString(),
+        // ignore: noop_primitive_operations
+        '$error\n${stacktrace.toString()}',
+      );
     }
   }
 
   static String? version(String output) {
-    final RegExp regExp = RegExp(
+    final regExp = RegExp(
       r'(\d+)\.(\d+)\.(\d+)',
     );
     return regExp.stringMatch(output).toString();
@@ -176,19 +181,21 @@ class Cmd {
   ///   path2: path2,
   /// );
   ///```
-  static Future<void> pipeTo(
-      {required String command1,
-      required List<String> args1,
-      String? path1,
-      required String command2,
-      required List<String> args2,
-      String? path2,
-      required Function(bool installed) onDone}) async {
-    final CommandController ctrl = Get.find<CommandController>();
-    final StringBuffer outputbuffer = StringBuffer();
+  static Future<void> pipeTo({
+    required String command1,
+    required List<String> args1,
+    required String command2,
+    required List<String> args2,
+    // ignore: inference_failure_on_function_return_type
+    required Function(bool installed) onDone,
+    String? path1,
+    String? path2,
+  }) async {
+    final ctrl = Get.find<CommandController>();
+    final outputbuffer = StringBuffer();
 
     try {
-      final Process left = await Process.start(
+      final left = await Process.start(
         command1,
         args1,
         environment: <String, String>{'PATH': PathEnv.get()},
@@ -196,7 +203,7 @@ class Cmd {
         runInShell: true,
       );
 
-      final Process right = await Process.start(
+      final right = await Process.start(
         command2,
         args2,
         environment: <String, String>{'PATH': PathEnv.get()},
@@ -204,7 +211,7 @@ class Cmd {
         runInShell: true,
       );
 
-      left.stdout.pipe(right.stdin);
+      await left.stdout.pipe(right.stdin);
       right.stdout.transform(utf8.decoder).listen((String event) {
         outputbuffer.write('$event\n');
       }).onDone(() {
@@ -212,7 +219,7 @@ class Cmd {
         onDone(true);
       });
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     }
   }
 
@@ -220,11 +227,11 @@ class Cmd {
     required String command,
     required List<String> args,
   }) async {
-    final CommandController ctrl = Get.find<CommandController>();
+    final ctrl = Get.find<CommandController>();
     // final StringBuffer outputbuffer = StringBuffer();
 
     try {
-      final Process left = await Process.start(
+      final left = await Process.start(
         command,
         args,
       );
@@ -235,7 +242,7 @@ class Cmd {
         ctrl.results = 'Opening Site ${args[0]}';
       });
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     }
   }
 }

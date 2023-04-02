@@ -7,12 +7,11 @@ import 'package:quatrokantos/services/theme_service.dart';
 import 'package:quatrokantos/utils/initial_binding.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      enableLog: true,
       initialBinding: InitialBinding(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

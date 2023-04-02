@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_function_invocation
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:quatrokantos/app/modules/wizard/controllers/wizard_controller.dart';
@@ -30,8 +32,9 @@ class NetlifyAuthService extends GetxService {
     _netlifyLogout();
     emptyAccount();
     wizard.completed = false;
-    stepper.netlifyLogged = false;
-    stepper.complete = false;
+    stepper
+      ..netlifyLogged = false
+      ..complete = false;
     Get.toNamed('/wizard');
   }
 
@@ -72,7 +75,7 @@ class NetlifyAuthService extends GetxService {
 
   void initAccount() {
     if (_getStorage.hasData(NETLIFY_ACCOUNT)) {
-      final Map<String, dynamic> accountMap =
+      final accountMap =
           _getStorage.read(NETLIFY_ACCOUNT) as Map<String, dynamic>;
       user = NetlifyAccount.fromJson(accountMap);
     }

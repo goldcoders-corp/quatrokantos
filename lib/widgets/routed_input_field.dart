@@ -1,25 +1,8 @@
+// ignore_for_file: prefer_int_literals
+
 import 'package:flutter/material.dart';
 
 class RoundedInputField extends StatelessWidget {
-  final String hintText;
-  final String helperText;
-  final String labelText;
-  final ValueChanged<String>? onChanged;
-  final Color? color;
-  final Color? focusColor;
-  final Icon? icon;
-  final String? prefixText;
-  final String? suffixText;
-  final TextStyle? textStyle;
-  final TextStyle? helperStyle;
-  final TextStyle? labelStyle;
-  final TextStyle? hintStyle;
-  final OutlineInputBorder? border;
-
-  Icon fieldIcon(IconData icon, {Color color = Colors.white}) {
-    return Icon(icon, color: color);
-  }
-
   const RoundedInputField({
     required this.hintText,
     required this.labelText,
@@ -39,8 +22,26 @@ class RoundedInputField extends StatelessWidget {
       borderSide: BorderSide(color: Color(0xffb69859)),
     ),
     this.focusColor,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final String hintText;
+  final String helperText;
+  final String labelText;
+  final ValueChanged<String>? onChanged;
+  final Color? color;
+  final Color? focusColor;
+  final Icon? icon;
+  final String? prefixText;
+  final String? suffixText;
+  final TextStyle? textStyle;
+  final TextStyle? helperStyle;
+  final TextStyle? labelStyle;
+  final TextStyle? hintStyle;
+  final OutlineInputBorder? border;
+
+  Icon fieldIcon(IconData icon, {Color color = Colors.white}) {
+    return Icon(icon, color: color);
+  }
 
   @override
   Widget build(BuildContext context) {

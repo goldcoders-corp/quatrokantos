@@ -13,6 +13,7 @@ Icon topBarIcon(IconData icon, {Color color = defaultIconColor}) {
 
 NetlifyAuthService netlifyAuthService = Get.find<NetlifyAuthService>();
 
+// ignore: non_constant_identifier_names
 final List<Menu> Menus = <Menu>[
   Menu(
     name: 'Dashboard',

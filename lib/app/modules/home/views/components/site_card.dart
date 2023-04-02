@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/controllers/site_list_controller.dart';
@@ -10,8 +12,8 @@ import 'package:quatrokantos/maps/app_colors.dart';
 class SiteCard extends GetView<SiteListController> {
   const SiteCard({
     required this.site,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Site site;
 
@@ -32,15 +34,16 @@ class SiteCard extends GetView<SiteListController> {
                 height: 40,
                 width: 40,
                 child: TextButton(
-                    onPressed: () async {
-                      if (site.details?.id != null) {
-                        await controller.deleteSite(site.details!.id);
-                      }
-                    },
-                    child: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red[400]?.withOpacity(0.5),
-                    )),
+                  onPressed: () async {
+                    if (site.details?.id != null) {
+                      await controller.deleteSite(site.details!.id);
+                    }
+                  },
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red[400]?.withOpacity(0.5),
+                  ),
+                ),
               )
             ],
           ),
@@ -68,6 +71,7 @@ class SiteCard extends GetView<SiteListController> {
               //       onPressed: () {
               //         Get.snackbar('Cloning Site', 'Copying Theme');
               //       },
+              // ignore: todo
               //       // TODO(uriah): /Users/uriah/Code/Goldcoders/site/.netlify/state.json
               //       // Read this json file from path provided
               //       // then find by id
@@ -87,6 +91,7 @@ class SiteCard extends GetView<SiteListController> {
               //       onPressed: () {
               //         Get.snackbar('Linking Site', 'Site will be Linked');
               //       },
+              // ignore: todo
               //       // TODO(uriah): /Users/uriah/Code/Goldcoders/site/.netlify/state.json
               //       // Read this json file from path provided
               //       // then find by id
@@ -103,65 +108,73 @@ class SiteCard extends GetView<SiteListController> {
                 height: 40,
                 width: 40,
                 child: TextButton(
-                    onPressed: () async {
-                      // switch logic here
-                      if (site.details?.default_domain != null ||
-                          site.details?.default_domain != '') {
-                        final UrlLauncher openURL = UrlLauncher(
-                            url: 'https://${site.details?.default_domain}');
-                        await openURL();
-                      } else {
-                        final UrlLauncher openURL = UrlLauncher(
-                            url: 'https://${site.details?.custom_domain}');
-                        await openURL();
-                      }
-                    },
-                    child: Icon(
-                      Icons.travel_explore,
-                      color: Colors.indigo.shade100,
-                    )),
+                  onPressed: () async {
+                    // switch logic here
+                    if (site.details?.default_domain != null ||
+                        site.details?.default_domain != '') {
+                      final openURL = UrlLauncher(
+                        url: 'https://${site.details?.default_domain}',
+                      );
+                      await openURL();
+                    } else {
+                      final openURL = UrlLauncher(
+                        url: 'https://${site.details?.custom_domain}',
+                      );
+                      await openURL();
+                    }
+                  },
+                  child: Icon(
+                    Icons.travel_explore,
+                    color: Colors.indigo.shade100,
+                  ),
+                ),
               ),
 
               SizedBox(
                 height: 40,
                 width: 40,
                 child: TextButton(
-                    onPressed: () {
-                      final Folder folder = Folder(name: site.path);
-                      folder.open();
-                    },
-                    child: Icon(
-                      Icons.pageview,
-                      color: Colors.brown.shade200,
-                    )),
+                  onPressed: () {
+                    final folder = Folder(name: site.path);
+                    // ignore: cascade_invocations
+                    folder.open();
+                  },
+                  child: Icon(
+                    Icons.pageview,
+                    color: Colors.brown.shade200,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 40,
                 width: 40,
                 child: TextButton(
-                    onPressed: () {
-                      // TODO(uriah): check this after we finished
-                      // Site Creation , we can then navigate to the extra page
-                      final Map<String, dynamic> siteMap = site.toJson();
-                      final Map<String, String> params = <String, String>{
-                        'local_name': siteMap['name'] as String,
-                        'path': siteMap['path'] as String,
-                        'siteId': siteMap['details']['id'] as String,
-                        'name': siteMap['details']['name'] as String,
-                        'account_slug':
-                            siteMap['details']['account_slug'] as String,
-                        'default_domain':
-                            siteMap['details']['default_domain'] as String,
-                        'repo_url': (siteMap['details']['repo_url'] == null)
-                            ? ''
-                            : siteMap['details']['repo_url'] as String,
-                      };
-                      Get.toNamed('/project/${site.name}', parameters: params);
-                    },
-                    child: Icon(
-                      Icons.drive_file_move,
-                      color: Colors.pink.shade200,
-                    )),
+                  onPressed: () {
+                    // ignore: todo
+                    // TODO(uriah): check this after we finished
+                    // Site Creation , we can then navigate to the extra page
+                    final siteMap = site.toJson();
+                    final params = <String, String>{
+                      'local_name': siteMap['name'] as String,
+                      'path': siteMap['path'] as String,
+                      'siteId': siteMap['details']['id'] as String,
+                      'name': siteMap['details']['name'] as String,
+                      'account_slug':
+                          siteMap['details']['account_slug'] as String,
+                      'default_domain':
+                          siteMap['details']['default_domain'] as String,
+                      'repo_url': (siteMap['details']['repo_url'] == null)
+                          ? ''
+                          : siteMap['details']['repo_url'] as String,
+                    };
+                    // ignore: inference_failure_on_function_invocation
+                    Get.toNamed('/project/${site.name}', parameters: params);
+                  },
+                  child: Icon(
+                    Icons.drive_file_move,
+                    color: Colors.pink.shade200,
+                  ),
+                ),
               ),
             ],
           ),

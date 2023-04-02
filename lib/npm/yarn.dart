@@ -18,12 +18,13 @@ import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class Yarn {
   static Future<void> install(ProjectController controller) async {
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
-    final String? command = whichSync('yarn',
-        environment: (Platform.isWindows)
-            ? null
-            : <String, String>{'PATH': PathEnv.get()});
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
+    final command = whichSync(
+      'yarn',
+      environment:
+          (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()},
+    );
     // we can use this at the end of the wizard installation
     // so we can force user to quit the app and open again.
     // SystemNavigator.pop();
@@ -50,27 +51,25 @@ class Yarn {
     // This is an example if we wanted to ship default theme zip file
     // so we can avoid downloading it
     // we can then save the file to the cms or themes directory
-    final ByteData zipFile =
-        await rootBundle.load('assets/scripts/goldcoders.dev.zip');
+    final zipFile = await rootBundle.load('assets/scripts/goldcoders.dev.zip');
     final List<int> bytes = Uint8List.view(zipFile.buffer);
-    final Archive archive = ZipDecoder().decodeBytes(bytes);
-    final String destination =
-        p.join(PC.userDirectory, '.local', 'share', 'archives');
-    for (final ArchiveFile file in archive) {
-      String filename = file.name;
-      final RegExp regExp = RegExp(r'\/(.*)');
+    final archive = ZipDecoder().decodeBytes(bytes);
+    final destination = p.join(PC.userDirectory, '.local', 'share', 'archives');
+    for (final file in archive) {
+      var filename = file.name;
+      final regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
       if (file.isFile) {
         if (kDebugMode) {
           print(file.name);
         }
-        final List<int> data = file.content as List<int>;
+        final data = file.content as List<int>;
 
         File(destination + filename)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
       } else {
-        Directory(destination + filename).create(recursive: true);
+        await Directory(destination + filename).create(recursive: true);
       }
     }
 
@@ -93,7 +92,7 @@ class Yarn {
     }
     try {
       controller.isIntalling = true;
-      final Process process = await Process.start(
+      final process = await Process.start(
         command!,
         <String>['install'],
         environment: (Platform.isWindows)
@@ -104,7 +103,7 @@ class Yarn {
         runInShell: Platform.isWindows ? true : false,
       );
 
-      final Stream<String> outputStream = process.stdout
+      final outputStream = process.stdout
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
 
@@ -112,14 +111,14 @@ class Yarn {
         outputbuffer.writeln(line);
       }
 
-      final Stream<String> errorStream = process.stderr
+      final errorStream = process.stderr
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
         errorBuffer.writeln(line);
       }
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     } finally {
       controller.isIntalling = false;
       if (errorBuffer.toString().isNotEmpty) {
@@ -141,16 +140,17 @@ class Yarn {
   }
 
   static Future<void> cms(ProjectController controller) async {
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
-    final String? command = whichSync('yarn',
-        environment: (Platform.isWindows)
-            ? null
-            : <String, String>{'PATH': PathEnv.get()});
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
+    final command = whichSync(
+      'yarn',
+      environment:
+          (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()},
+    );
 
     try {
       controller.canKillAll = true;
-      final Process process = await Process.start(
+      final process = await Process.start(
         command!,
         <String>['cms'],
         environment: (Platform.isWindows)
@@ -160,7 +160,7 @@ class Yarn {
         runInShell: true,
       );
 
-      final Stream<String> outputStream = process.stdout
+      final outputStream = process.stdout
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
 
@@ -168,14 +168,14 @@ class Yarn {
         outputbuffer.writeln(line);
       }
 
-      final Stream<String> errorStream = process.stderr
+      final errorStream = process.stderr
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
         errorBuffer.writeln(line);
       }
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     } finally {
       controller.isIntalling = false;
       if (errorBuffer.toString().isNotEmpty) {

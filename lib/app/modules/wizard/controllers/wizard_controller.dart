@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_slow_async_io, inference_failure_on_function_invocation, lines_longer_than_80_chars
+
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -65,19 +67,19 @@ class WizardController extends GetxController {
   set currentStep(int val) => _currentStep.value = val;
 
   Future<void> checkIfThemeInstalled() async {
-    final String zipName = dotenv.env['DEFAULT_SITE_THEME']!;
-    final String cmZip = p.join(
+    final zipName = dotenv.env['DEFAULT_SITE_THEME']!;
+    final cmZip = p.join(
       PathHelper.getCMSDIR,
       '$zipName.zip',
     );
 
-    final String themeZip = p.join(
+    final themeZip = p.join(
       PathHelper.getThemeDir,
       '$zipName.zip',
     );
 
-    final bool cmsDownloaded = await File(cmZip).exists();
-    final bool themeDownloaded = await File(themeZip).exists();
+    final cmsDownloaded = await File(cmZip).exists();
+    final themeDownloaded = await File(themeZip).exists();
 
     (cmsDownloaded && themeDownloaded)
         ? themeInstalled = true
@@ -85,6 +87,7 @@ class WizardController extends GetxController {
   }
 
   void initNetlifyAuth() {
+    // ignore: omit_local_variable_types
     final bool? netlify = _getStorage.read(NETLIFY_LOGGED);
     if (netlify == null) {
       netlifyLogged = false;
@@ -94,6 +97,7 @@ class WizardController extends GetxController {
   }
 
   void initNetlify() {
+    // ignore: omit_local_variable_types
     final bool? netlify = _getStorage.read(NETLIFY_INSTALLED);
     if (netlify == null) {
       netlifyInstalled = false;
@@ -103,6 +107,7 @@ class WizardController extends GetxController {
   }
 
   void initNode() {
+    // ignore: omit_local_variable_types
     final bool? node = _getStorage.read(NODE_INSTALLED);
     if (node == null) {
       nodeInstalled = false;
@@ -112,6 +117,7 @@ class WizardController extends GetxController {
   }
 
   void initHugo() {
+    // ignore: omit_local_variable_types
     final bool? hugo = _getStorage.read(HUGO_INSTALLED);
     if (hugo == null) {
       hugoInstalled = false;
@@ -121,6 +127,7 @@ class WizardController extends GetxController {
   }
 
   void initWebi() {
+    // ignore: omit_local_variable_types
     final bool? webi = _getStorage.read(WEBI_INSTALLED);
     if (webi == null) {
       webiInstalled = false;
@@ -130,6 +137,7 @@ class WizardController extends GetxController {
   }
 
   void initPkg() {
+    // ignore: omit_local_variable_types
     final bool? pkg = _getStorage.read(PKG_INSTALLED);
     if (pkg == null) {
       pkgInstalled = false;
@@ -290,6 +298,7 @@ class WizardController extends GetxController {
   }
 
   void initYarn() {
+    // ignore: omit_local_variable_types
     final bool? node = _getStorage.read(YARN_INSTALLED);
     if (node == null) {
       yarnInstalled = false;

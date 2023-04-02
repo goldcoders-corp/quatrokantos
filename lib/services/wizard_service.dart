@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:quatrokantos/constants/wizard_contants.dart';

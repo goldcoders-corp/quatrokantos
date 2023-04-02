@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_function_invocation
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -14,140 +16,142 @@ import 'package:quatrokantos/services/netlify_auth_service.dart';
 import 'package:quatrokantos/widgets/run_btn.dart';
 
 class NetlifyLoginDialog {
+  NetlifyLoginDialog(this.response);
   final Map<String, dynamic> response;
 
-  NetlifyLoginDialog(this.response);
-
   Future<dynamic> launch() {
-    final CommandController controller = Get.find<CommandController>();
+    final controller = Get.find<CommandController>();
 
-    final WizardController wctrl = Get.put(WizardController());
-    final NetlifyAuthService netlify = Get.put(NetlifyAuthService());
-    final String? url = response['url'] as String?;
+    final wctrl = Get.put(WizardController());
+    final netlify = Get.put(NetlifyAuthService());
+    final url = response['url'] as String?;
     // final int? pid = response['pid'] as int?;
     // final int? exitCode = response['pid'] as int?;
     // final String message = response['message'] as String;
     return Get.defaultDialog(
-        cancel: RunBtn(
-            title: 'Cancel',
-            onTap: () async {
-              Get.back();
-              final KillAll kill =
-                  KillAll(unix_cmd: 'node', win_cmd: 'node.exe');
-              final String output = await kill();
-              Get.snackbar(
-                'Notification',
-                output,
-                duration: const Duration(milliseconds: 30000),
-                icon: const Icon(Icons.warning, color: Colors.red),
-                snackPosition: SnackPosition.BOTTOM,
-                dismissDirection: DismissDirection.horizontal,
-              );
-              controller.isLoading = false;
-            },
-            icon: Icons.close),
-        title: '',
-        barrierDismissible: false,
-        content: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          height: 400,
-          width: 500,
-          child: Column(
-            children: <Widget>[
-              const Text(
-                'Link Your Netlify Account',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 50),
-              const Text(
-                'A URL Has Been Launched in the Browser',
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'If You Dont Have Account go Create One',
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Once Logged In You May Re Launch the URL',
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton.icon(
-                    icon: const Icon(
-                      Icons.open_in_browser,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'Re-Open Authorization Link',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.purple[50],
-                      backgroundColor: appColors[ACCENT],
-                      disabledBackgroundColor: Colors.lightBlue,
-                      elevation: 20,
-                      minimumSize: const Size(350, 50),
-                      shadowColor: Colors.purple[100],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    onPressed: () async {
-                      if (url != null) {
-                        await UrlLauncher(url: url)();
-                      }
-                    },
+      cancel: RunBtn(
+        title: 'Cancel',
+        onTap: () async {
+          Get.back();
+          final kill = KillAll(unixCmd: 'node', winCmd: 'node.exe');
+          final output = await kill();
+          Get.snackbar(
+            'Notification',
+            output,
+            duration: const Duration(milliseconds: 30000),
+            icon: const Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+            dismissDirection: DismissDirection.horizontal,
+          );
+          controller.isLoading = false;
+        },
+        icon: Icons.close,
+      ),
+      title: '',
+      barrierDismissible: false,
+      content: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 50),
+        height: 400,
+        width: 500,
+        child: Column(
+          children: <Widget>[
+            const Text(
+              'Link Your Netlify Account',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: 50),
+            const Text(
+              'A URL Has Been Launched in the Browser',
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'If You Dont Have Account go Create One',
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Once Logged In You May Re Launch the URL',
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.open_in_browser,
+                    color: Colors.white,
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Once App was Granted Authorization',
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Click Button Below',
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton.icon(
-                    icon: const Icon(
-                      Icons.verified_user,
+                  label: const Text(
+                    'Re-Open Authorization Link',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    label: const Text(
-                      'Verify Authorization was Granted',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.purple[50],
+                    backgroundColor: appColors[ACCENT],
+                    disabledBackgroundColor: Colors.lightBlue,
+                    elevation: 20,
+                    minimumSize: const Size(350, 50),
+                    shadowColor: Colors.purple[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.purple[50],
-                      backgroundColor: appColors[ACCENT],
-                      disabledForegroundColor: Colors.lightBlue,
-                      elevation: 20,
-                      minimumSize: const Size(350, 50),
-                      shadowColor: Colors.purple[100],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
+                  ),
+                  onPressed: () async {
+                    if (url != null) {
+                      await UrlLauncher(url: url)();
+                    }
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Once App was Granted Authorization',
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Click Button Below',
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.verified_user,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Verify Authorization was Granted',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    onPressed: () async {
-                      NetlifyApi.getCurrentUser(onDone: (String? userStr) {
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.purple[50],
+                    backgroundColor: appColors[ACCENT],
+                    disabledForegroundColor: Colors.lightBlue,
+                    elevation: 20,
+                    minimumSize: const Size(350, 50),
+                    shadowColor: Colors.purple[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await NetlifyApi.getCurrentUser(
+                      onDone: (String? userStr) {
                         if (userStr != '') {
-                          final Map<String, dynamic> userMap =
+                          final userMap =
                               json.decode(userStr!) as Map<String, dynamic>;
 
                           netlify.user = NetlifyAccount.fromJson(userMap);
@@ -157,20 +161,26 @@ class NetlifyLoginDialog {
                             wctrl.netlifyLogged = true;
                             Get.back();
                             controller.isLoading = false;
-                            Get.snackbar('Well Done',
-                                'You Have Completed The Last Step');
+                            Get.snackbar(
+                              'Well Done',
+                              'You Have Completed The Last Step',
+                            );
                           }
                         } else {
-                          Get.snackbar('Account Not Yet Linked!',
-                              'You Havent Authorized the App yet');
+                          Get.snackbar(
+                            'Account Not Yet Linked!',
+                            'You Havent Authorized the App yet',
+                          );
                         }
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

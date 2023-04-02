@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, avoid_dynamic_calls,, cascade_invocations, avoid_slow_async_io, lines_longer_than_80_chars
 
 import 'dart:convert';
 import 'dart:io';
@@ -40,7 +40,7 @@ class SiteListController extends GetxController {
   void onClose() {}
 
   Future<void> checkSitesEmpty() async {
-    final String sitesFolder = p.join(
+    final sitesFolder = p.join(
       PathHelper.getSitesDIR,
     );
     if (await PathHelper.exists(sitesFolder) == true) {
@@ -55,51 +55,53 @@ class SiteListController extends GetxController {
 
   Function listEquals = const DeepCollectionEquality().equals;
   Future<void> fetchSites() async {
-    const String command = 'netlify';
-    final List<String> args = <String>['sites:list', '--json'];
-    final List<Site> siteList = <Site>[];
+    const command = 'netlify';
+    final args = <String>['sites:list', '--json'];
+    final siteList = <Site>[];
 
     ctrl.isLoading = true;
 
-    final Cmd cmd = Cmd(command: command, args: args);
-    await cmd.execute(onResult: (String output) {
-      if (output.isNotEmpty) {
-        final List<dynamic> transformSiteList =
-            json.decode(output) as List<dynamic>;
+    final cmd = Cmd(command: command, args: args);
+    await cmd.execute(
+      onResult: (String output) {
+        if (output.isNotEmpty) {
+          final transformSiteList = json.decode(output) as List<dynamic>;
 
-        // ignore: avoid_function_literals_in_foreach_calls
-        transformSiteList.forEach((dynamic element) {
-          final Site entrySite = Site(
-            name: element['name'] as String,
-            linked: false,
-            path: Folder(name: element['name'] as String).folder(),
-            details: SiteDetails(
-              // TODO(uriah): This is throwing an error at this LINE
-              id: element['details']['id'] as String,
-              name: element['details']['name'] as String,
-              account_slug: element['details']['account_slug'] as String,
-              default_domain: element['details']['default_domain'] as String,
-              repo_url: element['details']?['repo_url'] as String?,
-              custom_domain: element['details']?['custom_domain'] as String?,
-            ),
-          );
-          siteList.add(entrySite);
-        });
-        //  If there is changes in Offline vs Remote Data
-        if (listEquals(sites.value, siteList) == false) {
-          // We Update The Sites Value
-          sites.value = siteList;
-          sites.refresh();
-          final String siteData = json.encode(sites.value);
+          // ignore: avoid_function_literals_in_foreach_calls,
+          transformSiteList.forEach((dynamic element) {
+            final entrySite = Site(
+              name: element['name'] as String,
+              linked: false,
+              path: Folder(name: element['name'] as String).folder(),
+              details: SiteDetails(
+                // ignore: todo
+                // TODO(uriah): This is throwing an error at this LINE
+                id: element['details']['id'] as String,
+                name: element['details']['name'] as String,
+                account_slug: element['details']['account_slug'] as String,
+                default_domain: element['details']['default_domain'] as String,
+                repo_url: element['details']?['repo_url'] as String?,
+                custom_domain: element['details']?['custom_domain'] as String?,
+              ),
+            );
+            siteList.add(entrySite);
+          });
+          //  If there is changes in Offline vs Remote Data
+          if (listEquals(sites.value, siteList) == false) {
+            // We Update The Sites Value
+            sites.value = siteList;
+            sites.refresh();
+            final siteData = json.encode(sites.value);
+            saveLocal(siteData);
+          }
+        } else {
+          sites.value = <Site>[];
+          final siteData = json.encode(sites.value);
           saveLocal(siteData);
         }
-      } else {
-        sites.value = <Site>[];
-        final String siteData = json.encode(sites.value);
-        saveLocal(siteData);
-      }
-      ctrl.isLoading = false;
-    });
+        ctrl.isLoading = false;
+      },
+    );
   }
 
   Site? findByName(String name) =>
@@ -113,27 +115,30 @@ class SiteListController extends GetxController {
 
   Future<void> deleteSite(String id) async {
     isLoading = true;
-    await NetlifyApi.deleteSite(id, onDone: (String? message) {
-      Get.snackbar(
-        'Site Deleted',
-        'Site with id: $id Deleted Successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        dismissDirection: DismissDirection.horizontal,
-      );
-      final int index = getIndex(id);
-      sites.value.removeAt(index);
-      final String siteData = json.encode(sites.value);
-      saveLocal(siteData);
-      sites.refresh();
-      isLoading = false;
-    });
+    await NetlifyApi.deleteSite(
+      id,
+      onDone: (String? message) {
+        Get.snackbar(
+          'Site Deleted',
+          'Site with id: $id Deleted Successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          dismissDirection: DismissDirection.horizontal,
+        );
+        final index = getIndex(id);
+        sites.value.removeAt(index);
+        final siteData = json.encode(sites.value);
+        saveLocal(siteData);
+        sites.refresh();
+        isLoading = false;
+      },
+    );
   }
 
   Future<void> deleteAllRemote() async {
     isLoading = true;
-    final List<Site> siteList = <Site>[];
+    final siteList = <Site>[];
     sites.value = siteList;
-    final NetlifyDeleteAllSites delete = NetlifyDeleteAllSites();
+    final delete = NetlifyDeleteAllSites();
     await delete.all();
     await Directory(PathHelper.getSitesDIR).delete(recursive: true);
     isLoading = false;
@@ -143,12 +148,11 @@ class SiteListController extends GetxController {
   /// and Delte All Site Remotely
   Future<void> uninstallSites() async {
     try {
-      final List<InternetAddress> result =
-          await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         isLoading = true;
-        final Directory sitesFolder = Directory(PathHelper.getSitesDIR);
-        sitesFolder.exists().then((bool exists) {
+        final sitesFolder = Directory(PathHelper.getSitesDIR);
+        await sitesFolder.exists().then((bool exists) {
           if (exists) {
             sitesFolder.delete(recursive: true);
           }
@@ -157,12 +161,12 @@ class SiteListController extends GetxController {
         isLoading = false;
       }
     } on SocketException catch (_) {
+      // ignore: inference_failure_on_function_invocation
       Get.back();
-      Future<void>.delayed(const Duration(seconds: 1)).then((_) {
+      await Future<void>.delayed(const Duration(seconds: 1)).then((_) {
         Get.snackbar(
           'Sites Deletion Failed',
           'Make Sure Your Connected to Internet',
-          duration: const Duration(seconds: 3),
           dismissDirection: DismissDirection.horizontal,
         );
       });
@@ -176,15 +180,15 @@ class SiteListController extends GetxController {
   }
 
   void getLocalData() {
-    final List<Site> siteList = <Site>[];
+    final siteList = <Site>[];
 
     if (_getStorage.hasData(SITE_LIST)) {
-      final List<dynamic> transformSiteList =
+      final transformSiteList =
           json.decode(_getStorage.read(SITE_LIST) as String) as List<dynamic>;
 
       // ignore: avoid_function_literals_in_foreach_calls
       transformSiteList.forEach((dynamic element) {
-        final Site entrySite = Site(
+        final entrySite = Site(
           name: element['name'] as String,
           path: element['path'] as String,
           linked: element['linked'] as bool,

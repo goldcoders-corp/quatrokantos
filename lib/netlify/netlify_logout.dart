@@ -6,23 +6,22 @@ import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 import 'package:quatrokantos/helpers/env_setter.dart';
 
 class NetlifyLogout {
-  late final String? command;
-  late List<String> args = <String>[];
-
   NetlifyLogout() : super() {
     command = whichSync('netlify');
     args = <String>['logout'];
   }
+  late final String? command;
+  late List<String> args = <String>[];
 
   Future<String> call() async {
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
 
     try {
       if (command == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(
+        final process = await Process.start(
           command!,
           args,
           runInShell: true,
@@ -31,7 +30,7 @@ class NetlifyLogout {
               : <String, String>{'PATH': PathEnv.get()},
         );
 
-        final Stream<String> outputStream = process.stdout
+        final outputStream = process.stdout
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in outputStream) {
@@ -44,8 +43,8 @@ class NetlifyLogout {
       errorBuffer.write(e.message);
     }
 
-    final String error = errorBuffer.toString();
-    final String output = outputbuffer.toString();
+    final error = errorBuffer.toString();
+    final output = outputbuffer.toString();
 
     if (error.isNotEmpty) {
       return error;

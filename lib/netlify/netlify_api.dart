@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -13,18 +15,22 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 /// https://docs.netlify.com/api/get-started/
 class NetlifyApi {
   /// Sure Method to Get Correct Account Slug
-  static Future<void> getAccountSlug(
-      {required Function(String? slug) onDone}) async {
-    await NetlifyApi.getCurrentUser(onDone: (String? account) async {
-      if (account != null) {
-        final Map<String, dynamic> user =
-            json.decode(account) as Map<String, dynamic>;
-        // compute here slug
-        // if no slug default is full name
-        // if no full name default is email
-        onDone(user['slug'] as String?);
-      }
-    });
+  static Future<void> getAccountSlug({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? slug) onDone,
+  }) async {
+    await NetlifyApi.getCurrentUser(
+      onDone: (String? account) async {
+        if (account != null) {
+          final Map<String, dynamic> user =
+              json.decode(account) as Map<String, dynamic>;
+          // compute here slug
+          // if no slug default is full name
+          // if no full name default is email
+          onDone(user['slug'] as String?);
+        }
+      },
+    );
   }
 
   /// Create a New Site with Randomness
@@ -131,12 +137,16 @@ class NetlifyApi {
   /// "default_domain": "competent-mccarthy-43fc0e.netlify.app"
   ///
   /// ```
-  static Future<void> createRandomSite(
-      {required Function(String? siteDetails) onDone}) async {
+  static Future<void> createRandomSite({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? siteDetails) onDone,
+  }) async {
     const String command = 'ntl';
     final List<String> args = <String>['api', 'createSite'];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? siteDetails;
     if (cmdPathOrNull != null) {
@@ -145,18 +155,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          siteDetails = output.toString();
-          onDone(siteDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            siteDetails = output.toString();
+            onDone(siteDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -174,22 +189,26 @@ class NetlifyApi {
   /// final String bodyStr = json.encode(data);
   /// ```
   ///  For Detailed API Docs: https://open-api.netlify.com/#operation/createSite
-  static Future<void> createSite(String? data,
-      {required Function(String? siteDetails) onDone,
-      required Function(String? errorMessage) onError}) async {
+  static Future<void> createSite(
+    String? data,
+    // ignore: inference_failure_on_function_return_type
+    {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? siteDetails) onDone,
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? errorMessage) onError,
+  }) async {
     const String command = 'ntl';
-    final List<String> args = <String>[];
+    final List<String> args = <String>['api', 'createSite'];
     final RegExp errorReg = RegExp(r'\bJSONHTTPError\b');
-    args.add('api');
-    args.add('createSite');
     if (data != null) {
-      args.add('--data');
-      args.add(data);
+      args
+        ..add('--data')
+        ..add(data);
     }
     final String? cmdPathOrNull = whichSync(
       command,
       environment: <String, String>{'PATH': PathEnv.get()},
-      includeParentEnvironment: true,
     );
     final StringBuffer output = StringBuffer();
     final StringBuffer errorBuffer = StringBuffer();
@@ -207,40 +226,45 @@ class NetlifyApi {
           environment: (Platform.isWindows)
               ? null
               : <String, String>{'PATH': PathEnv.get()},
-        ).asStream().listen((ProcessResult process) async {
-          final String _stdout = process.stdout.toString().trim();
-          final String _stderr = process.stderr.toString().trim();
-          if (_stdout != '') {
-            output.write(_stdout);
-          }
-          if (errorReg.hasMatch(_stderr)) {
-            errorBuffer.write(_stderr);
-          }
-          if (netRegex.hasMatch(_stderr)) {
-            networkErrorBuffer.write('No Internet Connection');
-          }
-        }, onDone: () {
-          siteDetails = output.toString();
-          errorMessage = errorBuffer.toString();
+        ).asStream().listen(
+          (ProcessResult process) async {
+            final String stdout = process.stdout.toString().trim();
+            final String stderr = process.stderr.toString().trim();
+            if (stdout != '') {
+              output.write(stdout);
+            }
+            if (errorReg.hasMatch(stderr)) {
+              errorBuffer.write(stderr);
+            }
+            if (netRegex.hasMatch(stderr)) {
+              networkErrorBuffer.write('No Internet Connection');
+            }
+          },
+          onDone: () {
+            siteDetails = output.toString();
+            errorMessage = errorBuffer.toString();
 
-          if (siteDetails != '') {
-            onDone(siteDetails);
-          }
+            if (siteDetails != '') {
+              onDone(siteDetails);
+            }
 
-          if (networkErrorBuffer.toString() != '') {
-            // No Internet Error
-            errorMessage = networkErrorBuffer.toString();
-          }
-          if (errorMessage != '') {
-            onError(errorMessage);
-          }
-        });
+            if (networkErrorBuffer.toString() != '') {
+              // No Internet Error
+              errorMessage = networkErrorBuffer.toString();
+            }
+            if (errorMessage != '') {
+              onError(errorMessage);
+            }
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -253,8 +277,13 @@ class NetlifyApi {
   ///
   ///  If it did return `any messages` then it `fails`
   ///  For Detailed API Docs: https://open-api.netlify.com/#operation/deleteSite
-  static Future<void> deleteSite(String id,
-      {required Function(String? message) onDone}) async {
+  static Future<void> deleteSite(
+    String id,
+    // ignore: inference_failure_on_function_return_type
+    {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? message) onDone,
+  }) async {
     final String jsonData = '''
 {"site_id": "$id"}
 '''
@@ -266,8 +295,10 @@ class NetlifyApi {
       '--data',
       jsonData,
     ];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? message;
     if (cmdPathOrNull != null) {
@@ -276,18 +307,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          message = output.toString();
-          onDone(message);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            message = output.toString();
+            onDone(message);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -433,31 +469,34 @@ class NetlifyApi {
   /// };
   /// final String bodyStr = json.encode(data);
   /// ```
-  static Future<void> createSiteInTeam(String account_slug, String? data,
-      {required Function(String? siteDetails) onDone}) async {
+  static Future<void> createSiteInTeam(
+    String accountSlug,
+    String? data, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? siteDetails) onDone,
+  }) async {
     const String command = 'ntl';
-    final List<String> args = <String>[];
+    final List<String> args = <String>['api', 'createSiteInTeam', '--data'];
     String noData;
-    args.add('api');
-    args.add('createSiteInTeam');
-    args.add('--data');
 
     if (data != null) {
       final Map<String, dynamic> payload = <String, dynamic>{
-        'account_slug': account_slug,
+        'account_slug': accountSlug,
         'body': json.decode(data)
       };
 
       args.add(json.encode(payload));
     } else {
       noData = '''
-{"account_slug": "$account_slug"}
+{"account_slug": "$accountSlug"}
 '''
           .trim();
       args.add(noData);
     }
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? siteDetails;
     if (cmdPathOrNull != null) {
@@ -466,18 +505,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          siteDetails = output.toString();
-          onDone(siteDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            siteDetails = output.toString();
+            onDone(siteDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -514,12 +558,16 @@ class NetlifyApi {
   ///  "tracking_id": "612678e8344e1c080c32c51b"
   ///   }
   /// ```
-  static Future<void> getCurrentUser(
-      {required Function(String? userStr) onDone}) async {
+  static Future<void> getCurrentUser({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? userStr) onDone,
+  }) async {
     const String command = 'ntl';
     final List<String> args = <String>['api', 'getCurrentUser'];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? userStr;
     if (cmdPathOrNull != null) {
@@ -528,18 +576,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          userStr = output.toString();
-          onDone(userStr);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            userStr = output.toString();
+            onDone(userStr);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -686,16 +739,21 @@ class NetlifyApi {
   ///}
   /// ```
   ///
-  static Future<void> getAccount(String account_slug,
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> getAccount(
+    String accountSlug, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     final String jsonData = '''
-{"account_id": "$account_slug"}
+{"account_id": "$accountSlug"}
 '''
         .trim();
     const String command = 'ntl';
     final List<String> args = <String>['api', 'getAccount', '--data', jsonData];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? accountDetails;
     if (cmdPathOrNull != null) {
@@ -704,18 +762,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          accountDetails = output.toString();
-          onDone(accountDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            accountDetails = output.toString();
+            onDone(accountDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -827,12 +890,16 @@ class NetlifyApi {
   ///  }
   ///]
   /// ```
-  static Future<void> listSites(
-      {required Function(String? sitesList) onDone}) async {
+  static Future<void> listSites({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? sitesList) onDone,
+  }) async {
     const String command = 'ntl';
     final List<String> args = <String>['api', 'listSites'];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? sitesList;
     if (cmdPathOrNull != null) {
@@ -841,18 +908,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          sitesList = output.toString();
-          onDone(sitesList);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            sitesList = output.toString();
+            onDone(sitesList);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -876,12 +948,16 @@ class NetlifyApi {
   ///  }
   ///]
   /// ```
-  static Future<void> listDeployKeys(
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> listDeployKeys({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     const String command = 'ntl';
     final List<String> args = <String>['api', 'listDeployKeys'];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? accountDetails;
     if (cmdPathOrNull != null) {
@@ -890,18 +966,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          accountDetails = output.toString();
-          onDone(accountDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            accountDetails = output.toString();
+            onDone(accountDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -919,35 +1000,44 @@ class NetlifyApi {
   ///  "created_at": "2021-09-08T19:19:42.440Z"
   ///}
   /// ```
-  static Future<void> createDeployKey(
-      {required Function(String? deploy_key) onDone}) async {
+  static Future<void> createDeployKey({
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? deployKey) onDone,
+  }) async {
     const String command = 'ntl';
     final List<String> args = <String>[
       'api',
       'createDeployKey',
     ];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
-    String? deploy_key;
+    String? deployKey;
     if (cmdPathOrNull != null) {
       try {
         Process.run(
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          deploy_key = output.toString();
-          onDone(deploy_key);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            deployKey = output.toString();
+            onDone(deployKey);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -956,8 +1046,11 @@ class NetlifyApi {
   /// - @return `""` can be ignored
   ///
   /// For more Details visit: https://open-api.netlify.com/#operation/deleteDeployKey
-  static Future<void> deleteDeployKey(String keyId,
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> deleteDeployKey(
+    String keyId, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     final String jsonData = '''
 {"key_id": "$keyId"}
 '''
@@ -969,8 +1062,10 @@ class NetlifyApi {
       '--data',
       jsonData
     ];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? accountDetails;
     if (cmdPathOrNull != null) {
@@ -979,18 +1074,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          accountDetails = output.toString();
-          onDone(accountDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            accountDetails = output.toString();
+            onDone(accountDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -1007,8 +1107,11 @@ class NetlifyApi {
   ///  "created_at": "2021-09-08T19:19:42.440Z"
   ///}
   /// ```
-  static Future<void> getDeployKey(String keyId,
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> getDeployKey(
+    String keyId, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     final String jsonData = '''
 {"key_id": "$keyId"}
 '''
@@ -1020,8 +1123,10 @@ class NetlifyApi {
       '--data',
       jsonData
     ];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? accountDetails;
     if (cmdPathOrNull != null) {
@@ -1030,18 +1135,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          accountDetails = output.toString();
-          onDone(accountDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            accountDetails = output.toString();
+            onDone(accountDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -1155,16 +1265,21 @@ class NetlifyApi {
   ///  "default_domain": "compassionate-khorana-3b73e7.netlify.app"
   ///}
   /// ```
-  static Future<void> getSite(String siteId,
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> getSite(
+    String siteId, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     final String jsonData = '''
 {"site_id": "$siteId"}
 '''
         .trim();
     const String command = 'ntl';
     final List<String> args = <String>['api', 'getSite', '--data', jsonData];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? accountDetails;
     if (cmdPathOrNull != null) {
@@ -1173,18 +1288,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          accountDetails = output.toString();
-          onDone(accountDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            accountDetails = output.toString();
+            onDone(accountDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 
@@ -1297,16 +1417,22 @@ class NetlifyApi {
   ///  "default_domain": "pitamelark.netlify.app"
   ///}
   /// ```
-  static Future<void> changeSiteName(String siteId, String name,
-      {required Function(String? accountDetails) onDone}) async {
+  static Future<void> changeSiteName(
+    String siteId,
+    String name, {
+    // ignore: inference_failure_on_function_return_type
+    required Function(String? accountDetails) onDone,
+  }) async {
     final String jsonData = '''
 { "site_id": "$siteId", "body": {"name": "$name"} }
 '''
         .trim();
     const String command = 'ntl';
     final List<String> args = <String>['api', 'updateSite', '--data', jsonData];
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final String? cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     final StringBuffer output = StringBuffer();
     String? siteDetails;
     if (cmdPathOrNull != null) {
@@ -1315,18 +1441,23 @@ class NetlifyApi {
           cmdPathOrNull,
           args,
           runInShell: true,
-        ).asStream().listen((ProcessResult process) async {
-          output.write(process.stdout.toString());
-        }, onDone: () {
-          siteDetails = output.toString();
-          onDone(siteDetails);
-        });
+        ).asStream().listen(
+          (ProcessResult process) async {
+            output.write(process.stdout.toString());
+          },
+          onDone: () {
+            siteDetails = output.toString();
+            onDone(siteDetails);
+          },
+        );
       } catch (e, stacktrace) {
-        CommandFailedException.log(e.toString(), stacktrace.toString());
+        await CommandFailedException.log(e.toString(), stacktrace.toString());
       }
     } else {
-      CommandFailedException.log(
-          'Command Not Found', 'Cannot Execute The Command');
+      await CommandFailedException.log(
+        'Command Not Found',
+        'Cannot Execute The Command',
+      );
     }
   }
 }

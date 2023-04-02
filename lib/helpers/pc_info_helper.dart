@@ -44,9 +44,9 @@ class PC {
   static String get chip {
     late String name;
 
-    final List<ProcessorInfo> processors = SysInfo.processors;
+    final processors = SysInfo.processors;
 
-    for (final ProcessorInfo processor in processors) {
+    for (final processor in processors) {
       name = processor.name;
       break;
     }

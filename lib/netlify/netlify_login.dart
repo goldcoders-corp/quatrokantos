@@ -10,30 +10,29 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:tint/tint.dart';
 
 class NetlifyLogged {
+  NetlifyLogged() : super() {
+    args = <String>['login'];
+  }
   final String command = 'netlify';
   late final List<String> args;
 
   final WizardController wctrl = Get.find<WizardController>();
   final CommandController ctrl = Get.find<CommandController>();
 
-  NetlifyLogged() : super() {
-    args = <String>['login'];
-  }
-
   Future<Map<String, dynamic>> call() async {
-    final String path = PathEnv.get();
-    final Map<String, String> env = <String, String>{
+    final path = PathEnv.get();
+    final env = <String, String>{
       'PATH': path,
     };
-    final String? cmdPathOrNull = whichSync(
+    final cmdPathOrNull = whichSync(
       command,
       environment: (Platform.isWindows) ? null : env,
     );
 
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
-    final RegExp loginUrlRegex = RegExp(r'(?<=Opening).*?\n');
-    final StringBuffer loginUrlBuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
+    final loginUrlRegex = RegExp(r'(?<=Opening).*?\n');
+    final loginUrlBuffer = StringBuffer();
     late final int exitCode;
     late final String? message;
     late final String? url;
@@ -41,13 +40,13 @@ class NetlifyLogged {
       if (cmdPathOrNull == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(
+        final process = await Process.start(
           cmdPathOrNull,
           args,
           environment: env,
         );
 
-        final Stream<String> outputStream = process.stdout
+        final outputStream = process.stdout
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in outputStream) {
@@ -58,13 +57,13 @@ class NetlifyLogged {
           }
           outputbuffer.write('$line\n');
         }
-        final String loginURL = loginUrlBuffer.toString();
+        final loginURL = loginUrlBuffer.toString();
         // we need to highjack to return early
         if (loginURL.isNotEmpty) {
           exitCode = 0;
           message = 'Launch The URL on Browser if it did Not Open.';
           url = loginURL.trim().strip();
-          final Map<String, dynamic> response = <String, dynamic>{
+          final response = <String, dynamic>{
             'exitCode': exitCode,
             'message': message,
             'url': url
@@ -72,7 +71,7 @@ class NetlifyLogged {
           return response;
         }
 
-        final Stream<String> errorStream = process.stderr
+        final errorStream = process.stderr
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in errorStream) {
@@ -85,13 +84,13 @@ class NetlifyLogged {
       errorBuffer.write(e.message);
     }
 
-    final String error = errorBuffer.toString();
-    final String output = outputbuffer.toString().strip();
+    final error = errorBuffer.toString();
+    final output = outputbuffer.toString().strip();
     if (error.isNotEmpty) {
       exitCode = 2;
       message = error;
       url = null;
-      final Map<String, dynamic> response = <String, dynamic>{
+      final response = <String, dynamic>{
         'exitCode': exitCode,
         'message': message,
         'url': url
@@ -102,7 +101,7 @@ class NetlifyLogged {
       message = output;
       url = null;
 
-      final Map<String, dynamic> response = <String, dynamic>{
+      final response = <String, dynamic>{
         'exitCode': exitCode,
         'message': message,
         'pid': pid,

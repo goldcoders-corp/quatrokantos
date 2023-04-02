@@ -1,49 +1,50 @@
+// ignore_for_file: cascade_invocations
+
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:tint/tint.dart';
 
 class KillAll {
-  late String command;
-  final String unix_cmd;
-  final String win_cmd;
-  late List<String> args = <String>[];
-
-  KillAll({required this.unix_cmd, required this.win_cmd}) : super() {
+  KillAll({required this.unixCmd, required this.winCmd}) : super() {
     if (Platform.isWindows) {
       command = 'taskkill';
       args.add('/F');
       args.add('/IM');
-      args.add(win_cmd);
+      args.add(winCmd);
     } else {
       command = 'killall';
-      args.add(unix_cmd);
+      args.add(unixCmd);
     }
   }
+  late String command;
+  final String unixCmd;
+  final String winCmd;
+  late List<String> args = <String>[];
 
   Future<String> call() async {
-    final StringBuffer outputbuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
 
-    final StringBuffer errorStrBuffer = StringBuffer();
+    final errorStrBuffer = StringBuffer();
 
-    final Process process = await Process.start(command, args);
+    final process = await Process.start(command, args);
 
-    final Stream<String> outputStream = process.stdout
+    final outputStream = process.stdout
         .transform(const Utf8Decoder())
         .transform(const LineSplitter());
     await for (final String line in outputStream) {
       outputbuffer.write('$line\n');
     }
-    final Stream<String> errorStream = process.stderr
+    final errorStream = process.stderr
         .transform(const Utf8Decoder())
         .transform(const LineSplitter());
     await for (final String line in errorStream) {
       errorStrBuffer.write('$line\n');
     }
-    final int exitCode = await process.exitCode;
+    final exitCode = await process.exitCode;
 
-    final String error = errorStrBuffer.toString().strip();
-    String output = outputbuffer.toString().strip();
+    final error = errorStrBuffer.toString().strip();
+    var output = outputbuffer.toString().strip();
 
     if (exitCode >= 1) {
       return error;

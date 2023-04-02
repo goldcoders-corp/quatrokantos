@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_slow_async_io, avoid_dynamic_calls, lines_longer_than_80_chars
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -53,7 +55,7 @@ class CmsController extends GetxController {
 
   set list(List<Cms> val) {
     _themes.value = val;
-    final String themeStr = json.encode(val);
+    final themeStr = json.encode(val);
     saveThemes(themeStr);
     _themes.refresh();
   }
@@ -69,56 +71,67 @@ class CmsController extends GetxController {
 
   Future<void> download(String projectName, Cms file) async {
     // ADDED FOR DEBUGGING
-    String folder = dotenv.env['APP_NAME']!.toLowerCase();
+    var folder = dotenv.env['APP_NAME']!.toLowerCase();
 
-    final ReplaceHelper text = ReplaceHelper(text: folder, regex: '\\s+');
+    final text = ReplaceHelper(text: folder, regex: r'\s+');
     folder = text.replace();
-    const String filename = 'debug_download.txt';
-    final String filePath =
+    const filename = 'debug_download.txt';
+    final filePath =
         p.join(PC.userDirectory, '.local', 'share', '.$folder', filename);
     // END ADDED FOR DEBUGGING
     isLoading = true;
-    final String zipName = '${file.name}.zip';
-    final String cmZip = p.join(
+    final zipName = '${file.name}.zip';
+    final cmZip = p.join(
       PathHelper.getCMSDIR,
       zipName,
     );
     // ADDED FOR DEBUGGING
     await WritterHelper.log(
-        filePath: filePath, stacktrace: 'zipName: $zipName');
+      filePath: filePath,
+      stacktrace: 'zipName: $zipName',
+    );
     // ADDED FOR DEBUGGING
     await WritterHelper.log(filePath: filePath, stacktrace: 'cmsZip: $cmZip');
 
-    final String themeZip = p.join(
+    final themeZip = p.join(
       PathHelper.getThemeDir,
       zipName,
     );
 
     // ADDED FOR DEBUGGING
     await WritterHelper.log(
-        filePath: filePath, stacktrace: 'themeZip: $themeZip');
+      filePath: filePath,
+      stacktrace: 'themeZip: $themeZip',
+    );
 
-    bool cmsDownloaded = await File(cmZip).exists();
-    bool themeDownloaded = await File(themeZip).exists();
-
-    // ADDED FOR DEBUGGING
-    await WritterHelper.log(
-        filePath: filePath, stacktrace: 'cms downloaded: $cmsDownloaded');
+    var cmsDownloaded = await File(cmZip).exists();
+    var themeDownloaded = await File(themeZip).exists();
 
     // ADDED FOR DEBUGGING
     await WritterHelper.log(
-        filePath: filePath, stacktrace: 'theme downloaded: $themeDownloaded');
+      filePath: filePath,
+      stacktrace: 'cms downloaded: $cmsDownloaded',
+    );
+
+    // ADDED FOR DEBUGGING
+    await WritterHelper.log(
+      filePath: filePath,
+      stacktrace: 'theme downloaded: $themeDownloaded',
+    );
 
     if (themeDownloaded == false) {
       // ADDED FOR DEBUGGING
-      await WritterHelper.log(filePath: filePath, stacktrace: '''
+      await WritterHelper.log(
+        filePath: filePath,
+        stacktrace: '''
 downloading theme: ${file.name}
 themeURL: ${file.themeUrl}
 dir: ${PathHelper.getThemeDir}
 name: $zipName
-          ''');
+          ''',
+      );
 
-      final Downloader theme = Downloader(
+      final theme = Downloader(
         url: file.themeUrl,
         dir: PathHelper.getThemeDir,
         name: zipName,
@@ -127,22 +140,26 @@ name: $zipName
         themeDownloaded = true;
         // ADDED FOR DEBUGGING
         await WritterHelper.log(
-            filePath: filePath,
-            stacktrace: '''
+          filePath: filePath,
+          stacktrace: '''
           themeDownloaded: $themeDownloaded
           '''
-                .trim());
+              .trim(),
+        );
       });
     }
 
     if (cmsDownloaded == false) {
-      await WritterHelper.log(filePath: filePath, stacktrace: '''
+      await WritterHelper.log(
+        filePath: filePath,
+        stacktrace: '''
 downloading cms: themeURL:
 ${file.cmsUrl}
 dir: ${PathHelper.getCMSDIR}
 name: $zipName
-          ''');
-      final Downloader cms = Downloader(
+          ''',
+      );
+      final cms = Downloader(
         url: file.cmsUrl,
         dir: PathHelper.getCMSDIR,
         name: zipName,
@@ -151,83 +168,90 @@ name: $zipName
         cmsDownloaded = true;
         // ADDED FOR DEBUGGING
         await WritterHelper.log(
-            filePath: filePath,
-            stacktrace: '''
+          filePath: filePath,
+          stacktrace: '''
           themeDownloaded: $themeDownloaded
           '''
-                .trim());
+              .trim(),
+        );
       });
     }
 
     // where are check here if we already have the files
 
-    final String currentCMSPATH = p.join(
+    final currentCMSPATH = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'cms',
       'yarn.lock',
     );
     await WritterHelper.log(
-        filePath: filePath,
-        stacktrace: '''
+      filePath: filePath,
+      stacktrace: '''
 currentCMSPATH: $currentCMSPATH
           '''
-            .trim());
+          .trim(),
+    );
 
-    final String currentTHEMEPATH = p.join(
+    final currentTHEMEPATH = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'yarn.lock',
     );
 
     await WritterHelper.log(
-        filePath: filePath,
-        stacktrace: '''
+      filePath: filePath,
+      stacktrace: '''
 currentTHEMEPATH: $currentTHEMEPATH
           '''
-            .trim());
+          .trim(),
+    );
 
-    bool cmsInstalled = await File(currentCMSPATH).exists();
-    bool themeInstalled = await File(currentTHEMEPATH).exists();
+    var cmsInstalled = await File(currentCMSPATH).exists();
+    var themeInstalled = await File(currentTHEMEPATH).exists();
     await WritterHelper.log(
-        filePath: filePath,
-        stacktrace: '''
+      filePath: filePath,
+      stacktrace: '''
 cmsInstalled: $cmsInstalled
 themeInstalled: $themeInstalled
           '''
-            .trim());
+          .trim(),
+    );
     if (cmsInstalled == false) {
-      final String cmsPath = p.join(PathHelper.getSitesDIR, projectName, 'cms');
+      final cmsPath = p.join(PathHelper.getSitesDIR, projectName, 'cms');
       await WritterHelper.log(
-          filePath: filePath,
-          stacktrace: '''
+        filePath: filePath,
+        stacktrace: '''
 cmsPath: $cmsPath
           '''
-              .trim());
-      final UnzipFile cmsSetUp = UnzipFile(cmZip, cmsPath);
+            .trim(),
+      );
+      final cmsSetUp = UnzipFile(cmZip, cmsPath);
 
       await WritterHelper.log(
-          filePath: filePath,
-          stacktrace: '''
+        filePath: filePath,
+        stacktrace: '''
 cmsSetup: $cmsSetUp
           '''
-              .trim());
+            .trim(),
+      );
       await cmsSetUp.unzip((bool unzip) async {
         cmsInstalled = true;
       });
     }
 
     if (themeInstalled == false) {
-      final String themePath = p.join(PathHelper.getSitesDIR, projectName);
-      final UnzipFile themeSetUp = UnzipFile(themeZip, themePath);
+      final themePath = p.join(PathHelper.getSitesDIR, projectName);
+      final themeSetUp = UnzipFile(themeZip, themePath);
 
       await WritterHelper.log(
-          filePath: filePath,
-          stacktrace: '''
+        filePath: filePath,
+        stacktrace: '''
 themePath: $themePath
 themeSetUp: $themeSetUp
           '''
-              .trim());
+            .trim(),
+      );
 
       await themeSetUp.unzip((bool unzip) async {
         themeInstalled = true;
@@ -236,11 +260,12 @@ themeSetUp: $themeSetUp
     if (themeInstalled && cmsInstalled) {
       project.themeInstalled = true;
       await WritterHelper.log(
-          filePath: filePath,
-          stacktrace: '''
+        filePath: filePath,
+        stacktrace: '''
 project.themeInstalled: ${project.themeInstalled}
           '''
-              .trim());
+            .trim(),
+      );
     }
 
     isLoading = false;
@@ -248,7 +273,7 @@ project.themeInstalled: ${project.themeInstalled}
 
   void loadDefaultThemes() {
     // This should be fetch on using supabase
-    const Cms thriftshop = Cms(
+    const thriftshop = Cms(
       name: 'thriftshop.site',
       cmsUrl: 'https://github.com/thriftapps/cms/archive/refs/heads/main.zip',
       themeUrl:
@@ -266,23 +291,24 @@ project.themeInstalled: ${project.themeInstalled}
   }
 
   void generateThemesList() {
-    final List<String> tokens = <String>[];
-    for (int i = 0; i < list.length; i++) {
+    final tokens = <String>[];
+    for (var i = 0; i < list.length; i++) {
       tokens.add(list[i].name);
     }
     themeNames = tokens;
   }
 
   void initThemes() {
-    final List<Cms> themeList = <Cms>[];
+    final themeList = <Cms>[];
     if (_getStorage.hasData(CMS_LIST)) {
-      final List<dynamic> transformList =
+      final transformList =
           json.decode(_getStorage.read(SITE_LIST) as String) as List<dynamic>;
       for (final dynamic element in transformList) {
-        final Cms entryCms = Cms(
-            name: element['name'] as String,
-            cmsUrl: element['cmsUrl'] as String,
-            themeUrl: element['themeUrl'] as String);
+        final entryCms = Cms(
+          name: element['name'] as String,
+          cmsUrl: element['cmsUrl'] as String,
+          themeUrl: element['themeUrl'] as String,
+        );
         themeList.add(entryCms);
       }
       list = themeList;

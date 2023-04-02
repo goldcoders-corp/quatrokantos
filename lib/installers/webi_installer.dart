@@ -10,18 +10,6 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class WebiInstall {
-  late final String command;
-  late final String command1;
-  late final List<String> args1;
-  late final String path1;
-
-  late final String command2;
-  late final List<String> args2;
-  late final String path2;
-
-  final WizardController wctrl = Get.find<WizardController>();
-  final CommandController ctrl = Get.find<CommandController>();
-
   WebiInstall() : super() {
     command = 'webi';
     if (Platform.isWindows) {
@@ -35,10 +23,24 @@ class WebiInstall {
       args2 = <String>[];
     }
   }
+  late final String command;
+  late final String command1;
+  late final List<String> args1;
+  late final String path1;
 
+  late final String command2;
+  late final List<String> args2;
+  late final String path2;
+
+  final WizardController wctrl = Get.find<WizardController>();
+  final CommandController ctrl = Get.find<CommandController>();
+
+  // ignore: inference_failure_on_function_return_type
   Future<void> call({required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     bool installed;
     if (cmdPathOrNull != null) {
       installed = true;
@@ -62,14 +64,15 @@ class WebiInstall {
             onDone: onDone,
           );
         } catch (e, stacktrace) {
-          CommandFailedException.log(e.toString(), stacktrace.toString());
+          await CommandFailedException.log(e.toString(), stacktrace.toString());
         }
       }
     }
   }
 
+  // ignore: inference_failure_on_function_return_type
   Future<void> _injectPath({required Function(bool installed) onDone}) async {
-    final String envpath = PathEnv.get();
+    final envpath = PathEnv.get();
     if (Platform.isWindows) {
       // Enable powershell script execution
       await Process.run('powershell', <String>[
@@ -112,8 +115,10 @@ class WebiInstall {
     }
   }
 
-  Future<void> _installOnWindows(
-      {required Function(bool installed) onDone}) async {
+  Future<void> _installOnWindows({
+    // ignore: inference_failure_on_function_return_type
+    required Function(bool installed) onDone,
+  }) async {
     Process.run(
       'curl',
       <String>[
@@ -128,10 +133,12 @@ class WebiInstall {
     ).asStream().listen((ProcessResult process1) {
       try {
         if (process1.stderr is String &&
-            process1.stderr.toString().contains('''
+            process1.stderr.toString().contains(
+                  '''
             Could not resolve host: webinstall.dev
             '''
-                .trim())) {
+                      .trim(),
+                )) {
           throw ProcessException(
             'curl',
             <String>[
@@ -157,7 +164,9 @@ class WebiInstall {
             }
             if (process2.stderr is String && process2.stderr.toString() != '') {
               CommandFailedException.log(
-                  'Command Failed', process2.stderr.toString());
+                'Command Failed',
+                process2.stderr.toString(),
+              );
             }
           });
         }

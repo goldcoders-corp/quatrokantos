@@ -1,3 +1,5 @@
+// ignore_for_file: flutter_style_todos
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,10 +9,7 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:tint/tint.dart';
 
 class NpmRun {
-  late final String? command;
-  final String path;
-  late List<String> args;
-
+  // ignore: todo
   // TODO (Uriah): We need this to Run as Isolate
   // Returnt the Process ID so we can Kill it anytime
   // If We Have an Existing Process Running , Dont Start
@@ -24,13 +23,16 @@ class NpmRun {
 
     args = args;
   }
+  late final String? command;
+  final String path;
+  late List<String> args;
 
   Future<String> run() async {
-    final StringBuffer outputbuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
     // final StringBuffer breakBuffer = StringBuffer();
-    final StringBuffer missingBuffer = StringBuffer();
-    final StringBuffer errorStrBuffer = StringBuffer();
-    final StringBuffer portBuffer = StringBuffer();
+    final missingBuffer = StringBuffer();
+    final errorStrBuffer = StringBuffer();
+    final portBuffer = StringBuffer();
 
     // final RegExp missingScriptRegex = RegExp(r'(?<=missing\sscript:).*?\n');
     // final RegExp CtrlCRegex = RegExp(r'\bPress\sCtrl\+C\sto\sstop\b');
@@ -40,7 +42,7 @@ class NpmRun {
       if (command == null) {
         throw CommandFailedException();
       } else {
-        final Process process = await Process.start(
+        final process = await Process.start(
           command!,
           args,
           runInShell: true,
@@ -50,7 +52,7 @@ class NpmRun {
               : <String, String>{'PATH': PathEnv.get()},
         );
 
-        final Stream<String> outputStream = process.stdout
+        final outputStream = process.stdout
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in outputStream) {
@@ -65,7 +67,7 @@ class NpmRun {
         // if (exitEarly.isNotEmpty) {
         //   return exitEarly;
         // }
-        final Stream<String> errorStream = process.stderr
+        final errorStream = process.stderr
             .transform(const Utf8Decoder())
             .transform(const LineSplitter());
         await for (final String line in errorStream) {
@@ -83,14 +85,14 @@ class NpmRun {
         }
       }
     } on CommandFailedException catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     } on ProcessException catch (e) {
       errorStrBuffer.write(e.message);
     }
 
-    final String error = errorStrBuffer.toString().strip();
-    final String missingScript = missingBuffer.toString().strip();
-    final String portError = portBuffer.toString();
+    final error = errorStrBuffer.toString().strip();
+    final missingScript = missingBuffer.toString().strip();
+    final portError = portBuffer.toString();
     if (missingScript.isNotEmpty) {
       return 'NPM Script $missingScript is Missing';
     } else if (portError.isNotEmpty) {

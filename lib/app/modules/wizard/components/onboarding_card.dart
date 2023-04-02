@@ -3,11 +3,11 @@ import 'package:quatrokantos/constants/default_size.dart';
 
 class OnboardingCard extends StatelessWidget {
   const OnboardingCard({
-    Key? key,
     required this.title,
     required this.checkbox,
     required this.button,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String title;
   final Widget checkbox;

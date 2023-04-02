@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, unnecessary_getters_setters, avoid_slow_async_io, lines_longer_than_80_chars
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,31 +7,30 @@ import 'package:path/path.dart' as p;
 import 'package:quatrokantos/exceptions/command_failed_exception.dart';
 
 class EnvHelper {
-  late final String _path;
-
   EnvHelper({required String path}) : _path = path;
+  late final String _path;
 
   String get path => _path;
 
   set path(String p) => _path = p;
 
   Future<Map<String, String>> read() async {
-    final File file = File(path);
+    final file = File(path);
 
-    final Map<String, String> source = <String, String>{};
+    final source = <String, String>{};
 
-    final Stream<String> lines =
+    final lines =
         file.openRead().transform(utf8.decoder).transform(const LineSplitter());
     try {
       await for (final String line in lines) {
         if (line != '') {
-          final List<String> newline = line.split('=');
-          final List<String> entry = newline.toList();
+          final newline = line.split('=');
+          final entry = newline.toList();
           source[entry[0]] = entry[1];
         }
       }
     } catch (e, stacktrace) {
-      CommandFailedException.log(
+      await CommandFailedException.log(
         e.toString(),
         stacktrace.toString(),
       );
@@ -41,8 +42,8 @@ class EnvHelper {
     required String key,
     required String value,
   }) async {
-    final StringBuffer envBuffer = StringBuffer();
-    final Map<String, String> envFile = await read();
+    final envBuffer = StringBuffer();
+    final envFile = await read();
 
     envFile.forEach((String oldKey, String oldVal) {
       if (oldKey == key) {
@@ -61,7 +62,7 @@ class EnvHelper {
   /// #### Any Changes to the Map<String,String>
   /// #### From UI Will just be Passed here as the `contents`
   Future<void> write({required Map<String, String> contents}) async {
-    final StringBuffer envBuffer = StringBuffer();
+    final envBuffer = StringBuffer();
 
     contents.forEach((String key, String val) {
       envBuffer.write('$key=$val\n');
@@ -76,14 +77,14 @@ class EnvHelper {
   // if we dont have any .env create a new .env with the default values
   static Future<void> copyOrCreateDotEnv(String folderPath) async {
     Directory.current = folderPath;
-    final String dotenvPath = p.join(folderPath, '.env.example');
+    final dotenvPath = p.join(folderPath, '.env.example');
 
-    final File dotEnvExample = File(dotenvPath);
-    dotEnvExample.exists().then((bool exists) async {
+    final dotEnvExample = File(dotenvPath);
+    await dotEnvExample.exists().then((bool exists) async {
       if (exists) {
-        dotEnvExample.copy('.env');
+        await dotEnvExample.copy('.env');
       } else {
-        const String defaultValue = '''
+        const defaultValue = '''
 HUGO_BASEURL=https://thriftshop.site
 SNOWPACK_PUBLIC_BACKEND_TYPE=git-gateway
 SNOWPACK_PUBLIC_BRANCH=main
@@ -95,7 +96,7 @@ SNOWPACK_PUBLIC_DISPLAY_URL=https://thriftshop.site
 SNOWPACK_PUBLIC_LOGO_URL=/images/logo.svg
 SNOWPACK_PUBLIC_PUBLIC_FOLDER=/images
 ''';
-        final String newDotEnv = p.join(folderPath, '.env');
+        final newDotEnv = p.join(folderPath, '.env');
 
         await File(newDotEnv).writeAsString(defaultValue);
       }

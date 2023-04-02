@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, unnecessary_getters_setters, cascade_invocations, lines_longer_than_80_chars
+
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -7,9 +9,8 @@ import 'package:quatrokantos/helpers/cmd_helper.dart';
 /// #### Just Create New Instance passing absolutePath of a file
 /// #### then invoke `open()` method
 class FileEditor {
-  late final String _filePath;
-
   FileEditor({required String filePath}) : _filePath = filePath;
+  late final String _filePath;
 
   String get filePath => _filePath;
 
@@ -17,17 +18,17 @@ class FileEditor {
 
   static const String macOs = 'open';
   static const String windows = 'notepad.exe';
-  static const String linux = '\$EDITOR';
+  static const String linux = r'$EDITOR';
 
   /// Quickly Launch Text Editor
   Future<void> open() async {
-    final List<String> args = <String>[];
-    String command = '';
+    final args = <String>[];
+    var command = '';
 
     if (Platform.isWindows) {
       // notepad.exe "C:\Documents\File.txt"
-      final p.Context context = p.Context(style: p.Style.windows);
-      final String winPath = context.join(dir(), filename());
+      final context = p.Context(style: p.Style.windows);
+      final winPath = context.join(dir(), filename());
       args.add(winPath);
       command = windows;
     } else if (Platform.isMacOS) {
@@ -45,8 +46,8 @@ class FileEditor {
   }
 
   String dir() {
-    final Directory absolutePath = Directory(filePath);
-    final String dir = absolutePath.parent.path;
+    final absolutePath = Directory(filePath);
+    final dir = absolutePath.parent.path;
     return dir;
   }
 

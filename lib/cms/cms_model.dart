@@ -1,15 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class CmsEntity extends Equatable {
-  final String name;
-  final String themeUrl;
-  final String cmsUrl;
-
   const CmsEntity({
     required this.name,
     required this.themeUrl,
     required this.cmsUrl,
   });
+  final String name;
+  final String themeUrl;
+  final String cmsUrl;
 
   @override
   List<Object?> get props => <Object?>[name, themeUrl, cmsUrl];
@@ -17,14 +16,10 @@ class CmsEntity extends Equatable {
 
 class Cms extends CmsEntity {
   const Cms({
-    required String name,
-    required String themeUrl,
-    required String cmsUrl,
-  }) : super(
-          name: name,
-          themeUrl: themeUrl,
-          cmsUrl: cmsUrl,
-        );
+    required super.name,
+    required super.themeUrl,
+    required super.cmsUrl,
+  });
 
   factory Cms.fromJson(Map<String, dynamic> json) {
     return Cms(

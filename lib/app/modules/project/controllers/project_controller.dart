@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, non_constant_identifier_names
+// ignore_for_file: depend_on_referenced_packages, non_constant_identifier_names, avoid_slow_async_io, lines_longer_than_80_chars
 
 import 'dart:convert';
 import 'dart:io';
@@ -79,7 +79,7 @@ class ProjectController extends GetxController {
   }
 
   Future<void> isSiteInstalled(String projectName) async {
-    final String currentTHEMEPATH = p.join(
+    final currentTHEMEPATH = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'yarn.lock',
@@ -88,19 +88,19 @@ class ProjectController extends GetxController {
   }
 
   Future<void> isNodeModulesInstalled(String projectName) async {
-    final String packageLock = p.join(
+    final packageLock = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'package-lock.json',
     );
 
-    final String yarnLock = p.join(
+    final yarnLock = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'yarn.lock',
     );
 
-    final String nodeModules = p.join(
+    final nodeModules = p.join(
       PathHelper.getSitesDIR,
       projectName,
       'node_module',
@@ -169,7 +169,7 @@ class ProjectController extends GetxController {
   }
 
   Future<void> changeToProjectDirectory() async {
-    final String projectPath = Folder(name: local_name).folder();
+    final projectPath = Folder(name: local_name).folder();
     if (await PathHelper.exists(projectPath) == true) {
       PathHelper.cd(projectPath);
     }
@@ -179,19 +179,18 @@ class ProjectController extends GetxController {
     // check if project folder has .netlify/state.json
     // if none create one , if yes read the file
     // check for a key "siteId"
-    final String dotnetlify = p.join(local_name, '.netlify');
+    final dotnetlify = p.join(local_name, '.netlify');
 
-    final String netlifyFolder = Folder(name: dotnetlify).folder();
+    final netlifyFolder = Folder(name: dotnetlify).folder();
 
-    final String netlifyFile = p.join(netlifyFolder, 'state.json');
+    final netlifyFile = p.join(netlifyFolder, 'state.json');
 
-    final bool exists = await File(netlifyFile).exists();
+    final exists = await File(netlifyFile).exists();
 
     if (exists) {
-      final String file = await File(netlifyFile).readAsString();
+      final file = await File(netlifyFile).readAsString();
       if (file.isNotEmpty) {
-        final Map<String, dynamic> json =
-            jsonDecode(file) as Map<String, dynamic>;
+        final json = jsonDecode(file) as Map<String, dynamic>;
         // check json has key siteId
         if (json.containsKey('siteId')) {
           linked = true;
@@ -199,7 +198,7 @@ class ProjectController extends GetxController {
       }
     } else {
       if (siteId.isNotEmpty) {
-        final String netlifyconfig = '''
+        final netlifyconfig = '''
 {
   "siteId": "$siteId"
 }

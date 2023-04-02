@@ -8,17 +8,6 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class WinEnvPaths {
-  late final String command1;
-  late final List<String> args1;
-  late final String path1;
-
-  late final String command2;
-  late final List<String> args2;
-  late final String path2;
-
-  final WizardController wctrl = Get.find<WizardController>();
-  final CommandController ctrl = Get.find<CommandController>();
-
   WinEnvPaths() : super() {
     if (Platform.isWindows) {
       command1 = 'curl';
@@ -30,13 +19,25 @@ class WinEnvPaths {
       command2 = 'cmd';
     }
   }
+  late final String command1;
+  late final List<String> args1;
+  late final String path1;
 
+  late final String command2;
+  late final List<String> args2;
+  late final String path2;
+
+  final WizardController wctrl = Get.find<WizardController>();
+  final CommandController ctrl = Get.find<CommandController>();
+
+  // ignore: inference_failure_on_function_return_type
   Future<void> call({required Function(bool installed) onDone}) async {
     await _injectPath(onDone: onDone);
   }
 
+  // ignore: inference_failure_on_function_return_type
   Future<void> _injectPath({required Function(bool installed) onDone}) async {
-    final String envpath = PathEnv.get();
+    final envpath = PathEnv.get();
     // Enable powershell script execution
     await Process.run('powershell', <String>[
       'Set-ExecutionPolicy',
@@ -90,10 +91,12 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User")'''
     ).asStream().listen((ProcessResult data) {
       try {
         if (data.stderr is String &&
-            data.stderr.toString().contains('''
+            data.stderr.toString().contains(
+                  '''
             Could not resolve host: gist.githubusercontent.com
             '''
-                .trim())) {
+                      .trim(),
+                )) {
           throw ProcessException(
             'curl',
             <String>[

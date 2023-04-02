@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,41 +12,46 @@ class PathHelper {
   /// #### Resolves The Path it found
   /// #### Returns the `Correct Path` it Resolves
   /// #### `Used` `Before Executing Any Commands`
-  static Future<String> resolve(
-      {required List<String> paths, required String fallback}) async {
-    final StringBuffer pathBuffer = StringBuffer();
+  static Future<String> resolve({
+    required List<String> paths,
+    required String fallback,
+  }) async {
+    final pathBuffer = StringBuffer();
 
-    for (final String element in paths) {
+    for (final element in paths) {
       if (await exists(element) == true) {
         pathBuffer.write(element);
         break;
       }
     }
-    String path = pathBuffer.toString().trim();
+    var path = pathBuffer.toString().trim();
     if (path.isEmpty) {
       path = fallback;
     }
     return path;
   }
 
-  static Future<String?> existInPATH(
-      {required String command,
-      required List<String> paths,
-      required String fallback}) async {
-    final StringBuffer pathBuffer = StringBuffer();
+  static Future<String?> existInPATH({
+    required String command,
+    required List<String> paths,
+    required String fallback,
+  }) async {
+    final pathBuffer = StringBuffer();
 
-    for (final String element in paths) {
-      final String cmd = '$element/$command';
-      final bool installed = await File(cmd).exists();
+    for (final element in paths) {
+      final cmd = '$element/$command';
+      // ignore: avoid_slow_async_io
+      final installed = await File(cmd).exists();
       if (installed == true) {
         pathBuffer.write(element);
         break;
       }
     }
-    final String path = pathBuffer.toString().trim();
+    final path = pathBuffer.toString().trim();
     if (path.isEmpty) {
-      final String cmd = '$fallback/$command';
-      final bool installed = await File(cmd).exists();
+      final cmd = '$fallback/$command';
+      // ignore: avoid_slow_async_io
+      final installed = await File(cmd).exists();
       if (installed == true) {
         return fallback;
       } else {
@@ -101,29 +108,30 @@ class PathHelper {
   ///      }
   ///
   static Future<bool> exists(String path) {
+    // ignore: avoid_slow_async_io
     return FileSystemEntity.isDirectory(path);
   }
 
   static String get getThemeDir {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    var appFolder = dotenv.env['APP_NAME']!.toLowerCase();
     // ignore: unnecessary_string_escapes
-    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    final text = ReplaceHelper(text: appFolder, regex: r'\s+');
     appFolder = text.replace();
     return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'themes');
   }
 
   static String get getCMSDIR {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    var appFolder = dotenv.env['APP_NAME']!.toLowerCase();
     // ignore: unnecessary_string_escapes
-    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    final text = ReplaceHelper(text: appFolder, regex: r'\s+');
     appFolder = text.replace();
     return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'cms');
   }
 
   static String get getSitesDIR {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    var appFolder = dotenv.env['APP_NAME']!.toLowerCase();
     // ignore: unnecessary_string_escapes
-    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    final text = ReplaceHelper(text: appFolder, regex: r'\s+');
     appFolder = text.replace();
     return p.join(PC.userDirectory, '.local', 'share', '.$appFolder', 'sites');
   }

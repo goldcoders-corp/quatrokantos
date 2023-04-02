@@ -10,5 +10,5 @@ Future<void> main() async {
 
   minWindowSize();
 
-  runApp(App());
+  runApp(const App());
 }

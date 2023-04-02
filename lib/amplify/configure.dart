@@ -20,17 +20,20 @@ class AmplifyConfigure {
   // https://en.wikipedia.org/wiki/Expect#Basics
   final String command = 'amplify';
   final List<String> args = <String>['configure'];
-  final String? cmdPathOrNull = whichSync('amplify',
-      environment: <String, String>{'PATH': PathEnv.get()});
+  final String? cmdPathOrNull = whichSync(
+    'amplify',
+    environment: <String, String>{'PATH': PathEnv.get()},
+  );
 
   final CommandController ctrl = Get.find<CommandController>();
 
+  // ignore: inference_failure_on_function_return_type
   Future<void> execute({required Function(String output) onResult}) async {
-    final StringBuffer outputbuffer = StringBuffer();
-    final StringBuffer errorBuffer = StringBuffer();
+    final outputbuffer = StringBuffer();
+    final errorBuffer = StringBuffer();
 
     try {
-      final Process process = await Process.start(
+      final process = await Process.start(
         command,
         args,
         environment: <String, String>{'PATH': PathEnv.get()},
@@ -38,7 +41,7 @@ class AmplifyConfigure {
         runInShell: true,
       );
 
-      final Stream<String> outputStream = process.stdout
+      final outputStream = process.stdout
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
 
@@ -46,7 +49,7 @@ class AmplifyConfigure {
         outputbuffer.write('$line\n');
       }
 
-      final Stream<String> errorStream = process.stderr
+      final errorStream = process.stderr
           .transform(const Utf8Decoder())
           .transform(const LineSplitter());
       await for (final String line in errorStream) {
@@ -56,9 +59,9 @@ class AmplifyConfigure {
       errorBuffer.write(stacktrace);
     }
 
-    final String error = errorBuffer.toString();
-    final String output = outputbuffer.toString();
-    String result = '';
+    final error = errorBuffer.toString();
+    final output = outputbuffer.toString();
+    var result = '';
 
     try {
       if (error.isNotEmpty) {
@@ -73,13 +76,16 @@ class AmplifyConfigure {
       }
       onResult(result);
     } on CommandFailedException catch (e, stacktrace) {
-      CommandFailedException.log(
-          e.toString(), '$error\n${stacktrace.toString()}');
+      await CommandFailedException.log(
+        e.toString(),
+        // ignore: noop_primitive_operations
+        '$error\n${stacktrace.toString()}',
+      );
     }
   }
 
   static String? version(String output) {
-    final RegExp regExp = RegExp(
+    final regExp = RegExp(
       r'(\d+)\.(\d+)\.(\d+)',
     );
     return regExp.stringMatch(output).toString();
@@ -115,15 +121,16 @@ class AmplifyConfigure {
     required List<String> args1,
     required String command2,
     required List<String> args2,
+    // ignore: inference_failure_on_function_return_type
     required Function(bool installed) onDone,
     String? path1,
     String? path2,
   }) async {
-    final CommandController ctrl = Get.find<CommandController>();
-    final StringBuffer outputbuffer = StringBuffer();
+    final ctrl = Get.find<CommandController>();
+    final outputbuffer = StringBuffer();
 
     try {
-      final Process left = await Process.start(
+      final left = await Process.start(
         command1,
         args1,
         environment: <String, String>{'PATH': PathEnv.get()},
@@ -131,7 +138,7 @@ class AmplifyConfigure {
         runInShell: true,
       );
 
-      final Process right = await Process.start(
+      final right = await Process.start(
         command2,
         args2,
         environment: <String, String>{'PATH': PathEnv.get()},
@@ -139,7 +146,7 @@ class AmplifyConfigure {
         runInShell: true,
       );
 
-      left.stdout.pipe(right.stdin);
+      await left.stdout.pipe(right.stdin);
       right.stdout.transform(utf8.decoder).listen((String event) {
         outputbuffer.write('$event\n');
       }).onDone(() {
@@ -147,7 +154,7 @@ class AmplifyConfigure {
         onDone(true);
       });
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     }
   }
 
@@ -155,11 +162,11 @@ class AmplifyConfigure {
     required String command,
     required List<String> args,
   }) async {
-    final CommandController ctrl = Get.find<CommandController>();
+    final ctrl = Get.find<CommandController>();
     // final StringBuffer outputbuffer = StringBuffer();
 
     try {
-      final Process left = await Process.start(
+      final left = await Process.start(
         command,
         args,
       );
@@ -170,7 +177,7 @@ class AmplifyConfigure {
         ctrl.results = 'Opening Site ${args[0]}';
       });
     } catch (e, stacktrace) {
-      CommandFailedException.log(e.toString(), stacktrace.toString());
+      await CommandFailedException.log(e.toString(), stacktrace.toString());
     }
   }
 }

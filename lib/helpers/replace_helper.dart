@@ -1,8 +1,6 @@
-class ReplaceHelper {
-  late final String _text;
-  late final String _str;
-  late final String _regex;
+// ignore_for_file: unnecessary_getters_setters
 
+class ReplaceHelper {
   /// #### Use for Text and Replace
   /// #### Good for renaming files ie:
   ///
@@ -19,14 +17,17 @@ class ReplaceHelper {
     required String text,
     String str = '_',
     // ignore: unnecessary_string_escapes
-    String regex = "'\\s+'",
+    String regex = r"'\s+'",
   })  : _text = text,
         _str = str,
         _regex = regex;
+  late final String _text;
+  late final String _str;
+  late final String _regex;
 
   String replace() {
     // ignore: prefer_single_quotes
-    final RegExp pattern = RegExp(regex);
+    final pattern = RegExp(regex);
 
     return text.replaceAll(pattern, str);
   }

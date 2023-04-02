@@ -10,16 +10,6 @@ import 'package:quatrokantos/helpers/env_setter.dart';
 import 'package:quatrokantos/helpers/pc_info_helper.dart';
 
 class PkgMangerInstall {
-  late final String command;
-  late final String command1;
-  late final List<String> args1;
-
-  late final String command2;
-  late final List<String> args2;
-
-  final CommandController ctrl = Get.find<CommandController>();
-  final WizardController wctrl = Get.find<WizardController>();
-
   PkgMangerInstall() : super() {
     if (Platform.isWindows) {
       command = 'scoop';
@@ -46,10 +36,22 @@ class PkgMangerInstall {
       args2 = <String>[];
     }
   }
+  late final String command;
+  late final String command1;
+  late final List<String> args1;
 
+  late final String command2;
+  late final List<String> args2;
+
+  final CommandController ctrl = Get.find<CommandController>();
+  final WizardController wctrl = Get.find<WizardController>();
+
+  // ignore: inference_failure_on_function_return_type
   Future<void> call({required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
     bool installed;
     if (cmdPathOrNull != null) {
       installed = true;
@@ -73,14 +75,16 @@ class PkgMangerInstall {
             onDone: onDone,
           );
         } catch (e, stacktrace) {
-          CommandFailedException.log(e.toString(), stacktrace.toString());
+          await CommandFailedException.log(e.toString(), stacktrace.toString());
         }
       }
     }
   }
 
-  Future<void> _installOnWindows(
-      {required Function(bool installed) onDone}) async {
+  Future<void> _installOnWindows({
+    // ignore: inference_failure_on_function_return_type
+    required Function(bool installed) onDone,
+  }) async {
     Process.run(
       'powershell',
       <String>[
@@ -107,10 +111,12 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
       ).asStream().listen((ProcessResult process) {
         try {
           if (process.stderr is String &&
-              process.stderr.toString().contains('''
+              process.stderr.toString().contains(
+                    '''
 The remote name could not be resolved:
 '''
-                  .trim())) {
+                        .trim(),
+                  )) {
             throw const ProcessException(
               'powershell.exe',
               <String>[

@@ -5,7 +5,7 @@ import 'package:quatrokantos/services/wizard_service.dart';
 class WizardMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    final WizardService wizard = Get.find<WizardService>();
+    final wizard = Get.find<WizardService>();
     if (wizard.completed == false) {
       return const RouteSettings(name: '/wizard');
     } else {

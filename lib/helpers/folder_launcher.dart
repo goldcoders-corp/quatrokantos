@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, unnecessary_getters_setters
+
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,9 +13,8 @@ import 'package:quatrokantos/helpers/replace_helper.dart';
 /// #### Just Create New Instance passing absolutePath of a file
 /// #### then invoke `open()` method
 class Folder {
-  late final String _name;
-
   Folder({required String name}) : _name = name;
+  late final String _name;
 
   String get name => _name;
 
@@ -24,20 +25,32 @@ class Folder {
   static const String linux = 'xdg-open';
 
   String folder() {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
-    final ReplaceHelper text = ReplaceHelper(text: appFolder, regex: '\\s+');
+    var appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    final text = ReplaceHelper(text: appFolder, regex: r'\s+');
     appFolder = text.replace();
 
     late String siteFolder;
 
     if (Platform.isWindows) {
-      final p.Context context = p.Context(style: p.Style.windows);
+      final context = p.Context(style: p.Style.windows);
       siteFolder = context.join(
-          PC.userDirectory, '.local', 'share', '.$appFolder', 'sites', name);
+        PC.userDirectory,
+        '.local',
+        'share',
+        '.$appFolder',
+        'sites',
+        name,
+      );
     } else {
-      final p.Context context = p.Context(style: p.Style.posix);
+      final context = p.Context(style: p.Style.posix);
       siteFolder = context.join(
-          PC.userDirectory, '.local', 'share', '.$appFolder', 'sites', name);
+        PC.userDirectory,
+        '.local',
+        'share',
+        '.$appFolder',
+        'sites',
+        name,
+      );
     }
 
     PathHelper.mkd(siteFolder);
@@ -47,7 +60,7 @@ class Folder {
 
   /// Quickly Launch Text Editor
   Future<void> open() async {
-    final List<String> args = <String>[];
+    final args = <String>[];
     late String command;
 
     if (Platform.isWindows) {
@@ -58,14 +71,14 @@ class Folder {
       command = linux;
     }
 
-    final String folderPath = folder();
+    final folderPath = folder();
     args.add(folderPath);
     await Cmd.open(command: command, args: args);
   }
 
   String cwd() {
-    final Directory absolutePath = Directory(name);
-    final String dir = absolutePath.parent.path;
+    final absolutePath = Directory(name);
+    final dir = absolutePath.parent.path;
     return dir;
   }
 

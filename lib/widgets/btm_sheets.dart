@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_function_invocation, lines_longer_than_80_chars, avoid_dynamic_calls
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quatrokantos/constants/color_constants.dart';
@@ -23,7 +25,7 @@ void triggerBottomSheet(List<Menu> menus) {
                 Get.offNamed(menus[index].route!);
               }
               if (menus[index].callback != null) {
-                menus[index].callback!();
+                menus[index].callback?.call();
               }
             },
           );

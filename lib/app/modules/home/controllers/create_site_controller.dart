@@ -47,20 +47,24 @@ class CreateSiteController extends GetxController {
   set isLoading(bool val) => _isLoading.value = val;
 
   String randomString(int length) {
-    final Random rnd = Random();
+    final rnd = Random();
     // ignore: always_specify_types
-    return String.fromCharCodes(Iterable.generate(
-        length, (_) => _chars.codeUnitAt(rnd.nextInt(_chars.length))));
+    return String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => _chars.codeUnitAt(rnd.nextInt(_chars.length)),
+      ),
+    );
   }
 
   void _setUpFolder() {
-    String appFolder = dotenv.env['APP_NAME']!.toLowerCase();
-    final ReplaceHelper appText = ReplaceHelper(text: appFolder, regex: '\\s+');
+    var appFolder = dotenv.env['APP_NAME']!.toLowerCase();
+    final appText = ReplaceHelper(text: appFolder, regex: r'\s+');
     appFolder = appText.replace();
 
-    final ReplaceHelper folderText =
-        ReplaceHelper(text: local_name.toLowerCase(), regex: '\\s+', str: '-');
-    final String folder = folderText.replace();
+    final folderText =
+        ReplaceHelper(text: local_name.toLowerCase(), regex: r'\s+', str: '-');
+    final folder = folderText.replace();
 
     path = p.join(
       PC.userDirectory,
@@ -70,44 +74,51 @@ class CreateSiteController extends GetxController {
       'sites',
       folder,
     );
-    final String netlifyfolder = p.join(path, '.netlify');
+    final netlifyfolder = p.join(path, '.netlify');
     PathHelper.mkd(netlifyfolder);
   }
 
   Future<void> addSite(Map<String, dynamic> siteDetails) async {
-    final SiteListController ctrl = Get.put(SiteListController());
+    final ctrl = Get.put(SiteListController());
     _setUpFolder();
-    final String siteId = siteDetails['id'] as String;
-    final Site site = Site(
-        name: local_name,
-        path: path, // setUpFolder invoked
-        linked: true, // set to true since we call linkSite(siteId)
-        details: SiteDetails(
-          account_slug: siteDetails['account_slug'] as String,
-          default_domain: siteDetails['default_domain'] as String,
-          id: siteId,
-          name: siteDetails['name'] as String,
-          custom_domain: custom_domain,
-          repo_url: siteDetails['repo_url'] as String?,
-        ));
+    final siteId = siteDetails['id'] as String;
+    final site = Site(
+      name: local_name,
+      path: path, // setUpFolder invoked
+      linked: true, // set to true since we call linkSite(siteId)
+      details: SiteDetails(
+        account_slug: siteDetails['account_slug'] as String,
+        default_domain: siteDetails['default_domain'] as String,
+        id: siteId,
+        name: siteDetails['name'] as String,
+        custom_domain: custom_domain,
+        repo_url: siteDetails['repo_url'] as String?,
+      ),
+    );
     ctrl.sites.value.add(site);
-    linkSite(siteId);
+    await linkSite(siteId);
     ctrl.saveLocal(json.encode(ctrl.sites.value));
     ctrl.sites.refresh();
-    Get.back();
-    Get.snackbar('Success!', 'Site Created: $custom_domain',
-        icon: const Icon(Icons.check_circle_outline));
+    // ignore: inference_failure_on_function_invocation
+    Get
+      // ignore: inference_failure_on_function_invocation
+      ..back()
+      ..snackbar(
+        'Success!',
+        'Site Created: $custom_domain',
+        icon: const Icon(Icons.check_circle_outline),
+      );
     resetFields();
   }
 
   Future<void> linkSite(String siteId) async {
     if (path != '') {
-      final String stateFile = p.join(path, '.netlify', 'state.json');
-      final String content = '''
+      final stateFile = p.join(path, '.netlify', 'state.json');
+      final content = '''
 {
     "siteId": "$siteId"
 }''';
-      final File file = await File(stateFile).create(recursive: true);
+      final file = await File(stateFile).create(recursive: true);
       file.writeAsStringSync(content);
     }
   }

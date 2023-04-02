@@ -2,6 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 
 class RunBtn extends StatelessWidget {
+  const RunBtn({
+    required this.title,
+    super.key,
+    this.onTap,
+    this.height = 70,
+    this.width = 70,
+    this.radius = 35,
+    this.fontSize = 10,
+    this.gradient1 = const Color(0xFFFF4081),
+    this.gradient2 = const Color(0xffb69859),
+    this.highlighColor = Colors.white24,
+    this.splashColor = Colors.black54,
+    this.icon = Icons.add_link,
+    this.iconColor = Colors.white,
+  });
   final String title;
   final VoidCallback? onTap;
 
@@ -20,22 +35,6 @@ class RunBtn extends StatelessWidget {
   final double fontSize;
   final IconData icon;
   final Color iconColor;
-
-  const RunBtn({
-    required this.title,
-    Key? key,
-    this.onTap,
-    this.height = 70,
-    this.width = 70,
-    this.radius = 35,
-    this.fontSize = 10,
-    this.gradient1 = const Color(0xFFFF4081),
-    this.gradient2 = const Color(0xffb69859),
-    this.highlighColor = Colors.white24,
-    this.splashColor = Colors.black54,
-    this.icon = Icons.add_link,
-    this.iconColor = Colors.white,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,19 +56,20 @@ class RunBtn extends StatelessWidget {
         padding: EdgeInsets.zero,
         radius: Radius.circular(radius),
         child: SizedBox(
-            width: width,
-            height: height,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  touchIcon(icon, iconColor),
-                  Text(title, style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
-            )),
+          width: width,
+          height: height,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                touchIcon(icon, iconColor),
+                Text(title, style: TextStyle(fontSize: fontSize)),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -11,14 +11,6 @@ import 'package:quatrokantos/helpers/pc_info_helper.dart';
 import 'package:quatrokantos/helpers/pkg_manager.dart';
 
 class NodeInstall {
-  late final String command;
-  late String command1;
-  late final List<String> args1;
-  late final String path1;
-
-  final WizardController wctrl = Get.find<WizardController>();
-  final CommandController ctrl = Get.find<CommandController>();
-
   NodeInstall() : super() {
     command = 'node';
     command1 = PackageManager.get();
@@ -32,10 +24,20 @@ class NodeInstall {
       args1 = <String>['install', 'node'];
     }
   }
+  late final String command;
+  late String command1;
+  late final List<String> args1;
+  late final String path1;
 
+  final WizardController wctrl = Get.find<WizardController>();
+  final CommandController ctrl = Get.find<CommandController>();
+
+  // ignore: inference_failure_on_function_return_type
   Future<void> call({required Function(bool installed) onDone}) async {
-    final String? cmdPathOrNull = whichSync(command,
-        environment: <String, String>{'PATH': PathEnv.get()});
+    final cmdPathOrNull = whichSync(
+      command,
+      environment: <String, String>{'PATH': PathEnv.get()},
+    );
 
     bool installed;
     if (cmdPathOrNull != null) {
@@ -51,19 +53,23 @@ class NodeInstall {
       if (Platform.isWindows) {
         await _installOnWindows(onDone: onDone);
       } else {
-        final Cmd cmd = Cmd(command: command1, args: args1, runInShell: true);
+        final cmd = Cmd(command: command1, args: args1, runInShell: true);
 
-        await cmd.execute(onResult: (
-          String output,
-        ) {
-          onDone(true);
-        });
+        await cmd.execute(
+          onResult: (
+            String output,
+          ) {
+            onDone(true);
+          },
+        );
       }
     }
   }
 
-  Future<void> _installOnWindows(
-      {required Function(bool installed) onDone}) async {
+  Future<void> _installOnWindows({
+    // ignore: inference_failure_on_function_return_type
+    required Function(bool installed) onDone,
+  }) async {
     Process.run(
       command1,
       args1,
@@ -76,7 +82,7 @@ class NodeInstall {
         runInShell: true,
         workingDirectory: PC.userDirectory,
       ).asStream().listen((ProcessResult data) {
-        final String? version = Cmd.version(data.stdout.toString());
+        final version = Cmd.version(data.stdout.toString());
 
         if (version != null) {
           onDone(true);
@@ -84,9 +90,11 @@ class NodeInstall {
       });
       try {
         if (data.stderr is String &&
-            data.stderr.toString().contains('''
+            data.stderr.toString().contains(
+                  '''
             The remote name could not be resolved:'''
-                .trim())) {
+                      .trim(),
+                )) {
           throw ProcessException(
             command,
             args1,

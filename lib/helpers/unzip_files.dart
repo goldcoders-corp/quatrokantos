@@ -25,35 +25,37 @@ import 'package:archive/archive.dart';
 ///   await cms.unzip((onDone){});
 /// ```
 class UnzipFile {
-  final String path;
-  final String destination; // project folder name
+  // project folder name
 
   UnzipFile(
     this.path,
     this.destination,
   );
+  final String path;
+  final String destination;
 
+  // ignore: inference_failure_on_function_return_type
   Future<void> unzip(Function(bool done) onDone) async {
+    // ignore: todo
     //! TODO: add try catch since we are having error here
     //! if the url i add is private
     //! Also when we delete our site folder
     //! we need to catch it and remove our site from UI
     //FileSystemException
-    final Archive archive =
-        ZipDecoder().decodeBytes(File(path).readAsBytesSync());
+    final archive = ZipDecoder().decodeBytes(File(path).readAsBytesSync());
 
-    for (final ArchiveFile file in archive) {
-      String filename = file.name;
-      final RegExp regExp = RegExp(r'\/(.*)');
+    for (final file in archive) {
+      var filename = file.name;
+      final regExp = RegExp(r'\/(.*)');
       filename = regExp.stringMatch(filename)!;
 
       if (file.isFile) {
-        final List<int> data = file.content as List<int>;
+        final data = file.content as List<int>;
         File(destination + filename)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
       } else {
-        Directory(destination + filename).create(recursive: true);
+        await Directory(destination + filename).create(recursive: true);
       }
     }
     onDone(true);

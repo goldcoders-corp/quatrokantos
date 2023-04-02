@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_function_invocation
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -13,14 +15,13 @@ import 'components/site_card.dart';
 
 class SitePanel extends GetView<SiteListController> {
   const SitePanel({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // ignore: no_leading_underscores_for_local_identifiers
-    final Size _size = MediaQuery.of(context).size;
-    final SiteListController sitesCtrl = Get.put(SiteListController());
+    final size = MediaQuery.of(context).size;
+    final sitesCtrl = Get.put(SiteListController());
 
     return Obx(() {
       return Padding(
@@ -48,18 +49,19 @@ class SitePanel extends GetView<SiteListController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 RunBtn(
-                    title: 'New Site',
-                    icon: Icons.add_business,
-                    onTap: () async {
-                      await CreateNewSiteDialog.launch();
-                    }),
+                  title: 'New Site',
+                  icon: Icons.add_business,
+                  onTap: () async {
+                    await CreateNewSiteDialog.launch();
+                  },
+                ),
                 Obx(
                   () => (sitesCtrl.isLoading == false)
                       ? RunBtn(
                           title: 'Clear All',
                           icon: Icons.auto_delete_outlined,
                           onTap: () async {
-                            Get.defaultDialog(
+                            await Get.defaultDialog(
                               barrierDismissible: false,
                               cancel: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
@@ -116,16 +118,20 @@ Live and Local Sites Will Be Wiped Out!'''),
                                   minimumSize: const Size(150, 50),
                                   shadowColor: Colors.black45,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30)),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
                                 ),
                                 label: const Text('Confirm'),
                                 icon: const Icon(Icons.delete),
                                 onPressed: () async {
                                   await sitesCtrl.checkSitesEmpty();
                                   if (sitesCtrl.sitesEmpty == true) {
-                                    Get.back();
-                                    Get.snackbar('No Sites Deleted!',
-                                        'Sites Are Empty!');
+                                    Get
+                                      ..back()
+                                      ..snackbar(
+                                        'No Sites Deleted!',
+                                        'Sites Are Empty!',
+                                      );
                                   } else {
                                     await sitesCtrl.uninstallSites();
                                     Get.back();
@@ -133,7 +139,8 @@ Live and Local Sites Will Be Wiped Out!'''),
                                 },
                               ),
                             );
-                          })
+                          },
+                        )
                       : SizedBox(
                           height: 70,
                           width: 70,
@@ -147,12 +154,12 @@ Live and Local Sites Will Be Wiped Out!'''),
             const SizedBox(height: defaultPadding),
             Responsive(
               mobile: SiteCardGridView(
-                crossAxisCount: _size.width < 650 ? 1 : 2,
-                childAspectRatio: _size.width < 650 ? 1.3 : 1,
+                crossAxisCount: size.width < 650 ? 1 : 2,
+                childAspectRatio: size.width < 650 ? 1.3 : 1,
               ),
               tablet: const SiteCardGridView(),
               desktop: SiteCardGridView(
-                childAspectRatio: _size.width < 1400 ? 1.1 : 1.4,
+                childAspectRatio: size.width < 1400 ? 1.1 : 1.4,
               ),
             )
           ],
@@ -164,10 +171,10 @@ Live and Local Sites Will Be Wiped Out!'''),
 
 class SiteCardGridView extends GetView<SiteListController> {
   const SiteCardGridView({
-    Key? key,
+    super.key,
     this.crossAxisCount = 3,
     this.childAspectRatio = 1,
-  }) : super(key: key);
+  });
 
   final int crossAxisCount;
   final double childAspectRatio;
@@ -191,7 +198,7 @@ class SiteCardGridView extends GetView<SiteListController> {
               SiteCard(site: controller.sites.value[index]),
         );
       } else {
-        return Container(
+        return DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
             shape: BoxShape.circle,
@@ -206,10 +213,12 @@ class SiteCardGridView extends GetView<SiteListController> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SvgPicture.asset('assets/svg/build_site.svg',
-                    width: 350.0,
-                    height: 350.0,
-                    semanticsLabel: 'Create Your First Site Now'),
+                SvgPicture.asset(
+                  'assets/svg/build_site.svg',
+                  width: 350,
+                  height: 350,
+                  semanticsLabel: 'Create Your First Site Now',
+                ),
               ],
             ),
           ),

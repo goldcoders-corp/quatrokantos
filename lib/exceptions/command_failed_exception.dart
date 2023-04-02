@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,15 +22,19 @@ class CommandFailedException implements Exception {
         dismissDirection: DismissDirection.horizontal,
       );
     } else {
-      String folder = dotenv.env['APP_NAME']!.toLowerCase();
+      var folder = dotenv.env['APP_NAME']!.toLowerCase();
       // ignore: unnecessary_string_escapes
-      final ReplaceHelper text = ReplaceHelper(text: folder, regex: '\\s+');
+      final text = ReplaceHelper(text: folder, regex: r'\s+');
       folder = text.replace();
-      const String filename = 'error_logs.txt';
-      final String filePath =
+      const filename = 'error_logs.txt';
+      final filePath =
           p.join(PC.userDirectory, '.local', 'share', '.$folder', filename);
       await WritterHelper.log(
-          filePath: filePath, e: e.toString(), stacktrace: stacktrace);
+        filePath: filePath,
+        // ignore: noop_primitive_operations
+        e: e.toString(),
+        stacktrace: stacktrace,
+      );
     }
   }
 }

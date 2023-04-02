@@ -15,8 +15,8 @@ class PackageManager {
   }
 
   static String linuxPkgManager() {
-    final String path = PathEnv.get();
-    final Map<String, String> env = <String, String>{'PATH': path};
+    final path = PathEnv.get();
+    final env = <String, String>{'PATH': path};
     return whichSync('pacman', environment: env) ??
         whichSync('yum', environment: env) ??
         whichSync('dnf', environment: env) ??

@@ -1,12 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class NetlifyAccountEntity extends Equatable {
-  // from getCurrentUser Netliyf Api
-  final String id;
-  final String name;
-  final String avatar;
-  final String email;
-  final String slug; // from getAccountSlug Netlify Api
+  // from getAccountSlug Netlify Api
   // slug is computed as follow
   // uses the full name as default if there is no slug
   // if there is not full name, uses the email as slug instead
@@ -18,6 +13,12 @@ class NetlifyAccountEntity extends Equatable {
     required this.email,
     required this.slug,
   });
+  // from getCurrentUser Netliyf Api
+  final String id;
+  final String name;
+  final String avatar;
+  final String email;
+  final String slug;
 
   @override
   List<Object?> get props => <Object?>[id, name, avatar, email, slug];
@@ -25,21 +26,15 @@ class NetlifyAccountEntity extends Equatable {
 
 class NetlifyAccount extends NetlifyAccountEntity {
   const NetlifyAccount({
-    required String id,
-    required String name,
-    required String avatar,
-    required String email,
-    required String slug,
-  }) : super(
-          id: id,
-          name: name,
-          avatar: avatar,
-          email: email,
-          slug: slug,
-        );
+    required super.id,
+    required super.name,
+    required super.avatar,
+    required super.email,
+    required super.slug,
+  });
 
   factory NetlifyAccount.fromJson(Map<String, dynamic> json) {
-    String accountName = '';
+    var accountName = '';
     if (json.containsKey('full_name')) {
       accountName = json['full_name'] as String;
     }

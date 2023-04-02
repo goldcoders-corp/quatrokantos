@@ -11,7 +11,7 @@ import 'package:quatrokantos/widgets/top_bar.dart';
 import '../controllers/site_list_controller.dart';
 
 class HomeView extends GetView<SiteListController> {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,14 @@ enum MenuSelection {
 }
 
 class MyMenuBarApp extends StatefulWidget {
-  const MyMenuBarApp({Key? key}) : super(key: key);
+  const MyMenuBarApp({super.key});
 
   @override
   State<MyMenuBarApp> createState() => _MyMenuBarAppState();
 }
 
 class _MyMenuBarAppState extends State<MyMenuBarApp> {
+  // ignore: unused_element
   void _handleMenuSelection(MenuSelection value) {
     switch (value) {
       case MenuSelection.about:
@@ -45,6 +46,7 @@ class _MyMenuBarAppState extends State<MyMenuBarApp> {
           applicationVersion: 'V1.0.0',
         );
         break;
+      // ignore: no_default_cases
       default:
         break;
     }

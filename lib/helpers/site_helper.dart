@@ -14,6 +14,7 @@ class SiteHelper {
   ///        packages['scripts'] as Map<String, dynamic>;
   ///
   ///    scripts.forEach((String key, dynamic script) {
+  // ignore: todo
   ///      // TODO: Save this on local db or as GetX route middleware
   ///      // command: npm
   ///      // args: ['$key'];
@@ -22,7 +23,7 @@ class SiteHelper {
   ///    });
   /// ```
   static Future<Map<String, dynamic>> getPackageJSON(String projectPath) async {
-    final String contents = await File(projectPath).readAsString();
+    final contents = await File(projectPath).readAsString();
     return json.decode(contents) as Map<String, dynamic>;
   }
 }

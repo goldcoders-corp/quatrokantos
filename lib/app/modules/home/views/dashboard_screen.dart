@@ -7,7 +7,7 @@ import 'package:quatrokantos/constants/default_size.dart';
 import '../../../../responsive.dart';
 
 class DashboardScreen extends GetView<SiteListController> {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -47,9 +49,9 @@ mixin Installer {
       (Platform.isWindows) ? null : <String, String>{'PATH': PathEnv.get()};
 
   String? cmdPathOrNull() {
-    final String? _cmd = whichSync(cmd, environment: environment);
-    if (_cmd != null) {
-      return cmd = _cmd;
+    final String? command = whichSync(cmd, environment: environment);
+    if (command != null) {
+      return cmd = command;
     } else {
       return null;
     }
@@ -68,8 +70,9 @@ mixin Installer {
           (ProcessResult data) {
             if (listenToStream) {
               // pipe to controller with stream
-              controller.results = data.stdout.toString();
-              controller.errors = data.stderr.toString();
+              controller
+                ..results = data.stdout.toString()
+                ..errors = data.stderr.toString();
             }
             // set current version to local storage
             // set command path to local storage

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:get/get.dart';
 import 'package:quatrokantos/app/modules/home/bindings/home_binding.dart';
 import 'package:quatrokantos/app/modules/home/views/home_view.dart';
@@ -18,7 +20,7 @@ class AppPages {
   static final List<GetPage<dynamic>> routes = <GetPage<dynamic>>[
     GetPage<dynamic>(
       name: _Paths.HOME,
-      page: () => HomeView(),
+      page: () => const HomeView(),
       binding: HomeBinding(),
       middlewares: <GetMiddleware>[
         WizardMiddleware(),
@@ -26,7 +28,7 @@ class AppPages {
     ),
     GetPage<dynamic>(
       name: _Paths.WIZARD,
-      page: () => WizardView(),
+      page: () => const WizardView(),
       binding: WizardBinding(),
       middlewares: <GetMiddleware>[
         SetUpMiddleware(),
@@ -34,7 +36,7 @@ class AppPages {
     ),
     GetPage<dynamic>(
       name: _Paths.PROJECT,
-      page: () => ProjectView(),
+      page: ProjectView.new,
       binding: ProjectBinding(),
       middlewares: <GetMiddleware>[
         WizardMiddleware(),
