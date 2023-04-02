@@ -12,20 +12,20 @@ dependencies:
   archive: ^3.3.0
   collection: ^1.16.0
   cupertino_icons: ^1.0.5
-  equatable: ^2.0.3
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
-  flutter_svg: ^1.1.0
+  flutter_svg: ^2.0.4
   get: ^4.6.5
-  get_storage: ^2.0.3
-  msix: ^3.6.2
-  outline_gradient_button: ^2.0.0+1
-  path_provider: ^2.0.11
+  get_storage: ^2.1.1
+  msix: ^3.9.1
+  outline_gradient_button: ^2.0.1+1
+  path_provider: ^2.0.14
   platform: ^3.1.0
-  process_run: ^0.12.3+2
+  process_run: ^0.12.5+2
   system_info: ^1.0.1
-  system_tray: ^0.1.1
+  system_tray: ^2.0.2
   tint: ^2.0.0
   window_size:
     git:
