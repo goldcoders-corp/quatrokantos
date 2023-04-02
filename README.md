@@ -1,5 +1,8 @@
 # Quatrokantos App
 
+## Deployment on AppStore
+https://docs.flutter.dev/deployment/macos
+
 ## System Tray
 https://github.com/antler119/system_tray
 

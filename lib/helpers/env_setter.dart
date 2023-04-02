@@ -17,6 +17,7 @@ class PathEnv {
 /usr/local/bin
 /opt/homebrew/sbin
 /opt/homebrew/bin
+${PC.userDirectory}/.nodenv/shims
 ${PC.userDirectory}/.local/bin
 ${PC.userDirectory}/.local/opt/brew/bin
 ${PC.userDirectory}/.local/opt/brew/sbin
