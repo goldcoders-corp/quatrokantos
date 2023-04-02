@@ -430,7 +430,8 @@
 				DEVELOPMENT_TEAM = 5KZ8MD34QW;
 				ENABLE_APP_SANDBOX = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+   				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -571,7 +572,7 @@
 				DEVELOPMENT_TEAM = 5KZ8MD34QW;
 				ENABLE_APP_SANDBOX = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -598,7 +599,7 @@
 				DEVELOPMENT_TEAM = 5KZ8MD34QW;
 				ENABLE_APP_SANDBOX = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
