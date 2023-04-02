@@ -14,7 +14,7 @@ class CommandController extends GetxController {
   set isLoading(bool val) => _loading.value = val;
   @override
   void onInit() {
-    ever(_results, notify);
+    // ever(_results, notify);
     super.onInit();
   }
 
