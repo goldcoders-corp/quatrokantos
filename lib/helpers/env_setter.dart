@@ -17,6 +17,7 @@ class PathEnv {
 /usr/local/bin
 /opt/homebrew/sbin
 /opt/homebrew/bin
+${PC.userDirectory}/Library/Containers/dev.goldcoders.quatrokantos/Data/.local/bin
 ${PC.userDirectory}/.nodenv/shims
 ${PC.userDirectory}/.local/bin
 ${PC.userDirectory}/.local/opt/brew/bin
